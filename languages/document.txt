@@ -1,0 +1,109 @@
+/******************************************************************************\
+ *                   © ViVuDi 2025. All rights reserved.                      *
+ ******************************************************************************
+ *  File        : document.ts                                                 *
+ *  Purpose     : Hướng dẫn sử dụng và mở rộng hệ thống đa ngôn ngữ           *
+ *  Author      : Minh Nhat                                                   *
+ *  Created     : 31/05/2025                                                  *
+ *  Updated by  :                                                             *
+ *  Modified    :                                                             *
+\******************************************************************************/
+
+/******************************************************************************
+ * MỤC TIÊU                                                                   *
+ * - Quản lý ngôn ngữ hiện tại (`vi`, `en`, ...)                              *
+ * - Hỗ trợ dịch bằng `key` dạng `a.b.c`                                      *
+ * - Format thông điệp động qua `MSG_ID`                                      *
+ * - Dễ dàng mở rộng thêm module hoặc ngôn ngữ mới                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ * CÁCH SỬ DỤNG                                                               *
+ ******************************************************************************/
+//# Sử dụng hook useLanguage trong component:
+/*
+import { useLanguage } from './providers/LanguageProvider';
+
+const MyComponent = () => {
+    const { lang, setLang, t, getMessage } = useLanguage();
+
+    return (
+        <>
+            <h1>{t('authentication.login')}</h1>
+            <p>{getMessage(MSG_ID.MSG_REQUIRED, 'Tên', 'Email')}</p>
+            <button onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}>
+                Đổi ngôn ngữ
+            </button>
+        </>
+    );
+};
+*/
+
+/******************************************************************************
+ * CÁCH MỞ RỘNG                                                               *
+ ******************************************************************************/
+
+//# 1. Thêm module mới (VD: profile)
+/*
+📁 en.ts
+const profile = {
+    name: 'Name',
+    email: 'Email',
+};
+export default { authentication, profile };
+
+📁 vi.ts
+const profile = {
+    name: 'Tên',
+    email: 'Email',
+};
+export default { authentication, profile };
+*/
+
+//# Sử dụng: t('profile.name') => 'Tên' hoặc 'Name'
+
+//# 2. Thêm message format mới
+/*
+📁 types.ts
+export enum MSG_ID {
+    ...
+    MSG_CUSTOM_ERROR = 4,
+};
+
+📁 en.ts
+[MSG_ID.MSG_CUSTOM_ERROR]: 'Something went wrong: {0}',
+
+📁 vi.ts
+[MSG_ID.MSG_CUSTOM_ERROR]: 'Đã xảy ra lỗi: {0}',
+*/
+
+//# Sử dụng: getMessage(MSG_ID.MSG_CUSTOM_ERROR, 'Lỗi kết nối')
+
+//# 3. Thêm ngôn ngữ mới (VD: Japanese)
+
+/*
+📁 jp.ts
+const authentication = {
+    login: 'ログイン',
+};
+export const jpMessages = {
+    [MSG_ID.MSG_REQUIRED]: '次の値を入力してください: {0}, {1}, {2}',
+};
+export default { authentication };
+
+📁 LanguageProvider.tsx
+import jp, { jpMessages } from '../jp';
+
+const translations = { en, vi, jp };
+const messages = { en: enMessages, vi: viMessages, jp: jpMessages };
+
+📁 types.ts
+export type AppLanguage = 'vi' | 'en' | 'jp';
+*/
+
+/******************************************************************************
+ * GHI CHÚ                                                                    *
+ * - `t()` hỗ trợ key dạng lồng nhau: `module.key1.key2`                      *
+ * - `getMessage()` giúp format với tham số động                              *
+ * - Key trong ngôn ngữ nên nhất quán, tránh lỗi runtime                      *
+ ******************************************************************************/

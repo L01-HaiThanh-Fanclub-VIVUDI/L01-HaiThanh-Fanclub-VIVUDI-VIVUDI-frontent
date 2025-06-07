@@ -8,6 +8,19 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
+android/
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+*.so
+*.jar
+*.keystore
+*.gradle
+/local.properties
+/captures/
+output.json
 
 # Native
 .kotlin/

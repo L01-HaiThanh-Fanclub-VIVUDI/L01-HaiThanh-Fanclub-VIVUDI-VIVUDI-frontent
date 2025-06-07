@@ -1,45 +1,41 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+/******************************************************************************
+ *                   © ViVuDi 2025. All rights reserved.                      *
+ ******************************************************************************
+ *  File        : _layout.tsx                                                 *
+ *  Author      : Minh Nhat                                                   *
+ *  Created     : 07/06/2025                                                  *
+ *  Updated by  :                                                             *
+ *  Modified    :                                                             *
+ ******************************************************************************/
 
-import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Tabs } from 'expo-router';
+import { JSX } from 'react';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+/******************************************************************************
+ * TabLayout: Cấu hình tab bar cho app                                        *
+ * - Ẩn header và tab bar                                                     *
+ * - Định nghĩa icon cho từng tab                                             *
+ ******************************************************************************/
+const TabLayout = (): JSX.Element => (
+	<Tabs
+		screenOptions={{
+			headerShown: false,
+			tabBarBackground: TabBarBackground,
+			tabBarStyle: { display: 'none' },
+		}}
+	>
+		<Tabs.Screen
+			name="index"
+			options={{
+				title: 'Home',
+				tabBarIcon: ({ color }) => (
+					<IconSymbol size={28} name="house.fill" color={color} />
+				),
+			}}
+		/>
+	</Tabs>
+);
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
-}
+export default TabLayout;

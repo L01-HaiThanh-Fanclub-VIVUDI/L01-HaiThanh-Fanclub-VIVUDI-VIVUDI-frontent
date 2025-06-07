@@ -1,21 +1,28 @@
-/**
- * Learn more about light and dark modes:
- * https://docs.expo.dev/guides/color-schemes/
- */
+/******************************************************************************\
+ *                   © ViVuDi 2025. All rights reserved.                      *
+ ******************************************************************************
+ *  File        : useThemeColor.ts                                            *
+ *  Author      : Minh Nhat                                                   *
+ *  Created     : 7/6/2025                                                    *
+ *  Updated by  :                                                             *
+ *  Modified    :                                                             *
+\******************************************************************************/
 
-import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { colors } from '@/settings';
 
-export function useThemeColor(
-  props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
-  const theme = useColorScheme() ?? 'light';
-  const colorFromProps = props[theme];
+/******************************************************************************
+ * useThemeColor: Lấy màu theo theme hiện tại (light/dark) hoặc props truyền  *
+ * - Ưu tiên màu truyền qua props, nếu không có thì lấy từ settings           *
+ ******************************************************************************/
+const useThemeColor = (
+	props: { light?: string; dark?: string },
+	colorName: keyof typeof colors.light & keyof typeof colors.dark
+): string => {
+	const theme = useColorScheme() ?? 'light';
+	const colorFromProps = props[theme];
 
-  if (colorFromProps) {
-    return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
-  }
-}
+	return colorFromProps ? colorFromProps : colors[theme][colorName];
+};
+
+export default useThemeColor;
