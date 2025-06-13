@@ -3,7 +3,7 @@ import { Platform, StyleSheet } from 'react-native';
 
 import ThemedText from '@/components/atoms/themed_text';
 import ThemedView from '@/components/atoms/themed_view';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import ParallaxScrollView from '@/components/ui/parallax_scroll_view';
 import { useLanguage } from '@/languages/provider';
 
 export default function HomeScreen() {

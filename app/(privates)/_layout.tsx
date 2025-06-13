@@ -8,8 +8,8 @@
  *  Modified    :                                                             *
  ******************************************************************************/
 
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
+import IconSymbol from '@/components/atoms/icon_symbol';
+import { PAGE_ID } from '@/settings/navigation/page';
 import { Tabs } from 'expo-router';
 import { JSX } from 'react';
 
@@ -18,16 +18,15 @@ import { JSX } from 'react';
  * - Ẩn header và tab bar                                                     *
  * - Định nghĩa icon cho từng tab                                             *
  ******************************************************************************/
-const TabLayout = (): JSX.Element => (
-	<Tabs
+const TabLayout = (): JSX.Element => {
+	return <Tabs
 		screenOptions={{
 			headerShown: false,
-			tabBarBackground: TabBarBackground,
 			tabBarStyle: { display: 'none' },
 		}}
 	>
 		<Tabs.Screen
-			name="index"
+			name={PAGE_ID.GENERAL}
 			options={{
 				title: 'Home',
 				tabBarIcon: ({ color }) => (
@@ -36,6 +35,6 @@ const TabLayout = (): JSX.Element => (
 			}}
 		/>
 	</Tabs>
-);
+};
 
 export default TabLayout;

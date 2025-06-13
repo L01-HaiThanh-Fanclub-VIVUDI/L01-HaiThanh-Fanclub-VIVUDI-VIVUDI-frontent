@@ -11,6 +11,7 @@
 import ScreenWrapper from '@/components/ui/screen_wrapper';
 import { ProviderInjection } from '@/providers';
 import { stackScreenSettings } from '@/settings';
+import { PAGE_ID } from '@/settings/navigation/page';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -41,7 +42,7 @@ const RootLayout = (): JSX.Element => {
 		<ProviderInjection>
 			<ScreenWrapper>
 				<Stack>
-					<Stack.Screen name="(tabs)" options={stackScreenSettings} />
+					<Stack.Screen name={PAGE_ID.PRIVATE_TABS} options={stackScreenSettings} />
 					<Stack.Screen name="+not-found" />
 				</Stack>
 			</ScreenWrapper>

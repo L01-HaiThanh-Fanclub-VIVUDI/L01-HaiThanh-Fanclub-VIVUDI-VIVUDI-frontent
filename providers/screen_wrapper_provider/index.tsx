@@ -8,6 +8,7 @@
  *  Modified    :                                                            *
 \*****************************************************************************/
 
+import { PAGE_ID } from '@/settings/navigation/page';
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { ScreenWrapperConfig, ScreenWrapperContextValue } from './types';
 
@@ -25,7 +26,22 @@ const ScreenWrapperContext = createContext<ScreenWrapperContextValue>(defaultCon
  * Sử dụng useState để lưu cấu hình hiện tại.                                 *
  ******************************************************************************/
 export const ScreenWrapperProvider = ({ children }: { children: ReactNode }) => {
-    const [config, setConfig] = useState<ScreenWrapperConfig>({});
+    // Sử dụng map PAGE_ID với config tương ứng
+    const [configs, setConfigs] = useState<Record<PAGE_ID, ScreenWrapperConfig>>({} as Record<PAGE_ID, ScreenWrapperConfig>);
+    const [screenId, setScreenId] = useState<PAGE_ID>(PAGE_ID.GENERAL);
+
+    const config = configs[screenId] || {};
+
+    const setConfig = (newConfig: ScreenWrapperConfig, screenId: PAGE_ID) => {
+        setConfigs(prev => ({
+            ...prev,
+            [screenId]: {
+                ...prev[screenId],
+                ...newConfig,
+            },
+        }));
+        setScreenId(screenId);
+    };
 
     return (
         <ScreenWrapperContext.Provider value={{ config, setConfig }}>

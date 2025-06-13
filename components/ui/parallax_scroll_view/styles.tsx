@@ -1,9 +1,9 @@
 /****************************************************************************\
  *                   © ViVuDi 2025. All rights reserved.                    *
  ****************************************************************************
- *  File        : Chứa styles sử dụng trong ScreenWrapper                   *
+ *  File        : Chứa styles sử dụng trong ParallaxScrollView              *
  *  Author      : Minh Nhat                                                 *
- *  Created     : 01/06/2025                                                *
+ *  Created     : /06/2025                                                *
  *  Updated by  :                                                           *
  *  Modified    :                                                           *
 \****************************************************************************/
@@ -15,64 +15,31 @@ import { Dimensions, StyleSheet } from 'react-native';
  ****************************************************************************/
 const screenWidth = Dimensions.get('window').width;
 
+/******************************************************************************
+ * Định nghĩa hằng số cho chiều cao header                                    *
+ ******************************************************************************/
+export const DEFAULT_HEADER_HEIGHT_VALUE = 350;
+
 /****************************************************************************
  * Styles                                                                   *
  ****************************************************************************/
 export const styles = StyleSheet.create({
-    root: {
+    container: {
         flex: 1,
         zIndex: 0,
         position: 'relative',
     },
-    headerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        gap: 10,
-        paddingHorizontal: 10,
-        marginTop: 10,
-        backgroundColor: 'transparent',
-        position: 'absolute',
+    header: {
+        height: DEFAULT_HEADER_HEIGHT_VALUE,
+        overflow: 'hidden',
         width: screenWidth,
-        left: 0,
+        position: 'relative',
         zIndex: 1,
     },
-    backButtonContainer: {
-        width: 35,
-        paddingHorizontal: 10,
-    },
-    actionButton: {
-        height: 40,
-        width: 40,
-        backgroundColor: '#ffffff',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#007bff',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    screenTitle: {
-        fontSize: 20,
-        fontWeight: '500',
-        color: '#111827',
+    content: {
         flex: 1,
-        textAlign: 'center',
-    },
-    screenTitleWithTwoActions: {
-        paddingLeft: 5
-    },
-    screenTitleWithRightAction: {
-        textAlign: 'left'
-    },
-    screenTitleWithBack: {
-        marginLeft: -5, textAlign: 'left'
-    },
-    contentContainer: {
-        flex: 1
-    },
-    bottomBorder: {
-        borderBottomWidth: 1,
-        borderColor: '#eee',
-        paddingBottom: 10,
+        padding: 32,
+        gap: 16,
+        overflow: 'hidden',
     },
 });

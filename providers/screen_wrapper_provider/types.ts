@@ -8,9 +8,16 @@
  *  Modified    :                                                           *
 \****************************************************************************/
 
+import { PAGE_ID } from '@/settings/navigation/page';
 import { ViewStyle } from 'react-native';
 
-export type ScreenWrapperProps = {
+/****************************************************************************
+* ScreenWrapperConfig: Cấu hình tuỳ chỉnh cho ScreenWrapper                 *
+* - Dùng để lưu trữ các tuỳ chỉnh như style, hành động back, v.v.           *
+* - Có thể được sử dụng để thay đổi cấu hình của ScreenWrapper trong ứng    *
+*   dụng.                                                                   *
+****************************************************************************/
+export type ScreenWrapperConfig = {
     /****************************************************************************
      * Style thêm của root container                                            *
      * @optional                                                                *
@@ -62,21 +69,7 @@ export type ScreenWrapperProps = {
         icon: React.ReactNode;
         onPress: () => void;
     }[];
-    /****************************************************************************
-     * Nội dung nằm bên trong ScreenWrapper                                     *
-     * @optional                                                                *
-     ****************************************************************************/
-    children?: React.ReactNode;
 };
-
-/****************************************************************************
-* ScreenWrapperConfig: Cấu hình tuỳ chỉnh cho ScreenWrapper                 *
-* - Dùng để lưu trữ các tuỳ chỉnh như style, hành động back, v.v.           *
-* - Có thể được sử dụng để thay đổi cấu hình của ScreenWrapper trong ứng    *
-*   dụng.                                                                   *
-****************************************************************************/
-export type ScreenWrapperConfig = Partial<Omit<ScreenWrapperProps, 'children'>>;
-
 /****************************************************************************
 * ScreenWrapperContextValue: Giá trị của context cho ScreenWrapper          *
 * - Cung cấp cấu hình và hàm setConfig để cập nhật cấu hình.                *
@@ -85,5 +78,5 @@ export type ScreenWrapperConfig = Partial<Omit<ScreenWrapperProps, 'children'>>;
 *****************************************************************************/
 export interface ScreenWrapperContextValue {
     config: ScreenWrapperConfig;
-    setConfig: (config: ScreenWrapperConfig) => void;
+    setConfig: (config: ScreenWrapperConfig, screenId: PAGE_ID) => void;
 };

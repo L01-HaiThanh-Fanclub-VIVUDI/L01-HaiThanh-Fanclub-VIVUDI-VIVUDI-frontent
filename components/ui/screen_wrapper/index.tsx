@@ -8,14 +8,22 @@
  *  Modified    :                                                             *
 \******************************************************************************/
 
+import useCurrentPageId from '@/hooks/useCurrentPageId';
 import { useScreenWrapper } from '@/providers/screen_wrapper_provider';
-import { AppNavigationProp } from '@/settings/navigation/route_params';
+import { PAGE_ID } from '@/settings/navigation/page';
+import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { JSX, useCallback } from 'react';
-import { BackHandler, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { JSX, useCallback, useEffect, useState } from 'react';
+import { BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './styles';
+
+/******************************************************************************
+ * Define các giá trị mặc định cho component                                  *
+ ******************************************************************************/
+const DEFAULT_DISABLE_DEFAULT_GOBACK_ACTION_VALUE: boolean = false;
+const DEFAULT_SHOW_SCREEN_NAME_VALUE: boolean = false;
 
 /******************************************************************************
  * ScreenWrapper: Bọc màn hình với header tuỳ biến, hỗ trợ back, search, v.v. *
@@ -29,26 +37,24 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
     const {
         config: {
             style,
-            disableDefaultGobackAction = false,
+            disableDefaultGobackAction = DEFAULT_DISABLE_DEFAULT_GOBACK_ACTION_VALUE,
             handleGoback,
-            showScreenName = false,
+            showScreenName = DEFAULT_SHOW_SCREEN_NAME_VALUE,
             rightActions,
-            searchValue,
-            setSearchValue,
-            searchPlaceholder = 'Tìm kiếm',
         },
     } = useScreenWrapper();
 
     /******************************************************************************
      * Khởi tạo navigation và route để lấy thông tin màn hình hiện tại            *
      ******************************************************************************/
-    const navigation = useNavigation<AppNavigationProp>();
-    const route = navigation.getState().routes[navigation.getState().index];
+    const navigation = useNavigation<AppStackNavigation>();
 
     /******************************************************************************
      * Lấy tên màn hình hiện tại                                                  *
      ******************************************************************************/
-    const screenName = showScreenName ? route.name : null;
+    const currentPageId = useCurrentPageId();
+    const [currentScreenId, setCurrentScreenId] = useState<PAGE_ID>(PAGE_ID.GENERAL);
+    const screenName = showScreenName ? currentScreenId : null;
 
     /******************************************************************************
      * Lấy insets an toàn để điều chỉnh padding cho header và content             *
@@ -70,15 +76,8 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
     const actionCount = (handleGoback ? 1 : 0) + rightActionsArr.length;
 
     /******************************************************************************
-     * Style cho search box và tiêu đề dựa trên số action                         *
+     * Style cho tiêu đề dựa trên số action                                       *
      ******************************************************************************/
-    const searchBoxWidth =
-        actionCount === 2
-            ? styles.searchBoxWidthThreeActions
-            : actionCount === 1
-                ? styles.searchBoxWidthTwoActions
-                : styles.searchBoxWidthDefault;
-
     const screenNameText =
         actionCount === 2
             ? styles.screenTitleWithTwoActions
@@ -131,22 +130,6 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
                 </View>
             )}
 
-            {searchValue !== null && searchValue !== undefined && !screenName && (
-                <View style={styles.searchHeaderContainer}>
-                    <View style={[styles.searchBoxContainer, searchBoxWidth]}>
-                        <FontAwesome5 name="search" size={16} color="#9ca3af" style={styles.searchIcon} />
-                        <TextInput
-                            style={styles.searchInput}
-                            value={searchValue}
-                            onChangeText={setSearchValue}
-                            placeholder={searchPlaceholder}
-                            placeholderTextColor="#9ca3af"
-                            cursorColor="#6b7280"
-                        />
-                    </View>
-                </View>
-            )}
-
             {screenName && (
                 <Text style={[styles.screenTitle, screenNameText]}>{screenName}</Text>
             )}
@@ -160,31 +143,17 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
     );
 
     /******************************************************************************
-     * Render search box dưới header nếu có cả searchValue và screenName          *
+     * Câp nhật currentScreenId khi currentPageId thay đổi                        *
      ******************************************************************************/
-    const renderSearchBelowHeader = () =>
-        searchValue !== null && searchValue !== undefined && screenName && (
-            <View style={styles.searchHeaderWrapper}>
-                <View style={styles.searchHeaderContainer}>
-                    <View style={[styles.searchBoxContainer, styles.searchBoxWidthDefault]}>
-                        <FontAwesome5 name="search" size={16} color="#9ca3af" style={styles.searchIcon} />
-                        <TextInput
-                            style={styles.searchInput}
-                            value={searchValue}
-                            onChangeText={setSearchValue}
-                            placeholder={searchPlaceholder}
-                            placeholderTextColor="#9ca3af"
-                            cursorColor="#6b7280"
-                        />
-                    </View>
-                </View>
-            </View>
-        );
+    useEffect(() => {
+        if (currentPageId) {
+            setCurrentScreenId(currentPageId);
+        };
+    }, [currentPageId]);
 
     return (
         <View style={[styles.root, style, { paddingBottom: insets.bottom }]}>
             {renderHeader()}
-            {renderSearchBelowHeader()}
             <View style={styles.contentContainer}>{children}</View>
         </View>
     );
