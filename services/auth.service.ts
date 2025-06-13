@@ -9,7 +9,7 @@
 \******************************************************************************/
 
 import { LoginDTO } from "@/models/auth_login.dto";
-import { BaseApiService } from "./base.service";
+import { baseApiService } from "./base.service";
 
 /******************************************************************************
  * AuthService Class                                                          *
@@ -43,7 +43,7 @@ class AuthServiceClass {
      * @returns Promise<any> - Kết quả trả về từ API                              *
      ******************************************************************************/
     public async login(payload: LoginDTO) {
-        return await BaseApiService.post<any>("/auth/login", { body: payload });
+        return await baseApiService.post<any>("/auth/login", { body: payload });
     };
 };
 
