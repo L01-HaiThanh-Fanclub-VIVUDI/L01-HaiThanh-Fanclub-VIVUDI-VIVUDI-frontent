@@ -1,6 +1,3 @@
-import { LoginDTO } from "@/models/auth_login.dto";
-import { BaseApiService } from "./base.service";
-
 /******************************************************************************\
  *                   © ViVuDi 2025. All rights reserved.                      *
  *******************************************************************************
@@ -10,6 +7,9 @@ import { BaseApiService } from "./base.service";
  *  Updated by  :                                                             *
  *  Modified    :                                                             *
 \******************************************************************************/
+
+import { LoginDTO } from "@/models/auth_login.dto";
+import { BaseApiService } from "./base.service";
 
 /******************************************************************************
  * AuthService Class                                                          *
