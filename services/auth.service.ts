@@ -39,11 +39,11 @@ class AuthServiceClass {
 
     /******************************************************************************
      * Hàm đăng nhập người dùng                                                   *
-     * @param payload: LoginDTO - Dữ liệu đăng nhập của người dùng                 *
-     * @returns Promise<any> - Kết quả trả về từ API                               *
+     * @param payload: LoginDTO - Dữ liệu đăng nhập của người dùng                *
+     * @returns Promise<any> - Kết quả trả về từ API                              *
      ******************************************************************************/
-    login(payload: LoginDTO) {
-        return BaseApiService.post<any>("/auth/login", { body: payload });
+    public async login(payload: LoginDTO) {
+        return await BaseApiService.post<any>("/auth/login", { body: payload });
     };
 };
 
