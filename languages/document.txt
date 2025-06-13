@@ -1,36 +1,39 @@
 /******************************************************************************\
  *                   © ViVuDi 2025. All rights reserved.                      *
- ******************************************************************************
- *  File        : document.ts                                                 *
+ *******************************************************************************
+ *  File        : document.txt                                                *
  *  Purpose     : Hướng dẫn sử dụng và mở rộng hệ thống đa ngôn ngữ           *
  *  Author      : Minh Nhat                                                   *
  *  Created     : 31/05/2025                                                  *
- *  Updated by  :                                                             *
- *  Modified    :                                                             *
+ *  Updated by  : Copilot                                                     *
+ *  Modified    : 13/06/2025                                                  *
 \******************************************************************************/
 
 /******************************************************************************
  * MỤC TIÊU                                                                   *
  * - Quản lý ngôn ngữ hiện tại (`vi`, `en`, ...)                              *
  * - Hỗ trợ dịch bằng `key` dạng `a.b.c`                                      *
- * - Format thông điệp động qua `MSG_ID`                                      *
+ * - Format thông điệp động qua `MSG_ID` hoặc `MSG_API_ID`                    *
  * - Dễ dàng mở rộng thêm module hoặc ngôn ngữ mới                            *
+ * - Hỗ trợ message động theo status code/endpoint (API)                      *
  ******************************************************************************/
 
 /******************************************************************************
  * CÁCH SỬ DỤNG                                                               *
  ******************************************************************************/
 //# Sử dụng hook useLanguage trong component:
-/*
-import { useLanguage } from './providers/LanguageProvider';
+ /*
+import { useLanguage } from '@/languages/provider';
+import { MSG_ID } from '@/languages/provider/types';
 
 const MyComponent = () => {
-    const { lang, setLang, t, getMessage } = useLanguage();
+    const { lang, setLang, t, getMessage, getAPIMessage } = useLanguage();
 
     return (
         <>
             <h1>{t('authentication.login')}</h1>
             <p>{getMessage(MSG_ID.MSG_REQUIRED, 'Tên', 'Email')}</p>
+            <p>{getAPIMessage(MSG_ID.MSG_AUTH_LOGIN, 101)}</p>
             <button onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}>
                 Đổi ngôn ngữ
             </button>
@@ -62,25 +65,35 @@ export default { authentication, profile };
 
 //# Sử dụng: t('profile.name') => 'Tên' hoặc 'Name'
 
-//# 2. Thêm message format mới
+//# 2. Thêm message format mới hoặc message API
 /*
 📁 types.ts
 export enum MSG_ID {
     ...
     MSG_CUSTOM_ERROR = 4,
+    MSG_PROFILE_UPDATE = 2000,
 };
 
 📁 en.ts
 [MSG_ID.MSG_CUSTOM_ERROR]: 'Something went wrong: {0}',
+[MSG_ID.MSG_PROFILE_UPDATE]: {
+    0: 'Profile updated successfully',
+    101: 'Profile not found',
+},
 
 📁 vi.ts
 [MSG_ID.MSG_CUSTOM_ERROR]: 'Đã xảy ra lỗi: {0}',
+[MSG_ID.MSG_PROFILE_UPDATE]: {
+    0: 'Cập nhật hồ sơ thành công',
+    101: 'Không tìm thấy hồ sơ',
+},
 */
 
-//# Sử dụng: getMessage(MSG_ID.MSG_CUSTOM_ERROR, 'Lỗi kết nối')
+//# Sử dụng:
+// getMessage(MSG_ID.MSG_CUSTOM_ERROR, 'Lỗi kết nối')
+// getAPIMessage(MSG_ID.MSG_PROFILE_UPDATE, 101)
 
 //# 3. Thêm ngôn ngữ mới (VD: Japanese)
-
 /*
 📁 jp.ts
 const authentication = {
@@ -91,7 +104,7 @@ export const jpMessages = {
 };
 export default { authentication };
 
-📁 LanguageProvider.tsx
+📁 provider/index.tsx
 import jp, { jpMessages } from '../jp';
 
 const translations = { en, vi, jp };
@@ -104,6 +117,8 @@ export type AppLanguage = 'vi' | 'en' | 'jp';
 /******************************************************************************
  * GHI CHÚ                                                                    *
  * - `t()` hỗ trợ key dạng lồng nhau: `module.key1.key2`                      *
- * - `getMessage()` giúp format với tham số động                              *
+ * - `getMessage()` giúp format với tham số động cho MSG_ID thông thường      *
+ * - `getAPIMessage()` dùng cho MSG_ID dạng object chứa nhiều MSG_API_ID      *
+ * - Không cần hardcode message ở nhiều nơi, dễ mở rộng và bảo trì            *
  * - Key trong ngôn ngữ nên nhất quán, tránh lỗi runtime                      *
  ******************************************************************************/

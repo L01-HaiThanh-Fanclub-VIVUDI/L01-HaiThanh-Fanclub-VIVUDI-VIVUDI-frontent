@@ -11,7 +11,7 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import en, { enMessages } from '../en';
 import vi, { viMessages } from '../vi';
-import { AppLanguage, AppLanguageContextType, MSG_ID, TranslationKey } from './types';
+import { AppLanguage, AppLanguageContextType, MSG_API_ID, MSG_ID, TranslationKey } from './types';
 
 /******************************************************************************
  * Object chứa các bản dịch cho từng ngôn ngữ.                                *
@@ -27,6 +27,7 @@ const AppLanguageContext = createContext<AppLanguageContextType>({
     setLang: () => { },
     t: (key) => key,
     getMessage: (messageId) => String(messageId),
+    getAPIMessage: (messageId, apiMessageId) => String(messageId) + String(apiMessageId),
 });
 
 /******************************************************************************
@@ -57,19 +58,40 @@ export const AppLanguageProvider = ({ children }: { children: React.ReactNode })
         };
 
         /**************************************************************************
-         * Hàm format message với tham số động.                                   *
+         * Hàm format message với tham số động, ưu tiên {n} là danh sách cuối.   *
          **************************************************************************/
         const formatMessage = (template: string, args: (string | number)[]): string => {
-            return template
-                .split(',')
-                .map((segment) => {
-                    return segment.replace(/{(\d+)}/g, (_, index) => {
-                        const value = args[Number(index)];
-                        return typeof value !== 'undefined' ? String(value) : '';
-                    });
-                })
-                .filter((segment) => segment.match(/[a-zA-Z0-9]/))
-                .join(',');
+            // Xử lý {n} nếu có
+            let result = template;
+
+            // Nếu có {n} trong template, lấy toàn bộ tham số còn lại (sau các {0}, {1}, ...)
+            if (result.includes('{n}')) {
+                // Xác định số lượng placeholder dạng {0}, {1}, ...
+                const indexedPlaceholders = Array.from(result.matchAll(/{(\d+)}/g)).map(m => Number(m[1]));
+                const maxIndex = indexedPlaceholders.length > 0 ? Math.max(...indexedPlaceholders) : -1;
+
+                // Các tham số cho {0}, {1}, ...
+                const indexedArgs = args.slice(0, maxIndex + 1);
+                // Các tham số còn lại cho {n}
+                const nArgs = args.slice(maxIndex + 1);
+
+                // Thay thế {n} bằng danh sách nArgs, phân tách bằng dấu , (không có dấu , cuối)
+                result = result.replace('{n}', nArgs.join(', '));
+
+                // Thay thế các {0}, {1}, ...
+                result = result.replace(/{(\d+)}/g, (_, index) => {
+                    const value = indexedArgs[Number(index)];
+                    return typeof value !== 'undefined' ? String(value) : '';
+                });
+            } else {
+                // Không có {n}, chỉ thay thế {0}, {1}, ...
+                result = result.replace(/{(\d+)}/g, (_, index) => {
+                    const value = args[Number(index)];
+                    return typeof value !== 'undefined' ? String(value) : '';
+                });
+            };
+
+            return result;
         };
 
         /**************************************************************************
@@ -77,10 +99,41 @@ export const AppLanguageProvider = ({ children }: { children: React.ReactNode })
          **************************************************************************/
         const getMessage = (messageId: MSG_ID, ...params: (string | number)[]): string => {
             const msg = messages[lang]?.[messageId];
-            return msg ? formatMessage(msg, params) : messageId.toString();
+            if (typeof msg !== 'string') {
+                // Nếu không phải là string, throw lỗi
+                throw new Error(`Sử dụng getAPIMessage để làm việc với MSG_ID ứng với MSG_API_ID tương ứng`);
+            };
+
+            if (!msg) {
+                // Nếu không có message, throw lỗi
+                throw new Error(`Không tìm thấy message cho MSG_ID ${messageId} trong ngôn ngữ ${lang}`);
+            };
+
+            return formatMessage(msg, params);
         };
 
-        return { lang, setLang, t, getMessage };
+        /**************************************************************************
+         * Hàm lấy message theo MSG_ID và MSG_API_ID, hỗ trợ tham số động.        *
+         * Sử dụng để lấy các message dạng object với nhiều API ID khác nhau.    *
+         **************************************************************************/
+        const getAPIMessage = (messageId: MSG_ID, apiMessageId: MSG_API_ID, ...params: (string | number)[]): string => {
+            const msg = messages[lang]?.[messageId];
+            if (typeof msg !== 'object' || !msg || !(apiMessageId in msg)) {
+                // Nếu không phải là object hoặc không có apiMessageId, throw lỗi
+                throw new Error(`MSG_ID ${messageId} không chứa API message với ID ${apiMessageId}`);
+            };
+
+            const template = msg[apiMessageId];
+
+            if (!template) {
+                // Nếu không có message, throw lỗi
+                throw new Error(`Không tìm thấy message cho MSG_ID ${messageId} và API ID ${apiMessageId} trong ngôn ngữ ${lang}`);
+            };
+
+            return formatMessage(template, params);
+        };
+
+        return { lang, setLang, t, getMessage, getAPIMessage };
     }, [lang]);
 
     return (

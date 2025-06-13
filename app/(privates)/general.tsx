@@ -1,13 +1,14 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Text } from 'react-native';
 
 import ThemedText from '@/components/atoms/themed_text';
 import ThemedView from '@/components/atoms/themed_view';
 import ParallaxScrollView from '@/components/ui/parallax_scroll_view';
 import { useLanguage } from '@/languages/provider';
+import { MSG_ID } from '@/languages/provider/types';
 
 export default function HomeScreen() {
-	const { t } = useLanguage();
+	const { t, getMessage } = useLanguage();
 	return (
 		<ParallaxScrollView
 			headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -20,6 +21,8 @@ export default function HomeScreen() {
 			<ThemedView style={styles.titleContainer}>
 				<ThemedText type="title">{t('authentication.login')}</ThemedText>
 			</ThemedView>
+			<Text>{getMessage(MSG_ID.MSG_REQUIRED, 'Hello', 'Hello1', 'Hello2', 'Hello 3')}</Text>
+
 			<ThemedView style={styles.stepContainer}>
 				<ThemedText type="subtitle">Step 1: Try it</ThemedText>
 				<ThemedText>

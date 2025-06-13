@@ -92,9 +92,9 @@ const request = async <T>(method: RequestMethod, endpoint: string, options: Fetc
 };
 
 /******************************************************************************
- * BaseApiService: Cung cấp các method gọi API                                *
+ * baseApiService: Cung cấp các method gọi API                                *
  ******************************************************************************/
-export const BaseApiService = {
+export const baseApiService = {
     get: <T>(endpoint: string, options?: FetchOptions) =>
         request<T>('GET', endpoint, options),
     post: <T>(endpoint: string, options?: FetchOptions) =>
