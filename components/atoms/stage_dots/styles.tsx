@@ -1,9 +1,9 @@
 /****************************************************************************\
  *                   © ViVuDi 2025. All rights reserved.                    *
  ****************************************************************************
- *  File        : Chứa styles sử dụng trong ParallaxScrollView              *
+ *  File        : Chứa styles sử dụng trong StageDots                       *
  *  Author      : Minh Nhat                                                 *
- *  Created     : 15/06/2025                                                *
+ *  Created     : 17/06/2025                                                *
  *  Updated by  :                                                           *
  *  Modified    :                                                           *
 \****************************************************************************/
@@ -15,25 +15,10 @@ import { StyleSheet } from 'react-native';
  ****************************************************************************/
 export const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    header: {
-        overflow: 'hidden',
-    },
-    contentContainer: {
-        paddingBottom: 0,
-        paddingRight: 0,
-        paddingLeft: 0
-    },
-    contentWrapper: {
-        flex: 1,
-        paddingHorizontal: 16,
-    },
-    content: {
-        flex: 1,
-        marginTop: -15,
-    },
-    indicator: {
-        bottom: 0
+    dot: {
+        marginHorizontal: 2,
     },
 });

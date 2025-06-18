@@ -67,10 +67,10 @@ export enum PAGE_TYPE {
  ****************************************************************************/
 export const PageInfo: Partial<Record<PAGE_ID, { key: string; type: PAGE_TYPE }>> = {
     [PAGE_ID.ON_BOARD]: { key: 'onboard', type: PAGE_TYPE.PUBLIC },
-    [PAGE_ID.AUTH_LOGIN]: { key: 'auth-login', type: PAGE_TYPE.PUBLIC },
-    [PAGE_ID.AUTH_SIGN_UP]: { key: 'auth-sign-up', type: PAGE_TYPE.PUBLIC },
-    [PAGE_ID.AUTH_FORGOT_PASSWORD]: { key: 'auth-forgot-password', type: PAGE_TYPE.PUBLIC },
-    [PAGE_ID.AUTH_OTP_VERIFICATION]: { key: 'auth-otp-verification', type: PAGE_TYPE.PUBLIC },
-    [PAGE_ID.PROFILE]: { key: 'privates-profile', type: PAGE_TYPE.PRIVATE },
-    [PAGE_ID.GENERAL]: { key: 'privates-general', type: PAGE_TYPE.PRIVATE },
+    [PAGE_ID.AUTH_LOGIN]: { key: 'login', type: PAGE_TYPE.PUBLIC },
+    [PAGE_ID.AUTH_SIGN_UP]: { key: 'sign-up', type: PAGE_TYPE.PUBLIC },
+    [PAGE_ID.AUTH_FORGOT_PASSWORD]: { key: 'forgot-password', type: PAGE_TYPE.PUBLIC },
+    [PAGE_ID.AUTH_OTP_VERIFICATION]: { key: 'otp-verification', type: PAGE_TYPE.PUBLIC },
+    [PAGE_ID.PROFILE]: { key: 'profile', type: PAGE_TYPE.PRIVATE },
+    [PAGE_ID.GENERAL]: { key: 'general', type: PAGE_TYPE.PRIVATE },
 };

@@ -3,7 +3,7 @@
  ******************************************************************************
  *  File        : _layout.tsx                                                 *
  *  Author      : Minh Nhat                                                   *
- *  Created     : 07/06/2025                                                  *
+ *  Created     : 17/06/2025                                                  *
  *  Updated by  :                                                             *
  *  Modified    :                                                             *
  ******************************************************************************/
@@ -13,15 +13,15 @@ import { Tabs } from 'expo-router';
 import { JSX } from 'react';
 
 /******************************************************************************
- * TabLayout: Cấu hình tab bar cho app                                        *
+ * AuthLayout: Cấu hình auth tab cho app                                      *
  * - Ẩn header và tab bar                                                     *
  ******************************************************************************/
-const TabLayout = (): JSX.Element => {
+const AuthLayout = (): JSX.Element => {
 	return (
 		<Tabs screenOptions={{ headerShown: false, tabBarStyle: { display: 'none' } }}>
-			<Tabs.Screen name={PAGE_ID.GENERAL} />
+			<Tabs.Screen name={PAGE_ID.AUTH_LOGIN} />
 		</Tabs>
 	);
 };
 
-export default TabLayout;
+export default AuthLayout;

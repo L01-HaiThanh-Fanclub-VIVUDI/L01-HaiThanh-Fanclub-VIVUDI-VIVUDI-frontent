@@ -27,7 +27,7 @@ const useIsFirstLaunch = (): boolean | null => {
                     setIsFirstLaunch(true);
                 } else {
                     setIsFirstLaunch(false);
-                }
+                };
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
                 setIsFirstLaunch(false);
@@ -37,7 +37,7 @@ const useIsFirstLaunch = (): boolean | null => {
         checkFirstLaunch();
     }, []);
 
-    return isFirstLaunch;
+    return true;
 };
 
 export default useIsFirstLaunch;

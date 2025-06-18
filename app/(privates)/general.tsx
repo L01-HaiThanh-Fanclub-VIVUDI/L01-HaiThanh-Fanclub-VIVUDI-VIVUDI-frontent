@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet, Text } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import ThemedText from '@/components/atoms/themed_text';
 import ThemedView from '@/components/atoms/themed_view';
@@ -17,14 +17,13 @@ export default function HomeScreen() {
 					source={require('@/assets/images/adaptive-icon.png')}
 					style={styles.reactLogo}
 				/>
-			}>
+			}
+			headerHeightValue={430}>
 			<ThemedView style={styles.titleContainer}>
 				<ThemedText type="title">{t('authentication.login')}</ThemedText>
 			</ThemedView>
-			<Text>{getMessage(MSG_ID.MSG_REQUIRED, 'Hello', 'Hello1', 'Hello2', 'Hello 3')}</Text>
-
 			<ThemedView style={styles.stepContainer}>
-				<ThemedText type="subtitle">Step 1: Try it</ThemedText>
+				<ThemedText type="subtitle">Step 1: {getMessage(MSG_ID.MSG_REQUIRED, 'Hello', 'Hello1', 'Hello2', 'Hello 3')}</ThemedText>
 				<ThemedText>
 					Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
 					Press{' '}
@@ -83,16 +82,16 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: 8,
-	},
-	stepContainer: {
-		gap: 8,
-		marginBottom: 8,
+		height: 50,
+		width: '100%',
+		paddingHorizontal: 16,
 	},
 	reactLogo: {
 		height: '100%',
-		width: '100%',
-		bottom: 0,
-		left: 0,
-		position: 'absolute',
+	},
+	stepContainer: {
+		paddingHorizontal: 16,
+		borderRadius: 8,
+		marginTop: 8,
 	},
 });

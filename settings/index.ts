@@ -18,17 +18,17 @@ export const stackScreenSettings: NativeStackNavigationOptions = {
 };
 
 /******************************************************************************
- * Màu sắc ứng dụng, bao gồm màu sáng và tối.                                  *
+ * Màu sắc ứng dụng, bao gồm màu sáng và tối.                                 *
  * - tintColorLight: Màu chính cho giao diện sáng.                            *
- * - tintColorDark: Màu chính cho giao diện tối.                               *
+ * - tintColorDark: Màu chính cho giao diện tối.                              *
  ******************************************************************************/
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 /******************************************************************************
- * colors: Định nghĩa màu sắc cho giao diện sáng và tối.                       *
- * - light: Màu sắc cho giao diện sáng.                                        *
- * - dark: Màu sắc cho giao diện tối.                                          *
+ * colors: Định nghĩa màu sắc cho giao diện sáng và tối.                      *
+ * - light: Màu sắc cho giao diện sáng.                                       *
+ * - dark: Màu sắc cho giao diện tối.                                         *
  ******************************************************************************/
 export const colors = {
     light: {
@@ -41,7 +41,7 @@ export const colors = {
     },
     dark: {
         text: '#ECEDEE',
-        background: '#151718',
+        background: '#2E2E2E',
         tint: tintColorDark,
         icon: '#9BA1A6',
         tabIconDefault: '#9BA1A6',

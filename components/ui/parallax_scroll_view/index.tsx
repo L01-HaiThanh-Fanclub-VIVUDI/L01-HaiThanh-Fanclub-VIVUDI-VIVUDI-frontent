@@ -10,23 +10,22 @@
 
 import ThemedView from '@/components/atoms/themed_view';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import type { JSX, PropsWithChildren, ReactElement } from 'react';
-import React from 'react';
+import type { FC, JSX } from 'react';
+import React, { useMemo } from 'react';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
-import { DEFAULT_HEADER_HEIGHT_VALUE, styles } from './styles';
+import TopCurveView from './concave_header';
+import { styles } from './styles';
+import { ParallaxScrollViewProps } from './types';
 
 /******************************************************************************
- * Định nghĩa Props cho ParallaxScrollView                                    *
+ * Định nghĩa hằng số cho chiều cao header                                    *
  ******************************************************************************/
-type Props = PropsWithChildren<{
-	headerImage: ReactElement;
-	headerBackgroundColor: { dark: string; light: string };
-}>;
+const DEFAULT_HEADER_HEIGHT_VALUE: number = 430;
 
 /******************************************************************************
  * ParallaxScrollView: ScrollView với hiệu ứng parallax cho header            *
  ******************************************************************************/
-const ParallaxScrollView = ({ children, headerImage, headerBackgroundColor }: Props): JSX.Element => {
+const ParallaxScrollView: FC<ParallaxScrollViewProps> = ({ children, headerImage, headerBackgroundColor, headerHeightValue = DEFAULT_HEADER_HEIGHT_VALUE, contentStyle }: ParallaxScrollViewProps): JSX.Element => {
 	/******************************************************************************
 	 * Lấy theme hiện tại                                                         *
 	 ******************************************************************************/
@@ -46,19 +45,32 @@ const ParallaxScrollView = ({ children, headerImage, headerBackgroundColor }: Pr
 			{
 				translateY: interpolate(
 					scrollOffset.value,
-					[-DEFAULT_HEADER_HEIGHT_VALUE, 0, DEFAULT_HEADER_HEIGHT_VALUE],
-					[-DEFAULT_HEADER_HEIGHT_VALUE / 2, 0, DEFAULT_HEADER_HEIGHT_VALUE * 0.75]
+					[-headerHeightValue, 0, headerHeightValue],
+					[-headerHeightValue / 2, 0, headerHeightValue * 0.75]
 				),
 			},
 			{
 				scale: interpolate(
 					scrollOffset.value,
-					[-DEFAULT_HEADER_HEIGHT_VALUE, 0, DEFAULT_HEADER_HEIGHT_VALUE],
+					[-headerHeightValue, 0, headerHeightValue],
 					[2, 1, 1]
 				),
 			},
 		],
 	}));
+
+	/******************************************************************************
+	 * Tính toán style cho header container                                        *
+	 * - Kết hợp chiều cao, màu nền và animated style                             *
+	 ******************************************************************************/
+	const headerContainerStyle = useMemo(
+		() => [
+			{ height: headerHeightValue, backgroundColor: headerBackgroundColor[colorScheme] },
+			styles.header,
+			headerAnimatedStyle,
+		],
+		[headerHeightValue, headerBackgroundColor, colorScheme, headerAnimatedStyle]
+	);
 
 	/******************************************************************************
 	 * Render component                                                           *
@@ -68,19 +80,22 @@ const ParallaxScrollView = ({ children, headerImage, headerBackgroundColor }: Pr
 			<Animated.ScrollView
 				ref={scrollRef}
 				scrollEventThrottle={16}
-				scrollIndicatorInsets={{ bottom: 0 }}
-				contentContainerStyle={{ paddingBottom: 0 }}
+				scrollIndicatorInsets={styles.indicator}
+				contentContainerStyle={styles.contentContainer}
 			>
 				<Animated.View
-					style={[
-						styles.header,
-						{ backgroundColor: headerBackgroundColor[colorScheme] },
-						headerAnimatedStyle,
-					]}
+					style={headerContainerStyle}
 				>
 					{headerImage}
 				</Animated.View>
-				<ThemedView style={styles.content}>{children}</ThemedView>
+
+				<TopCurveView />
+
+				<ThemedView style={[styles.contentWrapper, contentStyle]}>
+					<ThemedView style={styles.content}>
+						{children}
+					</ThemedView>
+				</ThemedView>
 			</Animated.ScrollView>
 		</ThemedView>
 	);

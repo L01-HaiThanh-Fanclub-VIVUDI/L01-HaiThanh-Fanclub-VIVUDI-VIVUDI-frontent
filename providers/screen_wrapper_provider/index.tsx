@@ -8,8 +8,9 @@
  *  Modified    :                                                            *
 \*****************************************************************************/
 
+import useCurrentPageId from '@/hooks/useCurrentPageId';
 import { PAGE_ID } from '@/settings/navigation/page';
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { ScreenWrapperConfig, ScreenWrapperContextValue } from './types';
 
 /******************************************************************************
@@ -18,6 +19,7 @@ import { ScreenWrapperConfig, ScreenWrapperContextValue } from './types';
 const defaultContext: ScreenWrapperContextValue = {
     config: {},
     setConfig: () => { },
+    screenId: PAGE_ID.GENERAL,
 };
 const ScreenWrapperContext = createContext<ScreenWrapperContextValue>(defaultContext);
 
@@ -28,8 +30,15 @@ const ScreenWrapperContext = createContext<ScreenWrapperContextValue>(defaultCon
 export const ScreenWrapperProvider = ({ children }: { children: ReactNode }) => {
     // Sử dụng map PAGE_ID với config tương ứng
     const [configs, setConfigs] = useState<Record<PAGE_ID, ScreenWrapperConfig>>({} as Record<PAGE_ID, ScreenWrapperConfig>);
+    /******************************************************************************
+     * Lấy tên màn hình hiện tại                                                  *
+     ******************************************************************************/
+    const currentPageId = useCurrentPageId();
     const [screenId, setScreenId] = useState<PAGE_ID>(PAGE_ID.GENERAL);
 
+    /******************************************************************************
+     * Lấy cấu hình tương ứng với screenId                                        *
+     ******************************************************************************/
     const config = configs[screenId] || {};
 
     const setConfig = (newConfig: ScreenWrapperConfig, screenId: PAGE_ID) => {
@@ -40,11 +49,19 @@ export const ScreenWrapperProvider = ({ children }: { children: ReactNode }) => 
                 ...newConfig,
             },
         }));
-        setScreenId(screenId);
     };
 
+    /******************************************************************************
+     * Câp nhật screenId khi currentPageId thay đổi                               *
+     ******************************************************************************/
+    useEffect(() => {
+        if (currentPageId) {
+            setScreenId(currentPageId);
+        };
+    }, [currentPageId]);
+
     return (
-        <ScreenWrapperContext.Provider value={{ config, setConfig }}>
+        <ScreenWrapperContext.Provider value={{ config, setConfig, screenId }}>
             {children}
         </ScreenWrapperContext.Provider>
     );

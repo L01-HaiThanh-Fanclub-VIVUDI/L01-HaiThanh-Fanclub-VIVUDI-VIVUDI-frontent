@@ -12,7 +12,9 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { AppLanguageProvider } from '@/languages/provider';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { LoadingProvider } from './loading_provider';
 import { ScreenWrapperProvider } from './screen_wrapper_provider';
 import { ProviderEntry, ProviderProps } from './types';
 
@@ -42,7 +44,13 @@ export const ProviderInjection = ({ children }: ProviderProps) => {
             provider: AppLanguageProvider,
         },
         {
+            provider: GestureHandlerRootView,
+        },
+        {
             provider: ScreenWrapperProvider,
+        },
+        {
+            provider: LoadingProvider,
         }
         // Thêm các provider khác nếu cần
     ];

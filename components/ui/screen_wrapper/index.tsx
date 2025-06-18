@@ -8,13 +8,13 @@
  *  Modified    :                                                             *
 \******************************************************************************/
 
-import useCurrentPageId from '@/hooks/useCurrentPageId';
+import Button from '@/components/atoms/button';
+import ThemedView from '@/components/atoms/themed_view';
 import { useScreenWrapper } from '@/providers/screen_wrapper_provider';
-import { PAGE_ID } from '@/settings/navigation/page';
 import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { JSX, useCallback, useEffect, useState } from 'react';
+import React, { JSX, useCallback, useMemo } from 'react';
 import { BackHandler, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './styles';
@@ -42,6 +42,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
             showScreenName = DEFAULT_SHOW_SCREEN_NAME_VALUE,
             rightActions,
         },
+        screenId
     } = useScreenWrapper();
 
     /******************************************************************************
@@ -52,9 +53,7 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
     /******************************************************************************
      * Lấy tên màn hình hiện tại                                                  *
      ******************************************************************************/
-    const currentPageId = useCurrentPageId();
-    const [currentScreenId, setCurrentScreenId] = useState<PAGE_ID>(PAGE_ID.GENERAL);
-    const screenName = showScreenName ? currentScreenId : null;
+    const screenName = showScreenName ? screenId : null;
 
     /******************************************************************************
      * Lấy insets an toàn để điều chỉnh padding cho header và content             *
@@ -64,11 +63,15 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
     /******************************************************************************
      * Chuẩn hoá rightActions thành mảng                                          *
      ******************************************************************************/
-    const rightActionsArr = rightActions
-        ? Array.isArray(rightActions)
-            ? rightActions
-            : [rightActions]
-        : [];
+    const rightActionsArr = useMemo(
+        () =>
+            rightActions
+                ? Array.isArray(rightActions)
+                    ? rightActions
+                    : [rightActions]
+                : [],
+        [rightActions]
+    );
 
     /******************************************************************************
      * Tính toán số lượng action để xác định style                                *
@@ -90,10 +93,10 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
     /******************************************************************************
      * Xử lý back event                                                           *
      ******************************************************************************/
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         if (handleGoback) handleGoback();
         if (!disableDefaultGobackAction) navigation.goBack();
-    };
+    }, [handleGoback, disableDefaultGobackAction, navigation]);
 
     useFocusEffect(
         useCallback(() => {
@@ -122,40 +125,37 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
     /******************************************************************************
      * Render header content                                                      *
      ******************************************************************************/
-    const renderHeader = () => (
-        <View style={[{ top: insets.top }, styles.headerContainer]}>
-            {handleGoback && (
-                <View style={styles.backButtonContainer}>
-                    <FontAwesome5 name="angle-left" size={23} color="#111827" onPress={handleBack} />
-                </View>
-            )}
-
-            {screenName && (
-                <Text style={[styles.screenTitle, screenNameText]}>{screenName}</Text>
-            )}
-
-            {rightActionsArr.map((action, idx) => (
-                <TouchableOpacity key={idx} style={styles.actionButton} onPress={action.onPress}>
-                    {action.icon}
-                </TouchableOpacity>
-            ))}
-        </View>
-    );
-
-    /******************************************************************************
-     * Câp nhật currentScreenId khi currentPageId thay đổi                        *
-     ******************************************************************************/
-    useEffect(() => {
-        if (currentPageId) {
-            setCurrentScreenId(currentPageId);
+    const renderHeader = useCallback(() => {
+        if (!handleGoback && !screenName && rightActionsArr.length === 0) {
+            return <></>;
         };
-    }, [currentPageId]);
+
+        return (
+            <View style={[{ top: insets.top }, styles.headerContainer]}>
+                {handleGoback && (
+                    <Button style={styles.backButtonContainer} onTap={handleBack}>
+                        <FontAwesome5 name="angle-left" size={18} color="#1B1E28" />
+                    </Button>
+                )}
+
+                {screenName && (
+                    <Text style={[styles.screenTitle, screenNameText]}>{screenName}</Text>
+                )}
+
+                {rightActionsArr.map((action, idx) => (
+                    <TouchableOpacity key={idx} style={styles.actionButton} onPress={action.onPress}>
+                        {action.icon}
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    }, [insets.top, handleGoback, handleBack, screenName, screenNameText, rightActionsArr]);
 
     return (
-        <View style={[styles.root, style, { paddingBottom: insets.bottom }]}>
+        <ThemedView style={[styles.root, style, { paddingBottom: insets.bottom }]}>
             {renderHeader()}
-            <View style={styles.contentContainer}>{children}</View>
-        </View>
+            <ThemedView style={styles.contentContainer}>{children}</ThemedView>
+        </ThemedView>
     );
 };
 

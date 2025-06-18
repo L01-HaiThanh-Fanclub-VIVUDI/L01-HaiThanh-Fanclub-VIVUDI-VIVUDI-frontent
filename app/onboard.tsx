@@ -1,27 +1,25 @@
 /******************************************************************************
  *                   © ViVuDi 2025. All rights reserved.                      *
  ******************************************************************************
- *  File        : _layout.tsx                                                 *
+ *  File        : Trang onboard xuất hiện khi mới mở app lần đầu              *
  *  Author      : Minh Nhat                                                   *
- *  Created     : 07/06/2025                                                  *
+ *  Created     : 16/06/2025                                                  *
  *  Updated by  :                                                             *
  *  Modified    :                                                             *
  ******************************************************************************/
 
-import { PAGE_ID } from '@/settings/navigation/page';
-import { Tabs } from 'expo-router';
-import { JSX } from 'react';
+import OnBoardPage from "@/pages/on_board/page";
+import { JSX } from "react";
 
 /******************************************************************************
- * TabLayout: Cấu hình tab bar cho app                                        *
- * - Ẩn header và tab bar                                                     *
+ * OnBoardScreen: Hiển thị trang onboard khi mở ứng dụng lần đầu              *
+ * - Sử dụng OnBoardPage để hiển thị nội dung onboard                         *
+ * - Trả về JSX.Element để sử dụng trong navigation stack                     *
  ******************************************************************************/
-const TabLayout = (): JSX.Element => {
-	return (
-		<Tabs screenOptions={{ headerShown: false, tabBarStyle: { display: 'none' } }}>
-			<Tabs.Screen name={PAGE_ID.GENERAL} />
-		</Tabs>
-	);
+const OnBoardScreen = (): JSX.Element => {
+    return (
+        <OnBoardPage />
+    );
 };
 
-export default TabLayout;
+export default OnBoardScreen;

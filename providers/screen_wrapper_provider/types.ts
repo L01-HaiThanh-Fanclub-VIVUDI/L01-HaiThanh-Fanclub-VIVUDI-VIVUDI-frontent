@@ -79,4 +79,5 @@ export type ScreenWrapperConfig = {
 export interface ScreenWrapperContextValue {
     config: ScreenWrapperConfig;
     setConfig: (config: ScreenWrapperConfig, screenId: PAGE_ID) => void;
+    screenId: PAGE_ID;
 };

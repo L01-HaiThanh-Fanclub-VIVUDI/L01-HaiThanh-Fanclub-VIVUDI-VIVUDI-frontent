@@ -17,9 +17,9 @@ import { PAGE_ID } from "./page";
  * RootStackParamList: Các màn hình được stack toàn cục trong ứng dụng      *
  ****************************************************************************/
 export type RootStackParamList = {
-    [PAGE_ID.PRIVATE_TABS]: undefined;
+    [PAGE_ID.PRIVATE_TABS]: NavigatorScreenParams<PrivateTabParamList>;
     [PAGE_ID.ON_BOARD]: undefined;
-    [PAGE_ID.AUTH_TABS]: undefined;
+    [PAGE_ID.AUTH_TABS]: NavigatorScreenParams<AuthTabParamList>;
 };
 
 /****************************************************************************
@@ -43,8 +43,9 @@ export type AuthTabParamList = {
 /****************************************************************************
  * AppStackNavigation: Navigation cho root stack                            *
  ****************************************************************************/
-export type AppStackNavigation<T extends keyof RootStackParamList = keyof RootStackParamList> =
-    StackNavigationProp<RootStackParamList, T>;
+export type AppStackNavigation<
+    T extends keyof RootStackParamList = keyof RootStackParamList
+> = StackNavigationProp<RootStackParamList, T>;
 
 /****************************************************************************
  * TabNavigationProp: Navigation cho tab navigator                          *
@@ -52,19 +53,38 @@ export type AppStackNavigation<T extends keyof RootStackParamList = keyof RootSt
  * @example: const navigation = useNavigation<TabNavigationProp>();         *
  * const navigation = useNavigation<TabNavigationProp<PAGE_ID.HOME>();      *
  ****************************************************************************/
-export type TabNavigationProp<T extends keyof PrivateTabParamList = keyof PrivateTabParamList> =
-    CompositeNavigationProp<
-        BottomTabNavigationProp<PrivateTabParamList, T>,
-        StackNavigationProp<RootStackParamList>
-    >;
+export type TabNavigationProp<
+    T extends keyof PrivateTabParamList = keyof PrivateTabParamList
+> = CompositeNavigationProp<
+    BottomTabNavigationProp<PrivateTabParamList, T>,
+    StackNavigationProp<RootStackParamList>
+>;
 
 /****************************************************************************
  * AuthTabNavigationProp: Navigation cho auth tab navigator                 *
  * Có kết hợp với Stack để dùng được ở bất cứ đâu trong auth tab            *
  * @example: const navigation = useNavigation<AuthTabNavigationProp>();     *
  ****************************************************************************/
-export type AuthTabNavigationProp<T extends keyof AuthTabParamList = keyof AuthTabParamList> =
-    CompositeNavigationProp<
-        BottomTabNavigationProp<AuthTabParamList, T>,
-        StackNavigationProp<RootStackParamList>
-    >;
+export type AuthTabNavigationProp<
+    T extends keyof AuthTabParamList = keyof AuthTabParamList
+> = CompositeNavigationProp<
+    BottomTabNavigationProp<AuthTabParamList, T>,
+    StackNavigationProp<RootStackParamList>
+>;
+
+/****************************************************************************
+ * Ví dụ sử dụng trong các thành phần                                       *
+ ****************************************************************************/
+// Trong OnBoardScreen (ngoài AuthTab)
+// const navigation = useNavigation<AppStackNavigation>();
+// navigation.navigate(PAGE_ID.AUTH_TABS, {
+//   screen: PAGE_ID.AUTH_LOGIN,
+// });
+
+// Trong LoginScreen (AuthTab)
+// const navigation = useNavigation<AuthTabNavigationProp>();
+// navigation.navigate(PAGE_ID.AUTH_SIGN_UP);
+
+// Trong ProfileScreen (PrivateTab)
+// const navigation = useNavigation<TabNavigationProp>();
+// navigation.navigate(PAGE_ID.GENERAL);

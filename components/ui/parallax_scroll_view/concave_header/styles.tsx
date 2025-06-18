@@ -3,37 +3,37 @@
  ****************************************************************************
  *  File        : Chứa styles sử dụng trong ParallaxScrollView              *
  *  Author      : Minh Nhat                                                 *
- *  Created     : 15/06/2025                                                *
+ *  Created     : /06/2025                                                  *
  *  Updated by  :                                                           *
  *  Modified    :                                                           *
 \****************************************************************************/
 
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+
+/******************************************************************************
+ * Lấy chiều rộng màn hình                                                    *
+ ******************************************************************************/
+const width = Dimensions.get('window').width;
 
 /****************************************************************************
  * Styles                                                                   *
  ****************************************************************************/
 export const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    header: {
+    svg: {
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+        marginTop: -78,
+        width: width,
         overflow: 'hidden',
+        position: 'relative'
     },
-    contentContainer: {
-        paddingBottom: 0,
-        paddingRight: 0,
-        paddingLeft: 0
-    },
-    contentWrapper: {
-        flex: 1,
-        paddingHorizontal: 16,
-    },
-    content: {
-        flex: 1,
-        marginTop: -15,
-    },
-    indicator: {
-        bottom: 0
-    },
+    bar: {
+        position: 'absolute',
+        top: 45,
+        width: 40,
+        left: (width - 40) / 2,
+        height: 5,
+        borderRadius: 99,
+        backgroundColor: "#7D848D",
+    }
 });
