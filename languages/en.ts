@@ -27,6 +27,12 @@ const authentication = {
     passwordPlaceholder: 'Enter your password',
 
     signInButton: 'Sign In',
+    connectMessage: 'Or connect',
+    dontHaveAccount: 'Don\'t have an account?',
+    signInTitle: 'Sign in now',
+    signInSubtitle: 'Please sign in to continue our app',
+
+    signUpButton: 'Sign Up',
 };
 //#endregion
 

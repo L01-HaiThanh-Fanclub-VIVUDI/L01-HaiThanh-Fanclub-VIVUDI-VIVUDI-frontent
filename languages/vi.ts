@@ -27,6 +27,12 @@ const authentication = {
     passwordPlaceholder: 'Nhập mật khẩu của bạn',
 
     signInButton: 'Đăng nhập',
+    connectMessage: 'Hoặc kết nối',
+    dontHaveAccount: 'Chưa có tài khoản?',
+    signInTitle: 'Đăng nhập ngay',
+    signInSubtitle: 'Vui lòng đăng nhập để tiếp tục sử dụng ứng dụng của chúng tôi',
+
+    signUpButton: 'Đăng ký',
 };
 //#endregion
 

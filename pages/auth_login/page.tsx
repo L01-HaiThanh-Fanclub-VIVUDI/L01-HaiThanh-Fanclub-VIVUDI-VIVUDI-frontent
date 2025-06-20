@@ -71,35 +71,73 @@ const AuthLoginPage: FC = (): JSX.Element => {
             {/* StatusBar với style phù hợp */}
             <StatusBar style={statusBarStyle} />
 
-            <ThemedView style={{ flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 }}>
-                <PasswordInput
-                    style={{ width: '100%', marginBottom: 24 }}
-                    regexChecks={['email']}
-                    placeholder='example@gmail.com'
-                    inputName={t('authentication.emailField')}
-                />
+            <ThemedView style={{ flex: 1, width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+                <ThemedView style={{ flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 }}>
+                    <ThemedView style={{ width: '100%', alignItems: 'center', marginBottom: 16 }}>
+                        <Text style={{ color: '#1B1E28', fontSize: 26, lineHeight: 34, fontFamily: 'SFUISemibold' }}>
+                            {t('authentication.signInTitle')}
+                        </Text>
+                    </ThemedView>
 
-                <PasswordInput
-                    style={{ width: '100%', marginBottom: 16 }}
-                    placeholder={t('authentication.passwordPlaceholder')}
-                    inputName={t('authentication.passwordField')}
-                    regexChecks={['length', 'upper', 'lower', 'digit', 'special', 'noWhitespace']}
-                    inputType="password"
-                />
+                    <ThemedView style={{ width: '100%', alignItems: 'center' }}>
+                        <Text style={{ color: '#7D848D', fontSize: 16, lineHeight: 20, fontFamily: 'SFUISemibold' }}>
+                            {t('authentication.signInSubtitle')}
+                        </Text>
+                    </ThemedView>
+                </ThemedView>
 
-                <ThemedView style={{ width: '100%', alignItems: 'flex-end' }}>
-                    <Text style={{ color: '#FF7029', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
-                        {t('authentication.forgotPassword')}?
-                    </Text>
+                <ThemedView style={{ width: '100%', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 20 }}>
+                    <PasswordInput
+                        style={{ width: '100%', marginBottom: 24 }}
+                        regexChecks={['email']}
+                        placeholder='example@gmail.com'
+                        inputName={t('authentication.emailField')}
+                    />
+
+                    <PasswordInput
+                        style={{ width: '100%', marginBottom: 16 }}
+                        placeholder={t('authentication.passwordPlaceholder')}
+                        inputName={t('authentication.passwordField')}
+                        regexChecks={['length', 'upper', 'lower', 'digit', 'special', 'noWhitespace']}
+                        inputType="password"
+                    />
+
+                    <ThemedView style={{ width: '100%', alignItems: 'flex-end' }}>
+                        <Text style={{ color: '#FF7029', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
+                            {t('authentication.forgotPassword')}?
+                        </Text>
+                    </ThemedView>
                 </ThemedView>
             </ThemedView>
 
-            <Button style={{ width: '100%', height: 56, backgroundColor: '#FF678B', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onTap={() => { }}>
-                <Text style={{ color: '#FFFFFF', fontSize: 16, lineHeight: 20, fontFamily: 'SFUISemibold' }}>
-                    {t('authentication.signInButton')}
-                </Text>
-            </Button>
+            <ThemedView style={{ width: '100%', padding: 20, paddingTop: 40 }}>
+                <Button style={{ width: '100%', height: 56, backgroundColor: '#FF678B', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onTap={() => { }}>
+                    <Text style={{ color: '#FFFFFF', fontSize: 16, lineHeight: 20, fontFamily: 'SFUISemibold' }}>
+                        {t('authentication.signInButton')}
+                    </Text>
+                </Button>
 
+                <ThemedView style={{ width: '100%', marginTop: 40, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 4 }}>
+                    <Text style={{ color: '#707B81', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
+                        {t('authentication.dontHaveAccount')}
+                    </Text>
+                    <Text style={{ color: '#FF7029', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
+                        {t('authentication.signUpButton')}
+                    </Text>
+                </ThemedView>
+
+                <ThemedView style={{ marginTop: 20, alignItems: 'center' }}>
+                    <Text style={{ color: '#707B81', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
+                        {t('authentication.connectMessage')}
+                    </Text>
+                </ThemedView>
+
+                <ThemedView style={{ marginTop: 36, alignItems: 'center', height: 44, backgroundColor: '#F2F4F5', borderRadius: 16, justifyContent: 'center', width: '100%' }}>
+                    <Text style={{ color: '#707B81', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
+                        Icon các mạng xã hội sẽ được hiển thị ở đây
+                    </Text>
+                </ThemedView>
+            </ThemedView>
         </ThemedView>
     );
 };

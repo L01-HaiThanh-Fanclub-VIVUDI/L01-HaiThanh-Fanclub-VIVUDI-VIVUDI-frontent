@@ -8,7 +8,12 @@
  *  Modified    :                                                           *
 \****************************************************************************/
 
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+
+/****************************************************************************
+ * Lấy chiều rộng, dài của app                                              *
+ ****************************************************************************/
+const { width, height } = Dimensions.get('window');
 
 /****************************************************************************
  * Styles                                                                   *
@@ -33,8 +38,12 @@ export const styles = StyleSheet.create({
     },
     blurOverlay: {
         ...StyleSheet.absoluteFillObject,
+        top: 0,
+        left: 0,
+        width: width,
+        height: height,
         backgroundColor: 'rgba(0,0,0,0.3)',
-        zIndex: 1
+        zIndex: 2,
     },
     checklist: {
         position: 'absolute',

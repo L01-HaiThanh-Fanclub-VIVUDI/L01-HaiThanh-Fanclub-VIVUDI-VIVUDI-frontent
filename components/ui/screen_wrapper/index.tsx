@@ -153,8 +153,8 @@ const ScreenWrapper = ({ children }: { children: React.ReactNode }): JSX.Element
 
     return (
         <ThemedView style={[styles.root, style, { paddingBottom: insets.bottom }]}>
-            {renderHeader()}
             <ThemedView style={styles.contentContainer}>{children}</ThemedView>
+            {renderHeader()}
         </ThemedView>
     );
 };
