@@ -71,8 +71,8 @@ const AuthLoginPage: FC = (): JSX.Element => {
             {/* StatusBar với style phù hợp */}
             <StatusBar style={statusBarStyle} />
 
-            <ThemedView style={{ flex: 1, width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-                <ThemedView style={{ flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 }}>
+            <ThemedView style={{ flex: 1, width: '100%', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20 }}>
+                <ThemedView style={{ flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                     <ThemedView style={{ width: '100%', alignItems: 'center', marginBottom: 16 }}>
                         <Text style={{ color: '#1B1E28', fontSize: 26, lineHeight: 34, fontFamily: 'SFUISemibold' }}>
                             {t('authentication.signInTitle')}
@@ -86,27 +86,25 @@ const AuthLoginPage: FC = (): JSX.Element => {
                     </ThemedView>
                 </ThemedView>
 
-                <ThemedView style={{ width: '100%', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 20 }}>
-                    <PasswordInput
-                        style={{ width: '100%', marginBottom: 24 }}
-                        regexChecks={['email']}
-                        placeholder='example@gmail.com'
-                        inputName={t('authentication.emailField')}
-                    />
+                <PasswordInput
+                    style={{ width: '100%', marginBottom: 24 }}
+                    regexChecks={['email']}
+                    placeholder='example@gmail.com'
+                    inputName={t('authentication.emailField')}
+                />
 
-                    <PasswordInput
-                        style={{ width: '100%', marginBottom: 16 }}
-                        placeholder={t('authentication.passwordPlaceholder')}
-                        inputName={t('authentication.passwordField')}
-                        regexChecks={['length', 'upper', 'lower', 'digit', 'special', 'noWhitespace']}
-                        inputType="password"
-                    />
+                <PasswordInput
+                    style={{ width: '100%', marginBottom: 16 }}
+                    placeholder={t('authentication.passwordPlaceholder')}
+                    inputName={t('authentication.passwordField')}
+                    regexChecks={['length', 'upper', 'lower', 'digit', 'special', 'noWhitespace']}
+                    inputType="password"
+                />
 
-                    <ThemedView style={{ width: '100%', alignItems: 'flex-end' }}>
-                        <Text style={{ color: '#FF7029', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
-                            {t('authentication.forgotPassword')}?
-                        </Text>
-                    </ThemedView>
+                <ThemedView style={{ width: '100%', alignItems: 'flex-end' }}>
+                    <Text style={{ color: '#FF7029', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
+                        {t('authentication.forgotPassword')}?
+                    </Text>
                 </ThemedView>
             </ThemedView>
 
