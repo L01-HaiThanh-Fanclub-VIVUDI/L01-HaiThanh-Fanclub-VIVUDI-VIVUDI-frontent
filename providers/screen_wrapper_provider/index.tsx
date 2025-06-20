@@ -49,6 +49,10 @@ export const ScreenWrapperProvider = ({ children }: { children: ReactNode }) => 
                 ...newConfig,
             },
         }));
+
+        if (!currentPageId) {
+            setScreenId(screenId);
+        };
     };
 
     /******************************************************************************

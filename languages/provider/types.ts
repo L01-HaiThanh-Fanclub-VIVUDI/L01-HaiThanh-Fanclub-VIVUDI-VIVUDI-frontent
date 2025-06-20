@@ -66,6 +66,22 @@ export enum MSG_ID {
     MSG_REGEX = 1,
     // Thông báo độ dài tối thiểu
     MSG_MIN_LENGTH = 2,
+    // Thông báo độ dài tối thiểu 8 ký tự
+    MSG_REGEX_MIN_LENGTH = 3,
+    // Thông báo ít nhất một chữ cái viết hoa
+    MSG_REGEX_ONE_UPPER = 4,
+    // Thông báo ít nhất một chữ cái viết thường
+    MSG_REGEX_ONE_LOWER = 5,
+    // Thông báo ít nhất một chữ số
+    MSG_REGEX_ONE_DIGIT = 6,
+    // Thông báo ít nhất một ký tự đặc biệt
+    MSG_REGEX_ONE_SPECIAL = 7,
+    // Thông báo không cho phép khoảng trắng
+    MSG_REGEX_NO_WHITESPACE = 8,
+    // Thông báo định dạng email
+    MSG_REGEX_EMAIL = 9,
+    // Thông báo dùng cho regex input
+    MSG_REGEX_INPUT = 10,
 
     // ID cha của các message liên quan đến đăng nhập
     MSG_AUTH_LOGIN = 1000,

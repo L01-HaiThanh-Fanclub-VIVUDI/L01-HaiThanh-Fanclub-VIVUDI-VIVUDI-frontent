@@ -1,29 +1,21 @@
 /******************************************************************************\
  *                   © ViVuDi 2025. All rights reserved.                      *
  ******************************************************************************
- *  File        : DTO cho /auth/login                                         *
+ *  File        : DTO cho /auth/verify-otp                                    *
  *  Author      : Minh Nhật                                                   *
- *  Created     : 13/06/2025                                                  *
+ *  Created     : 19/06/2025                                                  *
  *  Updated by  :                                                             *
  *  Modified    :                                                             *
 \******************************************************************************/
 
-export class LoginDTO {
+export class ResetPasswordDto {
     /****************************
-     * Email đăng nhập          *
-     * {REGEX_EMAIL}            *
-     * {REGEX_ONLY_ASCII}       *
+     * Mã OTP xác thực          *
+     * {REGEX_OTP}              *
      ****************************/
-    public email!: string;
-    /****************************
-     * Mật khẩu đăng nhập       *
-     * {REGEX_PASSWORD}         *
-     * {REGEX_ONLY_ASCII}       *
-     ****************************/
-    public password!: string;
+    public otp!: string;
 
     constructor() {
-        this.email = '';
-        this.password = '';
+        this.otp = '';
     };
 };

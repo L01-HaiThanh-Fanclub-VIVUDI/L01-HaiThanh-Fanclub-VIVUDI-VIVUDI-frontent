@@ -8,6 +8,7 @@
  *  Modified    :                                                             *
 \******************************************************************************/
 
+import getDeviceLanguage from '@/utils/getDeviceLanguage';
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import en, { enMessages } from '../en';
 import vi, { viMessages } from '../vi';
@@ -36,7 +37,8 @@ const AppLanguageContext = createContext<AppLanguageContextType>({
  * Cung cấp các hàm dịch (t, getMessage) cho toàn bộ app.                     *
  ******************************************************************************/
 export const AppLanguageProvider = ({ children }: { children: React.ReactNode }) => {
-    const [lang, setLang] = useState<AppLanguage>('vi');
+    const initialLang: AppLanguage = getDeviceLanguage();
+    const [lang, setLang] = useState<AppLanguage>(initialLang);
 
     const contextValue = useMemo(() => {
         /**************************************************************************

@@ -54,7 +54,7 @@ const SLIDES: Slide[] = [
         description:
             'To get the best of your adventure you just need to leave and go where we like, we are waiting for you',
         buttonColor: '#24BAEC',
-        dotLength: [13, 25, 6],
+        dotLength: [13.001, 25, 6],
         curveLeftPosition: 9,
         inactiveColor: '#CAEAFF',
     },

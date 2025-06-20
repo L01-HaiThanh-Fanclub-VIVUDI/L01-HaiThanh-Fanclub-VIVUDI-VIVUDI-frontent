@@ -21,6 +21,12 @@ const authentication = {
     forgotPassword: 'Quên mật khẩu',
     resetPassword: 'Đặt lại mật khẩu',
     changePassword: 'Đổi mật khẩu',
+
+    emailField: 'Email',
+    passwordField: 'Mật khẩu',
+    passwordPlaceholder: 'Nhập mật khẩu của bạn',
+
+    signInButton: 'Đăng nhập',
 };
 //#endregion
 
@@ -33,6 +39,14 @@ export const viMessages: MessageObject = {
     [MSG_ID.MSG_REQUIRED]: 'Vui lòng điền các giá trị còn thiếu: {n}',
     [MSG_ID.MSG_REGEX]: 'Trường {0} phải thoả mãn định dạng {1}',
     [MSG_ID.MSG_MIN_LENGTH]: 'Trường {0} phải có độ dài tối thiểu là {1}',
+    [MSG_ID.MSG_REGEX_MIN_LENGTH]: 'Ít nhất 8 ký tự',
+    [MSG_ID.MSG_REGEX_ONE_UPPER]: 'Ít nhất một chữ cái viết hoa',
+    [MSG_ID.MSG_REGEX_ONE_LOWER]: 'Ít nhất một chữ cái viết thường',
+    [MSG_ID.MSG_REGEX_ONE_DIGIT]: 'Ít nhất một chữ số',
+    [MSG_ID.MSG_REGEX_ONE_SPECIAL]: 'Ít nhất một ký tự đặc biệt',
+    [MSG_ID.MSG_REGEX_NO_WHITESPACE]: 'Không chứa khoảng trắng',
+    [MSG_ID.MSG_REGEX_EMAIL]: 'Email phải có định dạng: example@email.com',
+    [MSG_ID.MSG_REGEX_INPUT]: 'Trường {0} cần phải thoả mãn các điều kiện sau:',
 
     [MSG_ID.MSG_AUTH_LOGIN]: {
         0: 'Đăng nhập thành công',

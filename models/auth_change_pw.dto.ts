@@ -1,29 +1,30 @@
 /******************************************************************************\
  *                   © ViVuDi 2025. All rights reserved.                      *
  ******************************************************************************
- *  File        : DTO cho /auth/login                                         *
+ *  File        : DTO cho /auth/change-password                               *
  *  Author      : Minh Nhật                                                   *
- *  Created     : 13/06/2025                                                  *
+ *  Created     : 19/06/2025                                                  *
  *  Updated by  :                                                             *
  *  Modified    :                                                             *
 \******************************************************************************/
 
-export class LoginDTO {
+export class ChangePasswordDto {
     /****************************
-     * Email đăng nhập          *
-     * {REGEX_EMAIL}            *
-     * {REGEX_ONLY_ASCII}       *
-     ****************************/
-    public email!: string;
-    /****************************
-     * Mật khẩu đăng nhập       *
+     * Mật khẩu hiện tại        *
      * {REGEX_PASSWORD}         *
      * {REGEX_ONLY_ASCII}       *
      ****************************/
-    public password!: string;
+    public current_password!: string;
+
+    /****************************
+     * Mật khẩu mới             *
+     * {REGEX_PASSWORD}         *
+     * {REGEX_ONLY_ASCII}       *
+     ****************************/
+    public new_password!: string;
 
     constructor() {
-        this.email = '';
-        this.password = '';
+        this.current_password = '';
+        this.new_password = '';
     };
 };

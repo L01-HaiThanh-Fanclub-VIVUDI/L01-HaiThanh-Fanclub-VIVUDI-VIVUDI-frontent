@@ -37,7 +37,7 @@ const useIsFirstLaunch = (): boolean | null => {
         checkFirstLaunch();
     }, []);
 
-    return true;
+    return isFirstLaunch;
 };
 
 export default useIsFirstLaunch;

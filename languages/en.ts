@@ -21,6 +21,12 @@ const authentication = {
     forgotPassword: 'Forgot Password',
     resetPassword: 'Reset Password',
     changePassword: 'Change Password',
+
+    emailField: 'Email',
+    passwordField: 'Password',
+    passwordPlaceholder: 'Enter your password',
+
+    signInButton: 'Sign In',
 };
 //#endregion
 
@@ -33,6 +39,14 @@ export const enMessages: MessageObject = {
     [MSG_ID.MSG_REQUIRED]: 'Please fill in the missing values: {n}',
     [MSG_ID.MSG_REGEX]: 'Field {0} must satisfy the format {1}',
     [MSG_ID.MSG_MIN_LENGTH]: 'Field {0} must have a minimum length of {1}',
+    [MSG_ID.MSG_REGEX_MIN_LENGTH]: 'At least 8 characters',
+    [MSG_ID.MSG_REGEX_ONE_UPPER]: 'At least one uppercase letter',
+    [MSG_ID.MSG_REGEX_ONE_LOWER]: 'At least one lowercase letter',
+    [MSG_ID.MSG_REGEX_ONE_DIGIT]: 'At least one digit',
+    [MSG_ID.MSG_REGEX_ONE_SPECIAL]: 'At least one special character',
+    [MSG_ID.MSG_REGEX_NO_WHITESPACE]: 'No whitespace allowed',
+    [MSG_ID.MSG_REGEX_EMAIL]: 'Email must be in the format: example@email.com',
+    [MSG_ID.MSG_REGEX_INPUT]: 'Field {0} must satisfy the following conditions:',
 
     [MSG_ID.MSG_AUTH_LOGIN]: {
         0: 'Login successful',

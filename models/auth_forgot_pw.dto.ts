@@ -1,29 +1,22 @@
 /******************************************************************************\
  *                   © ViVuDi 2025. All rights reserved.                      *
  ******************************************************************************
- *  File        : DTO cho /auth/login                                         *
+ *  File        : DTO cho /auth/forgot-password                               *
  *  Author      : Minh Nhật                                                   *
- *  Created     : 13/06/2025                                                  *
+ *  Created     : 19/06/2025                                                  *
  *  Updated by  :                                                             *
  *  Modified    :                                                             *
 \******************************************************************************/
 
-export class LoginDTO {
+export class ForgotPasswordDto {
     /****************************
-     * Email đăng nhập          *
+     * Email đặt lại mật khẩu   *
      * {REGEX_EMAIL}            *
      * {REGEX_ONLY_ASCII}       *
      ****************************/
     public email!: string;
-    /****************************
-     * Mật khẩu đăng nhập       *
-     * {REGEX_PASSWORD}         *
-     * {REGEX_ONLY_ASCII}       *
-     ****************************/
-    public password!: string;
 
     constructor() {
         this.email = '';
-        this.password = '';
     };
 };

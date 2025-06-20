@@ -47,32 +47,34 @@ const Dot: FC<DotProps> = ({ length, height, isActive, inactiveColor, activeColo
     /******************************************************************************
      * 0 = inactive, 1 = active                                                   *
      ******************************************************************************/
-    const progress = useDerivedValue(() =>
-        withTiming(isActive ? 1 : 0, { duration: 300 })
+    const progress = useDerivedValue(
+        () => withTiming(isActive ? 1 : 0, { duration: 300 }),
+        [isActive]
     );
 
     /******************************************************************************
      * Animated style cho dot                                                     *
      ******************************************************************************/
     const aStyle = useAnimatedStyle(() => {
-        const backgroundColor = interpolateColor(
+        const animatedWidth = length + activeExtraWidth * progress.value;
+        const animatedBackgroundColor = interpolateColor(
             progress.value,
             [0, 1],
             [inactiveColor, activeColor]
         );
-        const width = length + activeExtraWidth * progress.value;
         const borderRadius = height / 2;
+        const scale = progress.value === 1 ? withTiming(1.05, { duration: 200 }) : withTiming(1, { duration: 200 });
 
         return {
-            width,
+            width: animatedWidth,
             height,
-            backgroundColor,
+            backgroundColor: animatedBackgroundColor,
             borderRadius,
             transform: [
-                { scale: withTiming(isActive ? 1.05 : 1, { duration: 200 }) },
+                { scale },
             ],
         };
-    });
+    }, [inactiveColor, activeColor, length, height, activeExtraWidth, isActive]);
 
     return <Animated.View style={[styles.dot, aStyle]} />;
 };
