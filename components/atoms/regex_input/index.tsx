@@ -10,6 +10,8 @@
 
 import { useLanguage } from '@/languages/provider';
 import { MSG_ID } from '@/languages/provider/types';
+import { useScreenWrapper } from '@/providers/screen_wrapper_provider';
+import { ScreenWrapperConfig } from '@/providers/screen_wrapper_provider/types';
 import { REGEX } from '@/settings/regex';
 import { RegexMsgMap } from '@/settings/regex/types';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -73,6 +75,8 @@ const RegexInput = forwardRef<TextInput, RegexInputProps>(({
     const [shouldShowChecklist, setShouldShowChecklist] = useState(false);
     const inputZIndex = useMemo(() => focused ? 3 : 0, [focused]);
     const { getMessage } = useLanguage();
+    const { config, setConfig, screenId } = useScreenWrapper();
+    const [storedConfig, setStoredConfig] = useState<ScreenWrapperConfig>({});
 
     // Animated values
     const opacity = useRef(new Animated.Value(0)).current;
@@ -159,6 +163,32 @@ const RegexInput = forwardRef<TextInput, RegexInputProps>(({
             checkTranslate.setValue(10);
         };
     }, [opacity, checkTranslate]);
+
+    /******************************************************************************
+     * Thiết lập cấu hình khi input được focus / unfocus                          *
+     ******************************************************************************/
+    useEffect(() => {
+        if (focused) {
+            // Lưu cấu hình hiện tại để khôi phục sau khi blur
+            setStoredConfig(config);
+            // Thiết lập cấu hình mới khi input được focus
+            setConfig({
+                disableDefaultGobackAction: true,
+                handleGoback: () => {
+                    (inputRef.current as TextInput)?.blur();
+                    setFocused(false);
+                },
+            }, screenId);
+        } else {
+            // Khôi phục cấu hình đã lưu khi input bị blur
+            if (storedConfig) {
+                setConfig(storedConfig, screenId);
+            };
+
+            setStoredConfig({});
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [focused]);
 
     /******************************************************************************
      * Tính toán vị trí checklist overlay                                         *

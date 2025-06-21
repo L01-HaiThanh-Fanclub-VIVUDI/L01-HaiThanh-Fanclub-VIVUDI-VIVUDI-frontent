@@ -13,7 +13,6 @@ import { AppLanguageProvider } from '@/languages/provider';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LoadingProvider } from './loading_provider';
 import { ScreenWrapperProvider } from './screen_wrapper_provider';
@@ -32,9 +31,6 @@ export const ProviderInjection = ({ children }: ProviderProps) => {
      * Có thể thêm các provider khác nếu cần thiết.                           *
      *************************************************************************/
     const providers: ProviderEntry[] = [
-        {
-            provider: PaperProvider,
-        },
         {
             provider: SafeAreaProvider,
         },

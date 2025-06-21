@@ -27,7 +27,7 @@ const authentication = {
     passwordPlaceholder: 'Enter your password',
 
     signInButton: 'Sign In',
-    connectMessage: 'Or connect',
+    connectMessage: 'or',
     dontHaveAccount: 'Don\'t have an account?',
     signInTitle: 'Sign in now',
     signInSubtitle: 'Please sign in to continue our app',

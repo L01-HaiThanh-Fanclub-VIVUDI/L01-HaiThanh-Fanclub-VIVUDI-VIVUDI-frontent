@@ -18,7 +18,33 @@ import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { FC, JSX, useEffect } from 'react';
-import { Text, useColorScheme } from 'react-native';
+import { Image, ImageSourcePropType, Text, useColorScheme, View } from 'react-native';
+
+export type SocialButton = {
+    /****************************************************************************
+     * Khóa định danh duy nhất cho SocialButton                                 *
+     ****************************************************************************/
+    key: string;
+    /****************************************************************************
+     * Ảnh hiển thị trên button                                                 *
+     ****************************************************************************/
+    image: ImageSourcePropType;
+};
+
+const SOCIAL_BUTTONS: SocialButton[] = [
+    {
+        key: 'google',
+        image: require('@/assets/images/auth/facebook.webp'),
+    },
+    {
+        key: 'facebook',
+        image: require('@/assets/images/auth/instagram.png'),
+    },
+    {
+        key: 'apple',
+        image: require('@/assets/images/auth/twitter.webp'),
+    },
+];
 
 /******************************************************************************
  * AuthLoginPage: Màn hình login của ứng dụng                                 *
@@ -124,16 +150,30 @@ const AuthLoginPage: FC = (): JSX.Element => {
                     </Text>
                 </ThemedView>
 
-                <ThemedView style={{ marginTop: 20, alignItems: 'center' }}>
-                    <Text style={{ color: '#707B81', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
+                <ThemedView style={{ marginTop: 20, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 3 }}>
+                    <View style={{ backgroundColor: '#707B8170', height: 2, width: 8, borderRadius: 99, marginTop: 3 }} />
+
+                    <Text style={{ color: '#707B8170', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
                         {t('authentication.connectMessage')}
                     </Text>
+
+                    <View style={{ backgroundColor: '#707B8170', height: 2, width: 8, borderRadius: 99, marginTop: 3 }} />
                 </ThemedView>
 
-                <ThemedView style={{ marginTop: 36, alignItems: 'center', height: 44, backgroundColor: '#F2F4F5', borderRadius: 16, justifyContent: 'center', width: '100%' }}>
-                    <Text style={{ color: '#707B81', fontSize: 14, lineHeight: 16, fontFamily: 'SFUISemibold' }}>
-                        Icon các mạng xã hội sẽ được hiển thị ở đây
-                    </Text>
+                <ThemedView style={{ marginTop: 36, alignItems: 'center', height: 44, justifyContent: 'center', width: '100%', flexDirection: 'row', gap: 20 }}>
+                    {SOCIAL_BUTTONS.map((button) => (
+                        <Button
+                            key={button.key}
+                            style={{ width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' }}
+                            onTap={() => { }}
+                        >
+                            <Image
+                                source={button.image}
+                                style={{ width: '100%', height: '100%' }}
+                                resizeMode="cover"
+                            />
+                        </Button>
+                    ))}
                 </ThemedView>
             </ThemedView>
         </ThemedView>
