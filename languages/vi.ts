@@ -42,8 +42,9 @@ const authentication = {
  * {n} là danh sách các tham số động, ưu tiên cuối cùng.                    *
  ****************************************************************************/
 export const viMessages: MessageObject = {
-    [MSG_ID.MSG_REQUIRED]: 'Vui lòng điền các giá trị còn thiếu: {n}',
-    [MSG_ID.MSG_REGEX]: 'Trường {0} phải thoả mãn định dạng {1}',
+    [MSG_ID.MSG_REQUIRED]: 'Trường {0} là bắt buộc',
+    [MSG_ID.MSG_REQUIRED_MULTI]: 'Các trường {n} là bắt buộc',
+    [MSG_ID.MSG_REGEX]: 'Trường {0} sai định dạng',
     [MSG_ID.MSG_MIN_LENGTH]: 'Trường {0} phải có độ dài tối thiểu là {1}',
     [MSG_ID.MSG_REGEX_MIN_LENGTH]: 'Ít nhất 8 ký tự',
     [MSG_ID.MSG_REGEX_ONE_UPPER]: 'Ít nhất một chữ cái viết hoa',
@@ -56,8 +57,10 @@ export const viMessages: MessageObject = {
 
     [MSG_ID.MSG_AUTH_LOGIN]: {
         0: 'Đăng nhập thành công',
-        100: 'Không tìm thấy người dùng',
-        101: 'Mật khẩu không đúng',
+        100: 'Tài khoảng email không tồn tại',
+        101: 'Trường email là bắt buộc',
+        102: 'Sai mật khẩu, vui lòng thử lại',
+        103: 'Mật khẩu không được để trống',
     },
 };
 //# endregion

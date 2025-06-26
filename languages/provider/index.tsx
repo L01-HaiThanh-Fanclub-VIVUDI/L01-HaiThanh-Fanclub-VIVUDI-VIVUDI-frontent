@@ -60,38 +60,69 @@ export const AppLanguageProvider = ({ children }: { children: React.ReactNode })
         };
 
         /**************************************************************************
-         * Hàm format message với tham số động, ưu tiên {n} là danh sách cuối.   *
+         * Hàm format message với tham số động, ưu tiên {n} là danh sách cuối.    *
+         * {0}, {1}, ... là các tham số tương ứng.                                *
+         * {n} là danh sách các tham số còn lại.                                  *
+         * {n} sẽ được viết hoa chữ cái đầu nếu là đầu câu, còn lại viết thường.  *
          **************************************************************************/
         const formatMessage = (template: string, args: (string | number)[]): string => {
-            // Xử lý {n} nếu có
-            let result = template;
-
-            // Nếu có {n} trong template, lấy toàn bộ tham số còn lại (sau các {0}, {1}, ...)
-            if (result.includes('{n}')) {
-                // Xác định số lượng placeholder dạng {0}, {1}, ...
-                const indexedPlaceholders = Array.from(result.matchAll(/{(\d+)}/g)).map(m => Number(m[1]));
-                const maxIndex = indexedPlaceholders.length > 0 ? Math.max(...indexedPlaceholders) : -1;
-
-                // Các tham số cho {0}, {1}, ...
-                const indexedArgs = args.slice(0, maxIndex + 1);
-                // Các tham số còn lại cho {n}
-                const nArgs = args.slice(maxIndex + 1);
-
-                // Thay thế {n} bằng danh sách nArgs, phân tách bằng dấu , (không có dấu , cuối)
-                result = result.replace('{n}', nArgs.join(', '));
-
-                // Thay thế các {0}, {1}, ...
-                result = result.replace(/{(\d+)}/g, (_, index) => {
-                    const value = indexedArgs[Number(index)];
-                    return typeof value !== 'undefined' ? String(value) : '';
-                });
-            } else {
-                // Không có {n}, chỉ thay thế {0}, {1}, ...
-                result = result.replace(/{(\d+)}/g, (_, index) => {
-                    const value = args[Number(index)];
-                    return typeof value !== 'undefined' ? String(value) : '';
-                });
+            // Helper: Viết hoa chữ cái đầu nếu là đầu câu, còn lại viết thường
+            const smartCase = (str: string, isFirst: boolean) => {
+                if (!str) return '';
+                return isFirst
+                    ? str.charAt(0).toUpperCase() + str.slice(1)
+                    : str.toLowerCase();
             };
+
+            // Regex tìm tất cả placeholder dạng {n} hoặc {0}, {1}, ...
+            const placeholderRegex = /{(n|\d+)}/g;
+            let match: RegExpExecArray | null;
+            let lastIndex = 0;
+            let result = '';
+            let isFirst = true;
+
+            // Duyệt từng placeholder và thay thế
+            while ((match = placeholderRegex.exec(template)) !== null) {
+                const [placeholder, key] = match;
+                const before = template.slice(lastIndex, match.index);
+
+                // Kiểm tra nếu trước đó là đầu câu hoặc sau dấu chấm
+                const trimmedBefore = before.trimEnd();
+                if (
+                    trimmedBefore.length === 0 ||
+                    /[.?!]\s*$/.test(trimmedBefore)
+                ) {
+                    isFirst = true;
+                } else {
+                    isFirst = false;
+                };
+
+                result += before;
+
+                let value = '';
+                if (key === 'n') {
+                    // Xử lý {n}: lấy các tham số còn lại sau các {0}, {1}, ...
+                    const indexedPlaceholders = Array.from(template.matchAll(/{(\d+)}/g)).map(m => Number(m[1]));
+                    const maxIndex = indexedPlaceholders.length > 0 ? Math.max(...indexedPlaceholders) : -1;
+                    const nArgs = args.slice(maxIndex + 1).map((v, i) =>
+                        smartCase(String(v), i === 0 && isFirst)
+                    );
+                    value = nArgs.join(', ');
+                } else {
+                    // Xử lý {0}, {1}, ...
+                    const idx = Number(key);
+                    value = smartCase(
+                        typeof args[idx] !== 'undefined' ? String(args[idx]) : '',
+                        isFirst
+                    );
+                };
+
+                result += value;
+                lastIndex = match.index + placeholder.length;
+            };
+
+            // Thêm phần còn lại của template
+            result += template.slice(lastIndex);
 
             return result;
         };

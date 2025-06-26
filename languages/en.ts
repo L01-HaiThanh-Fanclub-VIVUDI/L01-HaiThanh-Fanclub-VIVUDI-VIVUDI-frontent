@@ -42,8 +42,9 @@ const authentication = {
  * {n} là danh sách các tham số động, ưu tiên cuối cùng.                    *
  ****************************************************************************/
 export const enMessages: MessageObject = {
-    [MSG_ID.MSG_REQUIRED]: 'Please fill in the missing values: {n}',
-    [MSG_ID.MSG_REGEX]: 'Field {0} must satisfy the format {1}',
+    [MSG_ID.MSG_REQUIRED]: 'Field {0} is required',
+    [MSG_ID.MSG_REQUIRED_MULTI]: 'Fields {n} are required',
+    [MSG_ID.MSG_REGEX]: 'Field {0} is in the wrong format',
     [MSG_ID.MSG_MIN_LENGTH]: 'Field {0} must have a minimum length of {1}',
     [MSG_ID.MSG_REGEX_MIN_LENGTH]: 'At least 8 characters',
     [MSG_ID.MSG_REGEX_ONE_UPPER]: 'At least one uppercase letter',
@@ -56,8 +57,10 @@ export const enMessages: MessageObject = {
 
     [MSG_ID.MSG_AUTH_LOGIN]: {
         0: 'Login successful',
-        100: 'User not found',
-        101: 'Incorrect password',
+        100: 'Email account does not exist',
+        101: 'Email field is required',
+        102: 'Incorrect password, please try again',
+        103: 'Password field is required',
     },
 };
 //# endregion
