@@ -2,13 +2,9 @@
 
 ![Platform: React Native](https://img.shields.io/badge/platform-React%20Native-blue) ![Expo SDK](https://img.shields.io/badge/expo-SDK_53-blue) ![Language: TypeScript](https://img.shields.io/badge/language-TypeScript-blue) ![Status: Developing](https://img.shields.io/badge/status-developing-blue)
 
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
-
 ## Giới thiệu
 
 **BKI\_2025\_FE** là dự án frontend cho nền tảng du lịch ViVuDi, đượct triển bằng **React Native (Expo)**, hướng tới kiến trúc module hóa, dễ mở rộng, hiệu năng cao và trải nghiệm người dùng mượt mà. Dự án được thiết kế phù hợp với mô hình phát triển đa nền tảng (Android, iOS), tích hợp tốt với backend và hỗ trợ đa ngôn ngữ linh hoạt.
-
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Tính năng chính
 
@@ -29,8 +25,6 @@
 | `npx expo start`         | Khởi động Expo             |
 | `npx expo start --clear` | Xóa cache và khởi động lại |
 | `npm run lint`           | Chạy kiểm tra lint         |
-
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Cấu trúc thư mục chi tiết
 
@@ -134,8 +128,6 @@ BKI_2025_FE/
 └── package.json
 ```
 
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
-
 ## Hướng dẫn cài đặt và chạy
 
 1. **Cài đặt dependencies:**
@@ -156,8 +148,6 @@ npx expo start
 
 * Kiểm tra và cấu hình các giá trị như `API_BASE_URL`, `theme`... trong `settings/` hoặc `index.ts`.
 
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
-
 ## Đa ngôn ngữ (i18n)
 
 * Mỗi ngôn ngữ có một file riêng: `vi.ts`, `en.ts`
@@ -173,8 +163,6 @@ const { t, getMessage, getAPIMessage } = useLanguage();
   * Tạo file `xx.ts`
   * Khai báo trong `languages/provider.tsx`
 
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
-
 ## Kiểm tra dữ liệu đầu vào bằng Regex
 
 * Các biểu thức kiểm tra được khai báo tập trung trong `settings/regex.ts`
@@ -184,8 +172,6 @@ const { t, getMessage, getAPIMessage } = useLanguage();
   * Kiểm tra đầu vào
   * Hiển thị checklist điều kiện (ví dụ: độ dài, ký tự đặc biệt, email hợp lệ, ...)
 
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
-
 ## Quy ước phát triển
 
 * Tuân thủ quy tắc đặt tên rõ ràng, nhất quán
@@ -193,8 +179,6 @@ const { t, getMessage, getAPIMessage } = useLanguage();
 * Ưu tiên tách logic ra `hooks`, `utils`, tránh viết thẳng trong màn hình
 * Có comment mô tả rõ nếu function phức tạp
 * Đọc kỹ `document.txt` để hiểu cơ chế đa ngôn ngữ, regex, và quản lý trạng thái
-
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Quy tắc Commit
 
@@ -220,8 +204,6 @@ Docs(readme): update setup instructions
 Chore(deps): upgrade Expo SDK to 49
 ```
 
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
-
 ## Roadmap
 
 * [ ] Push Notifications
@@ -229,19 +211,13 @@ Chore(deps): upgrade Expo SDK to 49
 * [ ] In-app Update
 * [ ] Unit & E2E Tests
 
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
-
 ## Bản quyền
 
 © ViVuDi 2025. Toàn bộ bản quyền thuộc về nhóm phát triển ViVuDi.
-
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Liên hệ
 
 * Tác giả chính: Minh Nhật
 * Email: <nhat.dang2004.cv@gmail.com>
-
-<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 <p align="center">© 2025 ViVuDi Team. All rights reserved.</p>
