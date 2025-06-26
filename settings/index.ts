@@ -61,7 +61,11 @@ export const colors = {
 export const FIRST_LAUNCH_KEY = 'HAS_LAUNCHED_APP';
 
 /******************************************************************************
+ * Flag cho biết đang là môi trường beta hay product                          *
+ ******************************************************************************/
+export const FLAG_PRODUCT_VERSION = false; // Chỉnh sửa thành true khi deploy lên môi trường sản phẩm
+
+/******************************************************************************
  * API URL BackEnd                                                            *
  ******************************************************************************/
-// export const VIVUDI_API_URL = 'https://api.vivudi.com/v1';a
-export const VIVUDI_API_URL = 'http://localhost:5001/api/v1';
+export const VIVUDI_API_URL = 'https://vivudi-backend.onrender.com/api/v1';
