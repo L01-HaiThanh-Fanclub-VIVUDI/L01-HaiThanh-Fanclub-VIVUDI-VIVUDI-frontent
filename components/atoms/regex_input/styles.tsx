@@ -72,6 +72,11 @@ export const styles = StyleSheet.create({
         marginTop: 8,
         textAlign: 'center',
     },
+    errorContainer: {
+        borderWidth: 1,
+        borderColor: '#dc3545',
+        color: '#dc3545',
+    },
     passwordEye: {
         position: 'absolute',
         right: 1,

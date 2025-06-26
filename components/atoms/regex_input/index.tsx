@@ -8,6 +8,7 @@
  *  Modified    :                                                             *
 \******************************************************************************/
 
+import { useDebounce } from '@/hooks/useDebounce';
 import { useLanguage } from '@/languages/provider';
 import { MSG_ID } from '@/languages/provider/types';
 import { useScreenWrapper } from '@/providers/screen_wrapper_provider';
@@ -16,14 +17,17 @@ import { REGEX } from '@/settings/regex';
 import { RegexMsgMap } from '@/settings/regex/types';
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { ForwardedRef, forwardRef, JSX, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Animated, StyleProp, Text, TextInput, TextStyle, TouchableWithoutFeedback, ViewStyle } from 'react-native';
+import { Animated, StyleProp, Text, TextInput, TouchableWithoutFeedback, ViewStyle } from 'react-native';
 import Button from '../button';
 import { styles } from './styles';
+import { RegexInputCheckType, RegexInputProps, RegexInputType } from './types';
 
 /******************************************************************************
  * Define các giá trị mặc định cho component                                  *
  ******************************************************************************/
-const DEFAULT_CHECKLIST_PADDING_VALUE = 10;
+const DEFAULT_CHECKLIST_PADDING_VALUE: number = 10;
+const DEFAULT_INPUT_TYPE_VALUE: RegexInputType = 'text';
+const DEFAULT_REGEX_CHECKS_VALUE: RegexInputCheckType[] = [];
 
 /******************************************************************************
  * Map các regex sang message ID để hiển thị thông báo tương ứng              *
@@ -38,24 +42,11 @@ const REGEX_MSG_MAP: RegexMsgMap = {
     REGEX_EMAIL: MSG_ID.MSG_REGEX_EMAIL,
 };
 
-export type RegexInputCheckType = 'length' | 'upper' | 'lower' | 'digit' | 'special' | 'noWhitespace' | 'email';
-export type RegexInputType = 'text' | 'password';
-export type RegexInputProps = {
-    placeholder?: string;
-    style?: StyleProp<TextStyle>;
-    value?: string;
-    onChangeText?: (text: string) => void;
-    regexChecks?: RegexInputCheckType[];
-    inputType?: RegexInputType;
-    inputName?: string;
-    errorMessage?: string;
-};
-
 /******************************************************************************
- * RegexInput: Input có overlay checklist kiểm tra password    *
+ * RegexInput: Input có overlay checklist kiểm tra regex                      *
  ******************************************************************************/
 const RegexInput = forwardRef<TextInput, RegexInputProps>(({
-    placeholder, style, value: propValue, onChangeText, regexChecks = [], inputType = 'text', inputName, errorMessage
+    placeholder, style, value: propValue, onChangeText, regexChecks = DEFAULT_REGEX_CHECKS_VALUE, inputType = DEFAULT_INPUT_TYPE_VALUE, inputName, errorMessage, ...rest
 }, ref: ForwardedRef<TextInput>): JSX.Element => {
     /******************************************************************************
      * State và ref                                                               *
@@ -67,18 +58,29 @@ const RegexInput = forwardRef<TextInput, RegexInputProps>(({
     const [internalValue, setInternalValue] = useState('');
     // Nếu propValue được cung cấp, sử dụng nó làm giá trị ban đầu
     const value = propValue !== undefined ? propValue : internalValue;
-    // Các state khác để quản lý trạng thái của input
+    // State để quản lý hiển thị toggle xem/ẩn password
     const [showPassword, setShowPassword] = useState(false);
+    // State để quản lý focus của input
     const [focused, setFocused] = useState(false);
+    // State để quản lý layout của input và checklist
     const [inputLayout, setInputLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
+    // State để quản lý chiều cao của checklist
     const [checkHeight, setCheckHeight] = useState(0);
+    // State để quản lý việc hiển thị checklist overlay
     const [shouldShowChecklist, setShouldShowChecklist] = useState(false);
+    // Tính toán zIndex cho input dựa trên trạng thái focus
     const inputZIndex = useMemo(() => focused ? 3 : 0, [focused]);
+    // Lấy hàm getMessage từ useLanguage để lấy thông điệp dựa trên MSG_ID
     const { getMessage } = useLanguage();
+    // Lấy config từ ScreenWrapperProvider
     const { config, setConfig, screenId } = useScreenWrapper();
+    // State để lưu cấu hình đã lưu khi input bị blur
+    // Điều này giúp khôi phục cấu hình ban đầu khi input được focus lại
     const [storedConfig, setStoredConfig] = useState<ScreenWrapperConfig>({});
 
-    // Animated values
+    /******************************************************************************
+     * Sử dụng useRef để tạo các giá trị animated cho opacity và translate Y      *
+     ******************************************************************************/
     const opacity = useRef(new Animated.Value(0)).current;
     const checkTranslate = useRef(new Animated.Value(10)).current;
 
@@ -219,6 +221,7 @@ const RegexInput = forwardRef<TextInput, RegexInputProps>(({
                 onLayout={e => setCheckHeight(e.nativeEvent.layout.height)}
                 style={[
                     styles.checklist,
+                    errorMessage && styles.errorContainer,
                     {
                         top: Math.max(checkTopY, DEFAULT_CHECKLIST_PADDING_VALUE),
                         left: x,
@@ -269,17 +272,44 @@ const RegexInput = forwardRef<TextInput, RegexInputProps>(({
     /******************************************************************************
      * Render input                                                               *
      ******************************************************************************/
-    const handleChangeText = (text: string) => {
-        const asciiText = text.replace(/[^ -~]/g, '');
+    const [debouncedText, setDebouncedText] = useState(value);
 
+    const handleChangeText = (text: string) => {
+        // Cập nhật giá trị của input ngay lập tức (không loại bỏ ký tự đặc biệt)
         if (onChangeText) {
-            onChangeText(asciiText);
+            onChangeText(text);
         };
 
         if (propValue === undefined) {
-            setInternalValue(asciiText);
+            setInternalValue(text);
         };
+
+        setDebouncedText(text);
     };
+
+    useDebounce(
+        debouncedText,
+        (text) => {
+            let processedText = text;
+            if (regexChecks.includes('noWhitespace')) {
+                processedText = processedText.replace(/\s+/g, '');
+            };
+            // Loại bỏ ký tự không phải ASCII
+            processedText = processedText.replace(/[^ -~]/g, '');
+
+            // Nếu đã thay đổi so với text ban đầu thì cập nhật lại
+            if (processedText !== text) {
+                if (onChangeText) {
+                    onChangeText(processedText);
+                };
+
+                if (propValue === undefined) {
+                    setInternalValue(processedText);
+                };
+            };
+        },
+        1000
+    );
 
     return (
         <>
@@ -289,15 +319,16 @@ const RegexInput = forwardRef<TextInput, RegexInputProps>(({
             <Animated.View style={[styles.inputContainer, { zIndex: inputZIndex }, style as StyleProp<ViewStyle>]} onLayout={e => setInputLayout(e.nativeEvent.layout)}>
                 <TextInput
                     ref={inputRef}
-                    style={[style, styles.input, { paddingRight: inputType === 'password' ? 40 : undefined }]}
+                    style={[style, styles.input, { paddingRight: inputType === 'password' ? 40 : undefined }, errorMessage ? styles.errorContainer : {}]}
                     placeholder={placeholder}
                     secureTextEntry={inputType === 'password' && !showPassword}
                     value={value}
                     onChangeText={handleChangeText}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
-                    cursorColor="#bbb"
-                    placeholderTextColor="#bbb"
+                    cursorColor={errorMessage ? '#ef4444' : '#bbb'}
+                    placeholderTextColor={errorMessage ? '#ef4444' : '#bbb'}
+                    {...rest}
                 />
 
                 {/* Render nút hiển thị/ẩn password nếu inputType là 'password' */}
@@ -307,7 +338,7 @@ const RegexInput = forwardRef<TextInput, RegexInputProps>(({
                             <MaterialIcons
                                 name={showPassword ? 'visibility' : 'visibility-off'}
                                 size={20}
-                                color="#7D848D"
+                                color={errorMessage ? '#ef4444' : '#7D848D'}
                             />
                         </Button>
                     </Animated.View>
@@ -317,6 +348,7 @@ const RegexInput = forwardRef<TextInput, RegexInputProps>(({
     );
 });
 
+// Đặt tên cho component để dễ dàng nhận diện trong React DevTools
 RegexInput.displayName = "RegexInput";
 
 export default RegexInput;
