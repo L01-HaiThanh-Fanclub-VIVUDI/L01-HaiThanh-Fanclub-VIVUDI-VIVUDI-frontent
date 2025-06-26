@@ -1,5 +1,7 @@
 # BKI\_2025\_FE
 
+![Platform: React Native](https://img.shields.io/badge/platform-React%20Native-blue) ![Expo SDK](https://img.shields.io/badge/expo-SDK_49-orange) ![Language: TypeScript](https://img.shields.io/badge/language-TypeScript-blue) ![Status: Developing](https://img.shields.io/badge/status-developing-lightgrey)
+
 ## Giới thiệu
 
 **BKI\_2025\_FE** là dự án frontend cho nền tảng du lịch ViVuDi, được phát triển bằng **React Native (Expo)**, hướng tới kiến trúc module hóa, dễ mở rộng, hiệu năng cao và trải nghiệm người dùng mượt mà. Dự án được thiết kế phù hợp với mô hình phát triển đa nền tảng (Android, iOS), tích hợp tốt với backend và hỗ trợ đa ngôn ngữ linh hoạt.
@@ -16,6 +18,26 @@
 * Kiểm tra dữ liệu đầu vào **tập trung và mạnh mẽ** bằng Regex & message mapping
 * Hỗ trợ **Dark/Light Mode** tự động
 * Kiến trúc module hóa giúp mở rộng và bảo trì dễ dàng
+
+---
+
+## Tech Stack
+
+* **React Native (Expo)**
+* **TypeScript**
+* **expo-router**
+* **Context API** & Custom Providers
+
+---
+
+## Scripts
+
+| Lệnh                     | Mô tả                      |
+| ------------------------ | -------------------------- |
+| `npm install`            | Cài dependencies           |
+| `npx expo start`         | Khởi động Expo             |
+| `npx expo start --clear` | Xóa cache và khởi động lại |
+| `npm run lint`           | Chạy kiểm tra lint         |
 
 ---
 
@@ -186,6 +208,41 @@ const { t, getMessage, getAPIMessage } = useLanguage();
 
 ---
 
+## Quy tắc Commit
+
+Sử dụng phong cách **Conventional Commits** với format:
+
+```text
+<type>(<scope>): <mô tả ngắn gọn>
+```
+
+* **Feat**: thêm tính năng mới
+* **Fix**: sửa lỗi
+* **Refactor**: cải tiến code (không thêm tính năng mới)
+* **Docs**: cập nhật tài liệu
+* **Chore**: thay đổi cấu hình, build, deps
+
+**Ví dụ**:
+
+```text
+Feat(login): implement Google OAuth
+Fix(api): handle 401 error on token refresh
+Refactor(regexInput): extract validation logic
+Docs(readme): update setup instructions
+Chore(deps): upgrade Expo SDK to 49
+```
+
+---
+
+## Roadmap
+
+* [ ] Push Notifications
+* [ ] Apple Sign-In
+* [ ] In-app Update
+* [ ] Unit & E2E Tests
+
+---
+
 ## Bản quyền
 
 © ViVuDi 2025. Toàn bộ bản quyền thuộc về nhóm phát triển ViVuDi.
@@ -196,3 +253,7 @@ const { t, getMessage, getAPIMessage } = useLanguage();
 
 * Tác giả chính: Minh Nhật
 * Liên hệ nội bộ qua hệ thống ViVuDi hoặc tài liệu kèm theo dự án
+
+---
+
+© 2025 ViVuDi Team. All rights reserved.
