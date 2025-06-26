@@ -8,23 +8,14 @@
  *  Modified    :                                                           *
 \****************************************************************************/
 
-import { Dimensions, StyleSheet } from 'react-native';
-
-/****************************************************************************
- * Lấy chiều rộng của app                                                   *
- ****************************************************************************/
-const { width, height } = Dimensions.get('window');
+import { StyleSheet } from 'react-native';
 
 /****************************************************************************
  * Styles                                                                   *
  ****************************************************************************/
 export const styles = StyleSheet.create({
     overlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width,
-        height,
+        ...StyleSheet.absoluteFillObject,
         zIndex: 9999,
         elevation: 9999,
         justifyContent: 'center',
@@ -34,7 +25,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'transparent',
+        width: '100%',
     },
     loaderWrapper: {
         alignItems: 'center',
