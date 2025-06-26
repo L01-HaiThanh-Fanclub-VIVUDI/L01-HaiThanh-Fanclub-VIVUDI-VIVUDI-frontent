@@ -64,7 +64,8 @@ const AppStack = (): JSX.Element => {
 	 ******************************************************************************/
 	useEffect(() => {
 		if (loaded) hide();
-	}, [loaded, hide]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loaded]);
 
 	/******************************************************************************
 	 * Nếu chưa load font, trả về rỗng để tránh lỗi render                        *
