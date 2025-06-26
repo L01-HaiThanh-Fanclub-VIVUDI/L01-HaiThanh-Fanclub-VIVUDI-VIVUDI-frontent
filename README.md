@@ -1,6 +1,6 @@
 # BKI\_2025\_FE
 
-![Platform: React Native](https://img.shields.io/badge/platform-React%20Native-blue) ![Expo SDK](https://img.shields.io/badge/expo-SDK_49-orange) ![Language: TypeScript](https://img.shields.io/badge/language-TypeScript-blue) ![Status: Developing](https://img.shields.io/badge/status-developing-lightgrey)
+![Platform: React Native](https://img.shields.io/badge/platform-React%20Native-blue) ![Expo SDK](https://img.shields.io/badge/expo-SDK_53-blue) ![Language: TypeScript](https://img.shields.io/badge/language-TypeScript-blue) ![Status: Developing](https://img.shields.io/badge/status-developing-green)
 
 ## Giới thiệu
 
