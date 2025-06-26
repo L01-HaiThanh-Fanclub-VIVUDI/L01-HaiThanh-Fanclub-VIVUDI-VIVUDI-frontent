@@ -1,10 +1,12 @@
 # BKI\_2025\_FE
 
-![Platform: React Native](https://img.shields.io/badge/platform-React%20Native-blue) ![Expo SDK](https://img.shields.io/badge/expo-SDK_53-blue) ![Language: TypeScript](https://img.shields.io/badge/language-TypeScript-blue) ![Status: Developing](https://img.shields.io/badge/status-developing-green)
+![Platform: React Native](https://img.shields.io/badge/platform-React%20Native-blue) ![Expo SDK](https://img.shields.io/badge/expo-SDK_53-blue) ![Language: TypeScript](https://img.shields.io/badge/language-TypeScript-blue) ![Status: Developing](https://img.shields.io/badge/status-developing-blue)
+
+---
 
 ## Giới thiệu
 
-**BKI\_2025\_FE** là dự án frontend cho nền tảng du lịch ViVuDi, được phát triển bằng **React Native (Expo)**, hướng tới kiến trúc module hóa, dễ mở rộng, hiệu năng cao và trải nghiệm người dùng mượt mà. Dự án được thiết kế phù hợp với mô hình phát triển đa nền tảng (Android, iOS), tích hợp tốt với backend và hỗ trợ đa ngôn ngữ linh hoạt.
+**BKI\_2025\_FE** là dự án frontend cho nền tảng du lịch ViVuDi, đượct triển bằng **React Native (Expo)**, hướng tới kiến trúc module hóa, dễ mở rộng, hiệu năng cao và trải nghiệm người dùng mượt mà. Dự án được thiết kế phù hợp với mô hình phát triển đa nền tảng (Android, iOS), tích hợp tốt với backend và hỗ trợ đa ngôn ngữ linh hoạt.
 
 ---
 
@@ -256,4 +258,4 @@ Chore(deps): upgrade Expo SDK to 49
 
 ---
 
-© 2025 ViVuDi Team. All rights reserved.
+<p align="center">© 2025 ViVuDi Team. All rights reserved.</p>
