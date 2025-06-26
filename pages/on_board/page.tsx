@@ -80,7 +80,7 @@ const OnBoardPage: FC = (): JSX.Element => {
      * State và shared value cho animation                                        *
      ******************************************************************************/
     const { setConfig } = useScreenWrapper();
-    const [active, setActive] = useState(0);
+    const [active, setActive] = useState<number>(0);
     const translateX = useSharedValue(0);
 
     /******************************************************************************
