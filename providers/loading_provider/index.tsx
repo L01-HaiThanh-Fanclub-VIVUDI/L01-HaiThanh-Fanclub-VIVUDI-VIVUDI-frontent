@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 import LoadingScreen from '@/components/ui/loading_screen';
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 import { LoadingContextType } from './types';
 
 /******************************************************************************
@@ -28,15 +28,36 @@ const LoadingContext = createContext<LoadingContextType>(defaultContext);
  * Sử dụng useState để lưu trạng thái loading hiện tại.                       *
  ******************************************************************************/
 export const LoadingProvider = ({ children }: { children: ReactNode }) => {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [visible, setVisible] = useState<boolean>(false);
 
-    const show = () => setIsLoading(true);
-    const hide = () => setIsLoading(false);
+    /*****************************************************************************
+     * show: Bật visible và entry animation                                      *
+     ******************************************************************************/
+    const show = useCallback(() => {
+        setVisible(true);         // Render LoadingScreen
+        setIsLoading(true);       // Bắt đầu entry
+    }, []);
+
+    /*****************************************************************************
+     * hide: Chỉ tắt entry, chờ exit trong LoadingScreen                         *
+     ******************************************************************************/
+    const hide = useCallback(() => {
+        setIsLoading(false);      // Kích hoạt exit animation
+    }, []);
+
+    /*****************************************************************************
+     * handleHidden: Khi exit animation hoàn thành, unmount LoadingScreen         *
+     ******************************************************************************/
+    const handleHidden = useCallback(() => {
+        setVisible(false);        // Unmount component để dọn dẹp
+    }, []);
 
     return (
         <LoadingContext.Provider value={{ show, hide, isLoading }}>
             {children}
-            {isLoading && <LoadingScreen />}
+            {/* Render LoadingScreen khi visible=true và truyền props */}
+            {visible && <LoadingScreen isVisible={isLoading} onHidden={handleHidden} />}
         </LoadingContext.Provider>
     );
 };
