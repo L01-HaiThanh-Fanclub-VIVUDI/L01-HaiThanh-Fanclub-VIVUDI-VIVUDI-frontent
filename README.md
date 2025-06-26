@@ -1,38 +1,14 @@
-# ViVuDi Application
+# BKI\_2025\_FE
 
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
-  <!-- React Native -->
-  <div style="display: inline-flex; align-items: center; padding: 4px 8px; border:1px solid #ddd; border-radius: 10px; font-size:12px; color:#333;">
-    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/react.svg" alt="React" width="16" height="16" style="margin-right:4px;" />
-    <span>React Native</span>
-  </div>
+![Platform: React Native](https://img.shields.io/badge/platform-React%20Native-blue) ![Expo SDK](https://img.shields.io/badge/expo-SDK_53-blue) ![Language: TypeScript](https://img.shields.io/badge/language-TypeScript-blue) ![Status: Developing](https://img.shields.io/badge/status-developing-blue)
 
-  <!-- Expo SDK -->
-  <div style="display: inline-flex; align-items: center; padding: 4px 8px; border:1px solid #ddd; border-radius: 10px; font-size:12px; color:#333;">
-    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/expo.svg" alt="Expo" width="16" height="16" style="margin-right:4px;" />
-    <span>Expo SDK 53</span>
-  </div>
-
-  <!-- TypeScript -->
-  <div style="display: inline-flex; align-items: center; padding: 4px 8px; border:1px solid #ddd; border-radius: 10px; font-size:12px; color:#333;">
-    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/typescript.svg" alt="TypeScript" width="16" height="16" style="margin-right:4px;" />
-    <span>TypeScript</span>
-  </div>
-
-  <!-- Status: Developing -->
-  <div style="display: inline-flex; align-items: center; padding: 4px 8px; border:1px solid #ddd; border-radius: 10px; font-size:12px; color:#333;">
-    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/devdotto.svg" alt="Developing" width="16" height="16" style="margin-right:4px;" />
-    <span>Developing</span>
-  </div>
-</div>
-
-<hr style="border:0; height:1px; background-color:#e1e4e8; margin:16px 0;" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Giới thiệu
 
 **BKI\_2025\_FE** là dự án frontend cho nền tảng du lịch ViVuDi, đượct triển bằng **React Native (Expo)**, hướng tới kiến trúc module hóa, dễ mở rộng, hiệu năng cao và trải nghiệm người dùng mượt mà. Dự án được thiết kế phù hợp với mô hình phát triển đa nền tảng (Android, iOS), tích hợp tốt với backend và hỗ trợ đa ngôn ngữ linh hoạt.
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Tính năng chính
 
@@ -45,141 +21,16 @@
 * Hỗ trợ **Dark/Light Mode** tự động
 * Kiến trúc module hóa giúp mở rộng và bảo trì dễ dàng
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
-
 ## Scripts
 
-<table style="padding: 8px; text-align: left; border: 1px solid #ddd; border-radius: 10px; display:flex; flex-direction: column;">
-   <thead>
-  <tr style="display: flex; width: 100%; margin: 0; padding: 0;">
-   <th
-   style="
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-bottom: none;
-    border-top-left-radius:6px;
-    text-align: center;
-   "
-   >
-   Lệnh
-   </th>
-   <th
-   style="
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-left: none;
-    border-bottom: none;
-    border-top-right-radius: 6px;
-    text-align: center;
-   "
-   >
-   Mô tả
-   </th>
-  </tr>
- </thead>
- <tbody>
-    <tr style="display: flex; width: 100%; margin: 0; padding: 0;">
-      <td
-        style="
-          flex: 1;
-          padding: 8px;
-          border-right: 1px solid #ddd;
-          border-right: none;
-          border-bottom: none;
-          text-align: center;
-        "
-      >
-        <code>npm install</code>
-      </td>
-      <td
-        style="
-          flex: 1;
-          padding: 8px;
-          text-align: center;
-          border-bottom: none;
-        "
-      >
-        Cài dependencies
-      </td>
-    </tr>
-    <tr style="display: flex; width: 100%; margin: 0; padding: 0;">
-      <td
-        style="
-          flex: 1;
-          padding: 8px;
-          border-right: 1px solid #ddd;
-          border-right: none;
-          border-bottom: none;
-          text-align: center;
-        "
-      >
-        <code>npx expo start</code>
-      </td>
-      <td
-        style="
-          flex: 1;
-          padding: 8px;
-          text-align: center;
-          border-bottom: none;
-        "
-      >
-        Khởi động Expo
-      </td>
-    </tr>
-    <tr style="display: flex; width: 100%; margin: 0; padding: 0;">
-      <td
-        style="
-          flex: 1;
-          padding: 8px;
-          border-right: 1px solid #ddd;
-          border-right: none;
-          border-bottom: none;
-          text-align: center;
-        "
-      >
-        <code>npx expo start --clear</code>
-      </td>
-      <td
-        style="
-          flex: 1;
-          padding: 8px;
-          text-align: center;
-          border-bottom: none;
-        "
-      >
-        Xóa cache và khởi động lại
-      </td>
-    </tr>
-    <tr style="display: flex; width: 100%; margin: 0; padding: 0;">
-      <td
-        style="
-          flex: 1;
-          padding: 8px;
-          border-right: 1px solid #ddd;
-          border-right: none;
-          border-bottom-left-radius: 6px;
-          text-align: center;
-        "
-      >
-        <code>npm run lint</code>
-      </td>
-      <td
-        style="
-          flex: 1;
-          padding: 8px;
-          border-bottom-right-radius: 6px;
-          text-align: center;
-        "
-      >
-        Chạy kiểm tra lint
-      </td>
-    </tr>
-  </tbody>
-</table>
+| Lệnh                     | Mô tả                      |
+| ------------------------ | -------------------------- |
+| `npm install`            | Cài dependencies           |
+| `npx expo start`         | Khởi động Expo             |
+| `npx expo start --clear` | Xóa cache và khởi động lại |
+| `npm run lint`           | Chạy kiểm tra lint         |
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Cấu trúc thư mục chi tiết
 
@@ -283,7 +134,7 @@ BKI_2025_FE/
 └── package.json
 ```
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Hướng dẫn cài đặt và chạy
 
@@ -305,7 +156,7 @@ npx expo start
 
 * Kiểm tra và cấu hình các giá trị như `API_BASE_URL`, `theme`... trong `settings/` hoặc `index.ts`.
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Đa ngôn ngữ (i18n)
 
@@ -322,7 +173,7 @@ const { t, getMessage, getAPIMessage } = useLanguage();
   * Tạo file `xx.ts`
   * Khai báo trong `languages/provider.tsx`
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Kiểm tra dữ liệu đầu vào bằng Regex
 
@@ -333,7 +184,7 @@ const { t, getMessage, getAPIMessage } = useLanguage();
   * Kiểm tra đầu vào
   * Hiển thị checklist điều kiện (ví dụ: độ dài, ký tự đặc biệt, email hợp lệ, ...)
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Quy ước phát triển
 
@@ -343,7 +194,7 @@ const { t, getMessage, getAPIMessage } = useLanguage();
 * Có comment mô tả rõ nếu function phức tạp
 * Đọc kỹ `document.txt` để hiểu cơ chế đa ngôn ngữ, regex, và quản lý trạng thái
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Quy tắc Commit
 
@@ -369,7 +220,7 @@ Docs(readme): update setup instructions
 Chore(deps): upgrade Expo SDK to 49
 ```
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Roadmap
 
@@ -378,19 +229,19 @@ Chore(deps): upgrade Expo SDK to 49
 * [ ] In-app Update
 * [ ] Unit & E2E Tests
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Bản quyền
 
 © ViVuDi 2025. Toàn bộ bản quyền thuộc về nhóm phát triển ViVuDi.
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 ## Liên hệ
 
 * Tác giả chính: Minh Nhật
 * Email: <nhat.dang2004.cv@gmail.com>
 
-<hr style="border:0; height:0.5px; background-color:#ccc; margin:16px 0" />
+<img src="https://via.placeholder.com/1000x1/e1e4e8/000000?text=" alt="divider" />
 
 <p align="center">© 2025 ViVuDi Team. All rights reserved.</p>
