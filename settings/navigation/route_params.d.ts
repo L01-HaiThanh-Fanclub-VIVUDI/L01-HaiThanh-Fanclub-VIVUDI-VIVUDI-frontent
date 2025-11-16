@@ -20,6 +20,7 @@ export type RootStackParamList = {
     [PAGE_ID.PRIVATE_TABS]: NavigatorScreenParams<PrivateTabParamList>;
     [PAGE_ID.ON_BOARD]: undefined;
     [PAGE_ID.AUTH_TABS]: NavigatorScreenParams<AuthTabParamList>;
+    [PAGE_ID.HOME_TABS]: NavigatorScreenParams<AuthTabParamList>;
 };
 
 /****************************************************************************
@@ -38,6 +39,10 @@ export type AuthTabParamList = {
     [PAGE_ID.AUTH_SIGN_UP]: undefined;
     [PAGE_ID.AUTH_FORGOT_PASSWORD]: undefined;
     [PAGE_ID.AUTH_OTP_VERIFICATION]: undefined;
+};
+
+export type HomeTabParamList = {
+    [PAGE_ID.HOME]: undefined;
 };
 
 /****************************************************************************

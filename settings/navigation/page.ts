@@ -39,6 +39,11 @@ export enum PAGE_ID {
      ****************************************************************************/
     AUTH_OTP_VERIFICATION = 'otp-verification',
 
+    HOME_TABS = '(tabs)',
+    HOME = 'home',
+    SEARCH = 'search',
+    PROFILE = 'profile',
+
     /****************************************************************************
      * Tabs private chung khi đăng nhập thành công (privates)                   *
      ****************************************************************************/
@@ -47,10 +52,8 @@ export enum PAGE_ID {
      * Trang thông tin chung khi người dùng đăng nhập thành công                *
      ****************************************************************************/
     GENERAL = 'general',
-    /****************************************************************************
-     * Trang cá nhân của người dùng                                             *
-     ****************************************************************************/
-    PROFILE = 'profile',
+    REELS = 'reels',
+    MAP = 'map',
 };
 
 /****************************************************************************
@@ -71,6 +74,7 @@ export const PageInfo: Partial<Record<PAGE_ID, { key: string; type: PAGE_TYPE }>
     [PAGE_ID.AUTH_SIGN_UP]: { key: 'sign-up', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.AUTH_FORGOT_PASSWORD]: { key: 'forgot-password', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.AUTH_OTP_VERIFICATION]: { key: 'otp-verification', type: PAGE_TYPE.PUBLIC },
+    [PAGE_ID.HOME]: { key: 'home', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.PROFILE]: { key: 'profile', type: PAGE_TYPE.PRIVATE },
     [PAGE_ID.GENERAL]: { key: 'general', type: PAGE_TYPE.PRIVATE },
 };

@@ -10,6 +10,8 @@
 
 import { LoginDTO, LoginResponseDTO } from "@/models/auth_login.dto";
 import { baseApiService } from "./base.service";
+import { ResetPasswordDto } from "@/models/auth_verify_otp.dto";
+import { ApiResponse } from "@/models/api_response";
 
 /******************************************************************************
  * AuthService Class                                                          *
@@ -44,6 +46,22 @@ class AuthServiceClass {
      ******************************************************************************/
     public async login(payload: LoginDTO) {
         return await baseApiService.post<LoginResponseDTO>("/auth/login", { body: payload });
+    };
+
+    public async verifyOtp(payload: ResetPasswordDto) {
+        // return await baseApiService.post<LoginResponseDTO>("/auth/login", { body: payload });
+        return await new Promise<ApiResponse<LoginResponseDTO>>(resolve =>
+            setTimeout(() => {
+                resolve({
+                    success: true,
+                    statusCode: 0,
+                    message: "Đăng nhập thành công",
+                    data: {
+                        token: "mock-access-token-123456789",
+                    }
+                });
+            }, 5000)
+        );
     };
 };
 

@@ -8,6 +8,7 @@
  *  Modified    :                                                             *
  ******************************************************************************/
 
+import 'react-native-gesture-handler';
 import ScreenWrapper from '@/components/ui/screen_wrapper';
 import useIsFirstLaunch from '@/hooks/useIsFirstLaunch';
 import { ProviderInjection } from '@/providers';
@@ -38,7 +39,8 @@ const AppStack = (): JSX.Element => {
 	 * - Nếu là lần đầu, sử dụng PAGE_ID.ON_BOARD để hiển thị trang onboard       *
 	 * - Nếu không, sử dụng PAGE_ID.PRIVATE_TABS để hiển thị tab riêng tư         *
 	 ******************************************************************************/
-	const initialRouteName = isFirstLaunch ? PAGE_ID.ON_BOARD : PAGE_ID.AUTH_TABS;
+	// thay đổi chỗ này lại
+	const initialRouteName = isFirstLaunch ? PAGE_ID.ON_BOARD : PAGE_ID.HOME_TABS;
 
 	/******************************************************************************
 	 * Lấy hàm hide từ context LoadingProvider để ẩn loading sau khi load font    *
@@ -79,6 +81,7 @@ const AppStack = (): JSX.Element => {
 				<Stack initialRouteName={initialRouteName}>
 					<Stack.Screen name={PAGE_ID.ON_BOARD} options={stackScreenSettings} />
 					<Stack.Screen name={PAGE_ID.AUTH_TABS} options={stackScreenSettings} />
+					<Stack.Screen name={PAGE_ID.HOME_TABS} options={stackScreenSettings} />
 					<Stack.Screen name={PAGE_ID.PRIVATE_TABS} options={stackScreenSettings} />
 					<Stack.Screen name="+not-found" />
 				</Stack>

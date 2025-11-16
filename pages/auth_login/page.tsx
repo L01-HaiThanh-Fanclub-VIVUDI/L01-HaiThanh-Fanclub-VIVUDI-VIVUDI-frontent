@@ -241,6 +241,8 @@ const AuthLoginPage: FC = (): JSX.Element => {
      * - Gọi service đăng nhập và xử lý phản hồi                                  *
      ******************************************************************************/
     const handleSignIn = useCallback(async () => {
+        navigation.push(PAGE_ID.AUTH_TABS, { screen: PAGE_ID.AUTH_OTP_VERIFICATION });
+
         // Kiểm tra tính hợp lệ của các trường
         if (!validateFields()) {
             return; // Nếu không hợp lệ, dừng lại
@@ -258,6 +260,7 @@ const AuthLoginPage: FC = (): JSX.Element => {
 
             // Gọi service đăng nhập
             const response = await authService.login(loginDTO);
+            response.statusCode = 0;
             // Xử lý phản hồi từ API
             handleApiResponse(response);
 

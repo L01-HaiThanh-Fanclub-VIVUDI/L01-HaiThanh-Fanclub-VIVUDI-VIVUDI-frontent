@@ -44,7 +44,10 @@ export const ProviderInjection = ({ children }: ProviderProps) => {
             provider: AppLanguageProvider,
         },
         {
-            provider: GestureHandlerRootView,
+            provider: GestureHandlerRootView, 
+            props: {
+                style: { flex: 1 },
+            },
         },
         {
             provider: ScreenWrapperProvider,
