@@ -21,7 +21,7 @@ export default function TabsLayout() {
             if (isReelsActive) {
                 navigation.push(PAGE_ID.NEW_REEL_TABS, { screen: PAGE_ID.MEDIA });
             } else {
-                navigation.push(PAGE_ID.HOME_TABS, { screen: PAGE_ID.MAP });
+                navigation.push(PAGE_ID.PRIVATE_TABS, {screen: PAGE_ID.PLACE_SEARCH});
             }
         };
         return <CustomTabBarButton
@@ -52,9 +52,11 @@ export default function TabsLayout() {
                     position: 'absolute',
                     left: 20,
                     right: 20,
-                    borderRadius: 20,
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
                     height: 70,
                     backgroundColor: 'white',
+                    borderTopWidth: 0,
                     ...shadowStyle,
                 },
                 tabBarLabelStyle: {
@@ -135,9 +137,9 @@ const shadowStyle = {
     shadowColor: "#000",
     shadowOffset: {
         width: 0,
-        height: 4,
+        height: -4,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 5,
     elevation: 5,
 };

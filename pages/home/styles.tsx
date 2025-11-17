@@ -56,14 +56,6 @@ export const styles = StyleSheet.create({
         fontFamily: 'SFUISemibold',
         color: '#1B1E28',
     },
-    bellButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     locationContainer: {
         marginTop: 20,
     },

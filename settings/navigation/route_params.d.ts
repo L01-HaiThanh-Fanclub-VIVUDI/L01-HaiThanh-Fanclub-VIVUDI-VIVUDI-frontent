@@ -30,7 +30,7 @@ export type RootStackParamList = {
  ****************************************************************************/
 export type PrivateTabParamList = {
     [PAGE_ID.GENERAL]: undefined;
-    [PAGE_ID.PROFILE]: undefined;
+    [PAGE_ID.PLACE_DETAIL]: undefined;
 };
 
 /****************************************************************************
@@ -45,6 +45,7 @@ export type AuthTabParamList = {
 
 export type HomeTabParamList = {
     [PAGE_ID.HOME]: undefined;
+    [PAGE_ID.PROFILE]: undefined;
 };
 
 export type NewReelTabParamList = {

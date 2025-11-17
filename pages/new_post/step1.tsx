@@ -43,13 +43,12 @@ const ImagePickerScreen: FC = (): JSX.Element => {
 
         const newAssets = mediaResult.assets as MediaAsset[];
 
-        setMedia(prev => [...prev, ...newAssets]);
+        const currentIds = new Set(media.map(a => a.id));
+        const uniqueNewAssets = newAssets.filter(asset => !currentIds.has(asset.id));
+        
+        setMedia(prev => [...prev, ...uniqueNewAssets]);
         setEndCursor(mediaResult.endCursor);
         setHasNextPage(mediaResult.hasNextPage);
-
-        if (initialLoad && newAssets.length > 0) {
-            setSelectedImages([newAssets[0]]);
-        }
 
         setIsLoading(false);
     };
@@ -92,7 +91,7 @@ const ImagePickerScreen: FC = (): JSX.Element => {
     }
 
     const onNextPress = () => {
-        navigation.push(PAGE_ID.NEW_REEL_TABS, {
+        navigation.navigate(PAGE_ID.NEW_REEL_TABS, {
             screen: PAGE_ID.CONTENT,
             params: {
                 selectedMediaUri: selectedImages.map(asset => asset.uri),
@@ -133,6 +132,26 @@ const ImagePickerScreen: FC = (): JSX.Element => {
         );
     };
 
+    const renderSelectedThumbnail = ({ item, index }: { item: MediaAsset, index: number }) => {
+        return (
+            <View style={styles.selectedThumbnailWrapper}>
+                <Image
+                    source={{ uri: item.uri }}
+                    style={styles.selectedThumbnailImage}
+                    contentFit="cover"
+                />
+                <View style={styles.selectedNumberContainer}>
+                    <Text style={styles.selectedNumberText}>{index + 1}</Text>
+                </View>
+                {item.mediaType === 'video' && (
+                    <View style={styles.videoOverlay}>
+                        <Feather name="video" size={14} color="#FFF" />
+                    </View>
+                )}
+            </View>
+        );
+    };
+
     const renderFooter = () => {
         if (!isLoading) return null;
         return (
@@ -152,16 +171,29 @@ const ImagePickerScreen: FC = (): JSX.Element => {
                     <Text style={styles.headerTitle}>Recents</Text>
                 </View>
                 <TouchableOpacity style={styles.nextButton} onPress={onNextPress}>
-                    <Text style={styles.nextButtonText}>Next ({selectedImages.length})</Text>
+                    <Text
+                        style={styles.nextButtonText}
+                    >
+                        Next ({selectedImages.length})
+                    </Text>
                 </TouchableOpacity>
             </View>
 
             <View style={styles.previewContainer}>
-                {selectedImages.length > 0 && (
-                    <Image
-                        source={{ uri: selectedImages[0].uri }}
-                        style={styles.previewImage}
+                {selectedImages.length > 0 ? (
+                    <FlatList
+                        data={selectedImages}
+                        renderItem={renderSelectedThumbnail}
+                        keyExtractor={(item) => item.id}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.selectedMediaList}
+                        contentContainerStyle={styles.selectedMediaListContent}
                     />
+                ) : (
+                    <View style={styles.noMediaPlaceholder}>
+                        <Text style={styles.noMediaText}>Select images or videos below</Text>
+                    </View>
                 )}
             </View>
 

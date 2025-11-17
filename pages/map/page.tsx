@@ -9,7 +9,7 @@ import { Feather } from '@expo/vector-icons';
 import { Location } from '@/components/ui/marker/types';
 import CustomMarkerView, { DUMMY_LOCATIONS } from '@/components/ui/marker';
 import BottomSheet from '@gorhom/bottom-sheet';
-import LocationBottomSheet from '@/components/ui/bottom_sheet';
+import { PAGE_ID } from '@/settings/navigation/page';
 
 const DUMMY_POIS = [
     { id: 'p1', coordinate: { latitude: 10.8080, longitude: 106.7350 }, color: '#3B82F6' },
@@ -72,6 +72,12 @@ export default function MapScreen() {
                 onPress={() => navigation.goBack()}
             >
                 <Feather name="arrow-left" size={24} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.detailButton}
+                onPress={() => navigation.navigate(PAGE_ID.PRIVATE_TABS, {screen: PAGE_ID.PLACE_DETAIL})}
+            >
+                <Feather name="image" size={24} color="#000" />
             </TouchableOpacity>
 
             {/* <LocationBottomSheet

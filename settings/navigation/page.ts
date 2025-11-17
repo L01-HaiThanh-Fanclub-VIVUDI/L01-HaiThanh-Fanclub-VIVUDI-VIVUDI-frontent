@@ -58,7 +58,8 @@ export enum PAGE_ID {
      * Trang thông tin chung khi người dùng đăng nhập thành công                *
      ****************************************************************************/
     GENERAL = 'general',
-    POST = 'post',
+    PLACE_DETAIL = 'place_detail',
+    PLACE_SEARCH = 'place_search',
 };
 
 /****************************************************************************

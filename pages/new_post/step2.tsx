@@ -1,26 +1,27 @@
 import React, { FC, JSX, useState } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
-import { Image } from 'expo-image'; 
-import { useNavigation, useLocalSearchParams } from 'expo-router'; 
-import { AppStackNavigation } from '@/settings/navigation/route_params'; 
-import { Ionicons, Feather } from '@expo/vector-icons'; 
+import { Image } from 'expo-image';
+import { useNavigation, useLocalSearchParams } from 'expo-router';
+import { AppStackNavigation } from '@/settings/navigation/route_params';
+import { Ionicons, Feather } from '@expo/vector-icons';
 import { styles } from './styles_2';
+import { FlatList } from 'react-native-gesture-handler';
 
 export type CreatePostParams = {
-    selectedMediaUri?: string[]; 
-    mediaType?: 'photo' | 'video'; 
+    selectedMediaUri?: string[];
+    mediaType?: 'photo' | 'video';
 }
 
 const CreatePostScreen: FC = (): JSX.Element => {
     const params = useLocalSearchParams<CreatePostParams>();
 
-    const [selectedMediaUri] = useState(params.selectedMediaUri);
-    console.log(params.mediaType);
-    
+    const [selectedMediaUris] = useState(params.selectedMediaUri);
+    const [mediaType] = useState(params.mediaType);
+
     const navigation = useNavigation<AppStackNavigation>();
 
     const onCancelPress = () => {
-        navigation.goBack(); 
+        navigation.goBack();
     };
 
     const onNextPress = () => {
@@ -31,6 +32,26 @@ const CreatePostScreen: FC = (): JSX.Element => {
         console.log("Save as Draft button pressed!");
     };
 
+    const renderSelectedThumbnail = ({ item, index }: { item: string, index: number }) => {
+        return (
+            <View style={styles.selectedThumbnailWrapper}>
+                <Image
+                    source={{ uri: item }}
+                    style={styles.selectedThumbnailImage}
+                    contentFit="cover"
+                />
+                <View style={styles.selectedNumberContainer}>
+                    <Text style={styles.selectedNumberText}>{index + 1}</Text>
+                </View>
+                {mediaType === 'video' && (
+                    <View style={styles.videoOverlay}>
+                        <Feather name="video" size={14} color="#FFF" />
+                    </View>
+                )}
+            </View>
+        );
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -38,16 +59,19 @@ const CreatePostScreen: FC = (): JSX.Element => {
                     <Text style={styles.cancelButtonText}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onNextPress}>
-                    {/* <Text style={styles.nextButtonText}>Next</Text> */}
                 </TouchableOpacity>
             </View>
 
             <View style={styles.previewContainer}>
-                {selectedMediaUri?.length ? (
-                    <Image
-                        source={{ uri: selectedMediaUri[0] }}
-                        style={styles.previewImage}
-                        contentFit="cover" 
+                {selectedMediaUris?.length ? (
+                    <FlatList
+                        data={selectedMediaUris}
+                        renderItem={renderSelectedThumbnail}
+                        keyExtractor={(item) => item}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.selectedMediaList}
+                        contentContainerStyle={styles.selectedMediaListContent}
                     />
                 ) : (
                     <View style={styles.noMediaPlaceholder}>
