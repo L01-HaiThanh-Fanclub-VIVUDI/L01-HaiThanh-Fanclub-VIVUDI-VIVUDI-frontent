@@ -70,8 +70,9 @@ const HomePage: FC = (): JSX.Element => {
     const navigation = useNavigation<AppStackNavigation>();
 
     const handleViewAllClick = () => {
-        navigation.navigate(PAGE_ID.PRIVATE_TABS, { screen: PAGE_ID.REELS });
+        navigation.navigate(PAGE_ID.HOME_TABS, { screen: PAGE_ID.REELS });
     }
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView

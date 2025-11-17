@@ -12,6 +12,7 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { PAGE_ID } from "./page";
+import { CreatePostParams } from "@/pages/new_post/step2";
 
 /****************************************************************************
  * RootStackParamList: Các màn hình được stack toàn cục trong ứng dụng      *
@@ -20,7 +21,8 @@ export type RootStackParamList = {
     [PAGE_ID.PRIVATE_TABS]: NavigatorScreenParams<PrivateTabParamList>;
     [PAGE_ID.ON_BOARD]: undefined;
     [PAGE_ID.AUTH_TABS]: NavigatorScreenParams<AuthTabParamList>;
-    [PAGE_ID.HOME_TABS]: NavigatorScreenParams<AuthTabParamList>;
+    [PAGE_ID.NEW_REEL_TABS]: NavigatorScreenParams<NewReelTabParamList>;
+    [PAGE_ID.HOME_TABS]: NavigatorScreenParams<HomeTabParamList>;
 };
 
 /****************************************************************************
@@ -43,6 +45,11 @@ export type AuthTabParamList = {
 
 export type HomeTabParamList = {
     [PAGE_ID.HOME]: undefined;
+};
+
+export type NewReelTabParamList = {
+    [PAGE_ID.MEDIA]: undefined;
+    [PAGE_ID.CONTENT]: CreatePostParams;
 };
 
 /****************************************************************************

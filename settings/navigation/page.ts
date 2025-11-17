@@ -43,6 +43,12 @@ export enum PAGE_ID {
     HOME = 'home',
     SEARCH = 'search',
     PROFILE = 'profile',
+    REELS = 'reels',
+    MAP = 'map',
+
+    NEW_REEL_TABS = '(post)',
+    CONTENT = 'content',
+    MEDIA = 'media',
 
     /****************************************************************************
      * Tabs private chung khi đăng nhập thành công (privates)                   *
@@ -52,8 +58,7 @@ export enum PAGE_ID {
      * Trang thông tin chung khi người dùng đăng nhập thành công                *
      ****************************************************************************/
     GENERAL = 'general',
-    REELS = 'reels',
-    MAP = 'map',
+    POST = 'post',
 };
 
 /****************************************************************************

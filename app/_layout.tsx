@@ -82,6 +82,7 @@ const AppStack = (): JSX.Element => {
 					<Stack.Screen name={PAGE_ID.ON_BOARD} options={stackScreenSettings} />
 					<Stack.Screen name={PAGE_ID.AUTH_TABS} options={stackScreenSettings} />
 					<Stack.Screen name={PAGE_ID.HOME_TABS} options={stackScreenSettings} />
+					<Stack.Screen name={PAGE_ID.NEW_REEL_TABS} options={stackScreenSettings} />
 					<Stack.Screen name={PAGE_ID.PRIVATE_TABS} options={stackScreenSettings} />
 					<Stack.Screen name="+not-found" />
 				</Stack>
