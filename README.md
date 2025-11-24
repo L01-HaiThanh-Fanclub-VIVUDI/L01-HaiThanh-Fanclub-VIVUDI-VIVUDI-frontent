@@ -17,7 +17,7 @@
 * Hỗ trợ **Dark/Light Mode** tự động
 * Kiến trúc module hóa giúp mở rộng và bảo trì dễ dàng
 
-## Scripts
+## Scriptsreloadreload
 
 | Lệnh                     | Mô tả                      |
 | ------------------------ | -------------------------- |

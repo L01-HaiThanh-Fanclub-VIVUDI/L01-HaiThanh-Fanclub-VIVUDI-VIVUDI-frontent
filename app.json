@@ -1,46 +1,58 @@
 {
-	"expo": {
-		"name": "ViVuDi",
-		"slug": "ViVuDi",
-		"version": "1.0.0",
-		"orientation": "portrait",
-		"icon": "./assets/images/icon.png",
-		"scheme": "bki2025fe",
-		"userInterfaceStyle": "automatic",
-		"newArchEnabled": true,
-		"splash": {
-			"image": "./assets/images/adaptive-icon.png",
-			"resizeMode": "contain",
-			"backgroundColor": "#FF678B"
-		},
-		"ios": {
-			"supportsTablet": true,
-			"config": {
-				"googleMapsApiKey": "AIzaSyDQ0pDRDKSyAO4lm10ttEXa2_uoZmWQzHc"
-			}
-		},
-		"android": {
-			"adaptiveIcon": {
-				"foregroundImage": "./assets/images/adaptive-icon.png",
-				"backgroundColor": "#ffffff"
-			},
-			"edgeToEdgeEnabled": true,
-			"package": "com.anonymous.ViVuDi",
-			"config": {
-				"googleMaps": {
-					"apiKey": "AIzaSyDQ0pDRDKSyAO4lm10ttEXa2_uoZmWQzHc"
-				}
-			}
-		},
-		"web": {
-			"bundler": "metro",
-			"output": "static",
-			"favicon": "./assets/images/favicon.png"
-		},
-		"plugins": [
-		],
-		"experiments": {
-			"typedRoutes": true
-		}
-	}
+  "expo": {
+    "name": "ViVuDi",
+    "slug": "ViVuDi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "bki2025fe",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/adaptive-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FF678B"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyDQ0pDRDKSyAO4lm10ttEXa2_uoZmWQzHc"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.ViVuDi",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDQ0pDRDKSyAO4lm10ttEXa2_uoZmWQzHc"
+        }
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "76a6fcd6-a97a-42ef-92bb-f00b641499ad"
+      }
+    },
+    "owner": "khoale2k4",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/76a6fcd6-a97a-42ef-92bb-f00b641499ad"
+    },
+    "platforms": ["ios", "android"]
+  }
 }

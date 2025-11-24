@@ -39,8 +39,7 @@ const AppStack = (): JSX.Element => {
 	 * - Nếu là lần đầu, sử dụng PAGE_ID.ON_BOARD để hiển thị trang onboard       *
 	 * - Nếu không, sử dụng PAGE_ID.PRIVATE_TABS để hiển thị tab riêng tư         *
 	 ******************************************************************************/
-	// thay đổi chỗ này lại
-	const initialRouteName = isFirstLaunch ? PAGE_ID.ON_BOARD : PAGE_ID.HOME_TABS;
+	const initialRouteName = isFirstLaunch ? PAGE_ID.ON_BOARD : PAGE_ID.AUTH_TABS;
 
 	/******************************************************************************
 	 * Lấy hàm hide từ context LoadingProvider để ẩn loading sau khi load font    *
