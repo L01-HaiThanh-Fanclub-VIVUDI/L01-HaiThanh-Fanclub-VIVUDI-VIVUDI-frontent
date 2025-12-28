@@ -52,7 +52,7 @@ const request = async <T>(method: RequestMethod, endpoint: string, options: Fetc
      * Thiết lập headers, nếu không có thì dùng mặc định                          *
      ******************************************************************************/
     const finalHeaders: Record<string, string> = {
-        'Content-Type': 'application/json',
+        'Content-Type': headers['Content-Type'] ?? 'application/json',
         ...headers,
     };
 

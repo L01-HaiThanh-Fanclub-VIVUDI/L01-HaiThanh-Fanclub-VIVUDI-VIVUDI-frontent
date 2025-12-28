@@ -58,6 +58,13 @@ class AuthServiceClass {
                     message: "Đăng nhập thành công",
                     data: {
                         token: "mock-access-token-123456789",
+                        user: {
+                            email: '',
+                            phone_number: '',
+                            id: '',
+                            updatedAt: '',
+                            createdAt: ''
+                        }
                     }
                 });
             }, 5000)

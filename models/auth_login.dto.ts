@@ -40,8 +40,22 @@ export class LoginResponseDTO {
      * {REGEX_TOKEN}            *
      ****************************/
     public token!: string;
+    public user!: {
+        email: string,
+        phone_number: string,
+        id: string,
+        updatedAt: string,
+        createdAt: string
+    }
 
     constructor() {
         this.token = '';
+        this.user = {
+            email: '',
+            phone_number: '',
+            id: '',
+            updatedAt: '',
+            createdAt: ''
+        };
     };
 };
