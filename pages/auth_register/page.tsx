@@ -1,9 +1,9 @@
 /******************************************************************************\
  *                   © ViVuDi 2025. All rights reserved.                      *
  ******************************************************************************
- *  File        : auth_login/page.tsx                                         *
- *  Author      : Minh Nhat                                                   *
- *  Created     : 17/06/2025                                                  *
+ *  File        : auth_register/page.tsx                                      *
+ *  Author      : AI Assistant                                                *
+ *  Created     : 28/12/2025                                                  *
  *  Updated by  :                                                             *
  *  Modified    :                                                             *
 \******************************************************************************/
@@ -14,7 +14,7 @@ import ThemedView from '@/components/atoms/themed_view';
 import { useLanguage } from '@/languages/provider';
 import { MSG_API_ID, MSG_ID } from '@/languages/provider/types';
 import { ApiResponse } from '@/models/api_response';
-import { LoginDTO, LoginResponseDTO } from '@/models/auth_login.dto';
+import { RegisterDto, RegisterResponseDTO } from '@/models/auth_register.dto';
 import { useLoading } from '@/providers/loading_provider';
 import { useScreenWrapper } from '@/providers/screen_wrapper_provider';
 import { authService } from '@/services/auth.service';
@@ -32,23 +32,16 @@ import { styles } from './styles';
  * Mỗi nút sẽ có một khóa duy nhất và ảnh hiển thị                            *
  ******************************************************************************/
 export type SocialButton = {
-    /****************************************************************************
-     * Khóa định danh duy nhất cho SocialButton                                 *
-     ****************************************************************************/
     key: string;
-    /****************************************************************************
-     * Ảnh hiển thị trên button                                                 *
-     ****************************************************************************/
     image: ImageSourcePropType;
 };
 
 /******************************************************************************
- * AuthLoginPage: Màn hình login của ứng dụng                                 *
+ * AuthRegisterPage: Màn hình đăng ký của ứng dụng                           *
  ******************************************************************************/
-const AuthLoginPage: FC = (): JSX.Element => {
+const AuthRegisterPage: FC = (): JSX.Element => {
     /******************************************************************************
      * Danh sách các nút social button với ảnh tương ứng                          *
-     * Mỗi nút sẽ có một khóa duy nhất và ảnh hiển thị                            *
      ******************************************************************************/
     const SOCIAL_BUTTONS: SocialButton[] = [
         {
@@ -94,167 +87,138 @@ const AuthLoginPage: FC = (): JSX.Element => {
     /******************************************************************************
      * State lưu field error và id message                                        *
      ******************************************************************************/
-    const [fieldError, setFieldError] = useState<Partial<Record<'email' | 'password', MSG_ID>>>();
+    const [fieldError, setFieldError] = useState<Partial<Record<'email' | 'phone_number' | 'password', MSG_ID>>>();
 
     /******************************************************************************
      * State lưu field error và id api message                                    *
      ******************************************************************************/
-    const [apiFieldError, setApiFieldError] = useState<Partial<Record<'email' | 'password', MSG_API_ID>>>();
+    const [apiFieldError, setApiFieldError] = useState<Partial<Record<'email' | 'phone_number' | 'password', MSG_API_ID>>>();
 
     /******************************************************************************
-     * State cho trường email và password                                         *
+     * State cho các trường nhập liệu                                             *
      ******************************************************************************/
     const [email, setEmail] = useState<string>('');
+    const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
     /******************************************************************************
-     * Ref cho 2 trường trên                                                      *
+     * Ref cho các trường trên                                                    *
      ******************************************************************************/
     const emailRef = useRef<TextInput>(null);
+    const phoneRef = useRef<TextInput>(null);
     const passwordRef = useRef<TextInput>(null);
 
     /******************************************************************************
      * handleGoback: hàm override nút go back trên header                         *
      ******************************************************************************/
-    const handleGoback = () => navigation.replace(PAGE_ID.ON_BOARD);
+    const handleGoback = () => navigation.goBack();
 
     /******************************************************************************
-     * Focus email: thực hiện focus vào field email                               *
+     * Focus các field                                                            *
      ******************************************************************************/
     const focusEmail = () => emailRef.current?.focus();
-
-    /******************************************************************************
-     * Focus password: thực hiện focus vào field password                         *
-     ******************************************************************************/
+    const focusPhone = () => phoneRef.current?.focus();
     const focusPassword = () => passwordRef.current?.focus();
 
     /******************************************************************************
      * validateEmail: Kiểm tra tính hợp lệ của email                              *
-     * - Nếu email rỗng, focus vào trường email và set lỗi field error            *
-     * - Nếu email không hợp lệ theo regex, focus vào trường email và set lỗi    *
-     * - Trả về true nếu email hợp lệ                                             *
      ******************************************************************************/
     const validateEmail = useMemo(() => {
         return (): boolean => {
-            // Kiểm tra email có rỗng hay không
             if (!email) { focusEmail(); setFieldError({ email: MSG_ID.MSG_REQUIRED }); return false; }
-            // Kiểm tra email có hợp lệ theo regex hay không
             if (!REGEX.REGEX_EMAIL.test(email)) { focusEmail(); setFieldError({ email: MSG_ID.MSG_REGEX }); return false; }
-            // Nếu email hợp lệ, xoá lỗi field error
             setFieldError((prev) => ({ ...prev, email: undefined }));
             return true;
         };
     }, [email]);
 
     /******************************************************************************
+     * validatePhone: Kiểm tra tính hợp lệ của phone_number                       *
+     ******************************************************************************/
+    const validatePhone = useMemo(() => {
+        return (): boolean => {
+            if (!phoneNumber) { focusPhone(); setFieldError({ phone_number: MSG_ID.MSG_REQUIRED }); return false; }
+            if (!REGEX.REGEX_PHONE.test(phoneNumber)) { focusPhone(); setFieldError({ phone_number: MSG_ID.MSG_REGEX }); return false; }
+            setFieldError((prev) => ({ ...prev, phone_number: undefined }));
+            return true;
+        };
+    }, [phoneNumber]);
+
+    /******************************************************************************
      * validatePassword: Kiểm tra tính hợp lệ của password                        *
-     * - Nếu password rỗng, focus vào trường password và set lỗi field error      *
-     * - Nếu password không hợp lệ theo regex, focus vào trường và set lỗi        *
-     * - Trả về true nếu password hợp lệ                                          *
      ******************************************************************************/
     const validatePassword = useMemo(() => {
         return (): boolean => {
-            // Kiểm tra password có rỗng hay không
             if (!password) { focusPassword(); setFieldError({ password: MSG_ID.MSG_REQUIRED }); return false; }
-            // Kiểm tra password có hợp lệ theo regex hay không
             if (!REGEX.REGEX_PASSWORD.test(password)) { focusPassword(); setFieldError({ password: MSG_ID.MSG_REGEX }); return false; }
             return true;
         };
     }, [password]);
 
     /******************************************************************************
-     * validateFields: Kiểm tra tính hợp lệ của email và password                 *
-     * - Nếu email không hợp lệ, focus vào trường email                           *
-     * - Nếu password không hợp lệ, focus vào trường password                     *
-     * - Trả về true nếu tất cả đều hợp lệ                                        *
+     * validateFields: Kiểm tra tính hợp lệ của tất cả các trường                 *
      ******************************************************************************/
     const validateFields = useMemo(() => {
         return (): boolean => {
-            // Kiểm tra tính hợp lệ của email
-            if (!validateEmail()) return false; // Nếu email không hợp lệ, dừng lại
-            // Kiểm tra tính hợp lệ của password
-            if (!validatePassword()) return false; // Nếu password không hợp lệ, dừng lại
-
+            if (!validateEmail()) return false;
+            if (!validatePhone()) return false;
+            if (!validatePassword()) return false;
             return true;
         };
-    }, [validateEmail, validatePassword]);
+    }, [validateEmail, validatePhone, validatePassword]);
 
     /******************************************************************************
      * getMessageByID: Hàm lấy message theo ID của field error                    *
-     * - Trả về chuỗi rỗng nếu không có lỗi                                       *
-     * - Trả về message đã dịch nếu có lỗi                                        *
      ******************************************************************************/
-    const getMessageByID = useCallback((field: 'email' | 'password'): string | undefined => {
+    const getMessageByID = useCallback((field: 'email' | 'phone_number' | 'password'): string | undefined => {
         const messageId = fieldError?.[field];
         if (messageId === undefined) return undefined;
-        const fieldName = t(`authentication.${field}Field`);
+        const fieldName = t(`authentication.${field === 'phone_number' ? 'phoneField' : field + 'Field'}`);
         return getMessage(messageId, fieldName);
     }, [fieldError, getMessage, t]);
 
     /******************************************************************************
      * getAPIMessageByID: Hàm lấy message theo ID của apiFieldError               *
-     * - Trả về chuỗi rỗng nếu không có lỗi                                       *
-     * - Trả về message đã dịch nếu có lỗi                                        *
      ******************************************************************************/
-    const getAPIMessageByID = useCallback((field: 'email' | 'password'): string | undefined => {
+    const getAPIMessageByID = useCallback((field: 'email' | 'phone_number' | 'password'): string | undefined => {
         const apiMessageId = apiFieldError?.[field];
         if (apiMessageId === undefined) return undefined;
-        const fieldName = t(`authentication.${field}Field`);
-        return getAPIMessage(MSG_ID.MSG_AUTH_LOGIN, apiMessageId, fieldName);
+        const fieldName = t(`authentication.${field === 'phone_number' ? 'phoneField' : field + 'Field'}`);
+        return getAPIMessage(MSG_ID.MSG_AUTH_REGISTER, apiMessageId, fieldName);
     }, [apiFieldError, getAPIMessage, t]);
 
     /******************************************************************************
      * handleApiResponse: Xử lý phản hồi từ API                                   *
      ******************************************************************************/
-    const handleApiResponse = useCallback(async (response: ApiResponse<LoginResponseDTO | null>) => {
-        console.log('handleApiResponse called with:', response);
-
-        // Check if login was successful
-        if (response.success && response.data) {
-            console.log('Login successful, navigating to home...');
-
-            // Lưu token vào AsyncStorage
-            try {
-                const AsyncStorage = await import('@react-native-async-storage/async-storage');
-                await AsyncStorage.default.setItem('auth_token', response.data.token);
-                console.log('Token saved to AsyncStorage');
-            } catch (error) {
-                console.error('Error saving token:', error);
-            }
-
-            // Nếu đăng nhập thành công, điều hướng đến trang home
-            navigation.replace(PAGE_ID.HOME_TABS, { screen: PAGE_ID.HOME });
-            return;
-        }
-
-        // Handle error cases based on statusCode if present
-        const statusCode = response.statusCode || (response.success ? 0 : 100);
-        console.log('Handling error with statusCode:', statusCode);
-
-        switch (statusCode) {
+    const handleApiResponse = useCallback((response: ApiResponse<RegisterResponseDTO | null>) => {
+        switch (response.statusCode) {
             case 0:
-                // Nếu đăng nhập thành công, điều hướng đến trang home
-                navigation.replace(PAGE_ID.HOME_TABS, { screen: PAGE_ID.HOME });
+                // Nếu đăng ký thành công, điều hướng đến trang privates
+                navigation.replace(PAGE_ID.PRIVATE_TABS, { screen: PAGE_ID.GENERAL });
                 break;
             case 100:
-                // Tài khoản email không tồn tại
-                setEmail('');
+                // Email đã tồn tại
                 setApiFieldError({ email: response.statusCode });
                 focusEmail();
                 break;
             case 101:
-                // Trường email là bắt buộc
+                // Số điện thoại đã tồn tại
+                setApiFieldError({ phone_number: response.statusCode });
+                focusPhone();
+                break;
+            case 102:
+                // Email không hợp lệ
                 setApiFieldError({ email: response.statusCode });
                 focusEmail();
                 break;
-            case 102:
-                // Sai mật khẩu
-                setPassword('');
-                setApiFieldError({ password: response.statusCode });
-                focusPassword();
-                break;
             case 103:
-                // Mật khẩu không được để trống
+                // Số điện thoại không hợp lệ
+                setApiFieldError({ phone_number: response.statusCode });
+                focusPhone();
+                break;
+            case 104:
+                // Mật khẩu không đủ mạnh
+                setPassword('');
                 setApiFieldError({ password: response.statusCode });
                 focusPassword();
                 break;
@@ -264,80 +228,62 @@ const AuthLoginPage: FC = (): JSX.Element => {
     }, [navigation]);
 
     /******************************************************************************
-     * handleSignIn: Hàm thực hiện đăng nhập                                      *
-     * - Kiểm tra tính hợp lệ của các trường                                      *
-     * - Hiển thị loading                                                         *
-     * - Tạo đối tượng DTO cho đăng nhập                                          *
-     * - Gọi service đăng nhập và xử lý phản hồi                                  *
+     * handleSignUp: Hàm thực hiện đăng ký                                        *
      ******************************************************************************/
-    const handleSignIn = useCallback(async () => {
-        console.log('=== handleSignIn called ===');
-
+    const handleSignUp = useCallback(async () => {
         // Kiểm tra tính hợp lệ của các trường
         if (!validateFields()) {
-            console.log('Validation failed');
-            return; // Nếu không hợp lệ, dừng lại
+            return;
         };
-
-        console.log('Validation passed, showing loading...');
         // Hiển thị loading
         show();
 
-        // Hiện thực đăng nhập
         try {
-            // Tạo đối tượng DTO cho đăng nhập
-            const loginDTO: LoginDTO = {
+            // Tạo đối tượng DTO cho đăng ký
+            const registerDTO: RegisterDto = {
                 email: email.trim(),
+                phone_number: phoneNumber.trim(),
                 password: password.trim(),
             };
 
-            console.log('Calling authService.login with:', loginDTO);
-            // Gọi service đăng nhập
-            const response = await authService.login(loginDTO);
-
-            console.log('Login response:', response);
+            // Gọi service đăng ký
+            const response = await authService.register(registerDTO);
             // Xử lý phản hồi từ API
             handleApiResponse(response);
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
-            console.error('Login error:', error);
-            // Nếu có lỗi từ API, cập nhật apiFieldError
-            // setApiFieldError({ email: MSG_API_ID.API_ERROR });
+            // Nếu có lỗi từ API
         } finally {
-            console.log('Hiding loading...');
             // Ẩn loading sau khi hoàn thành
             hide();
         };
-    }, [email, password, validateFields, show, hide, handleApiResponse]);
+    }, [email, phoneNumber, password, validateFields, show, hide, handleApiResponse]);
 
     /******************************************************************************
-     * Xử lý sự kiện khi nhấn Enter trên trường email                             *
-     * - Nếu email hợp lệ, focus vào trường password                              *
+     * Xử lý sự kiện khi nhấn Enter trên các trường                               *
      ******************************************************************************/
     const onSubmitEditingEmail = useCallback(() => {
-        // Kiểm tra tính hợp lệ của email khi nhấn Enter
         if (validateEmail()) {
-            focusPassword(); // Nếu hợp lệ, focus vào trường password
+            focusPhone();
         };
     }, [validateEmail]);
 
-    /******************************************************************************
-     * Xử lý sự kiện khi nhấn Enter trên trường password                          *
-     * - Nếu password hợp lệ, thực hiện đăng nhập                                 *
-     ******************************************************************************/
+    const onSubmitEditingPhone = useCallback(() => {
+        if (validatePhone()) {
+            focusPassword();
+        };
+    }, [validatePhone]);
+
     const onSubmitEditingPassword = useCallback(() => {
-        // Kiểm tra tính hợp lệ của password khi nhấn Enter
         if (validatePassword()) {
-            handleSignIn(); // Nếu hợp lệ, thực hiện đăng nhập
+            handleSignUp();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [validatePassword]);
 
     /******************************************************************************
-     * Xử lý thay đổi text cho trường email                                       *
-     * - Cập nhật state email                                                     *
-     * - Xoá lỗi field error và apiFieldError nếu có                              *
+     * Xử lý thay đổi text cho các trường                                         *
      ******************************************************************************/
     const handleEmailChange = (text: string) => {
         setEmail(text);
@@ -345,11 +291,12 @@ const AuthLoginPage: FC = (): JSX.Element => {
         setApiFieldError((prev) => ({ ...prev, email: undefined }));
     };
 
-    /******************************************************************************
-     * Xử lý thay đổi text cho trường password                                    *
-     * - Cập nhật state password                                                  *
-     * - Xoá lỗi field error và apiFieldError nếu có                              *
-     ******************************************************************************/
+    const handlePhoneChange = (text: string) => {
+        setPhoneNumber(text);
+        setFieldError((prev) => ({ ...prev, phone_number: undefined }));
+        setApiFieldError((prev) => ({ ...prev, phone_number: undefined }));
+    };
+
     const handlePasswordChange = (text: string) => {
         setPassword(text);
         setFieldError((prev) => ({ ...prev, password: undefined }));
@@ -361,9 +308,9 @@ const AuthLoginPage: FC = (): JSX.Element => {
      ******************************************************************************/
     useEffect(() => {
         setConfig({
-            disableDefaultGobackAction: true,
+            disableDefaultGobackAction: false,
             handleGoback: handleGoback,
-        }, PAGE_ID.AUTH_LOGIN);
+        }, PAGE_ID.AUTH_REGISTER);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -380,13 +327,13 @@ const AuthLoginPage: FC = (): JSX.Element => {
                 <ThemedView style={styles.headerContainer}>
                     <ThemedView style={styles.titleContainer}>
                         <Text style={styles.title}>
-                            {t('authentication.signInTitle')}
+                            {t('authentication.signUpTitle')}
                         </Text>
                     </ThemedView>
 
                     <ThemedView style={styles.subtitleContainer}>
                         <Text style={styles.subtitle}>
-                            {t('authentication.signInSubtitle')}
+                            {t('authentication.signUpSubtitle')}
                         </Text>
                     </ThemedView>
                 </ThemedView>
@@ -406,6 +353,20 @@ const AuthLoginPage: FC = (): JSX.Element => {
                 />
 
                 <RegexInput
+                    style={styles.phoneInput}
+                    ref={phoneRef}
+                    value={phoneNumber}
+                    onChangeText={handlePhoneChange}
+                    regexChecks={['noWhitespace']}
+                    inputType="text"
+                    inputName={t('authentication.phoneField')}
+                    placeholder={t('authentication.phonePlaceholder')}
+                    errorMessage={getMessageByID('phone_number') || getAPIMessageByID('phone_number')}
+                    returnKeyType="next"
+                    onSubmitEditing={onSubmitEditingPhone}
+                />
+
+                <RegexInput
                     style={styles.passwordInput}
                     ref={passwordRef}
                     value={password}
@@ -418,29 +379,22 @@ const AuthLoginPage: FC = (): JSX.Element => {
                     returnKeyType="done"
                     onSubmitEditing={onSubmitEditingPassword}
                 />
-
-                {/* Nút quên mật khẩu */}
-                <ThemedView style={styles.forgotPasswordContainer}>
-                    <Text style={styles.forgotPassword}>
-                        {t('authentication.forgotPassword')}?
-                    </Text>
-                </ThemedView>
             </ThemedView>
 
-            {/* Nút đăng nhập và các nút social button */}
+            {/* Nút đăng ký và các nút social button */}
             <ThemedView style={styles.footerContainer}>
-                <Button style={styles.signInButton} onTap={handleSignIn}>
-                    <Text style={styles.signInButtonText}>
-                        {t('authentication.signInButton')}
+                <Button style={styles.signUpButton} onTap={handleSignUp}>
+                    <Text style={styles.signUpButtonText}>
+                        {t('authentication.signUpButton')}
                     </Text>
                 </Button>
 
-                <ThemedView style={styles.signUpRow}>
-                    <Text style={styles.signUpText}>
-                        {t('authentication.dontHaveAccount')}
+                <ThemedView style={styles.signInRow}>
+                    <Text style={styles.signInText}>
+                        {t('authentication.alreadyHaveAccount')}
                     </Text>
-                    <Text style={styles.signUpButton} onPress={() => navigation.push(PAGE_ID.AUTH_TABS, { screen: 'register' })}>
-                        {t('authentication.signUpButton')}
+                    <Text style={styles.signInButton} onPress={() => navigation.goBack()}>
+                        {t('authentication.signInLink')}
                     </Text>
                 </ThemedView>
 
@@ -474,4 +428,4 @@ const AuthLoginPage: FC = (): JSX.Element => {
     );
 };
 
-export default AuthLoginPage;
+export default AuthRegisterPage;

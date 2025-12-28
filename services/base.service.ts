@@ -57,6 +57,20 @@ const request = async <T>(method: RequestMethod, endpoint: string, options: Fetc
     };
 
     /******************************************************************************
+     * Lấy token từ AsyncStorage và thêm vào Authorization header                 *
+     ******************************************************************************/
+    try {
+        const AsyncStorage = await import('@react-native-async-storage/async-storage');
+        const token = await AsyncStorage.default.getItem('auth_token');
+        if (token) {
+            finalHeaders['Authorization'] = `Bearer ${token}`;
+        }
+    } catch (error) {
+        // Ignore error if AsyncStorage not available
+        console.warn('Could not retrieve auth token:', error);
+    }
+
+    /******************************************************************************
      * Nếu có token thì thêm vào headers                                          *
      ******************************************************************************/
     const fetchOptions: RequestInit = {
@@ -67,9 +81,18 @@ const request = async <T>(method: RequestMethod, endpoint: string, options: Fetc
     /******************************************************************************
      * Nếu có body thì chuyển đổi thành JSON và thêm vào fetchOptions             *
      * Chỉ áp dụng cho các method POST, PUT, PATCH                                *
+     * Nếu body là FormData thì không JSON.stringify và không set Content-Type    *
      ******************************************************************************/
     if (body) {
-        fetchOptions.body = JSON.stringify(body);
+        if (body instanceof FormData) {
+            // FormData: không cần JSON.stringify và tự động set Content-Type với boundary
+            fetchOptions.body = body as any;
+            // Remove Content-Type để browser tự động set với boundary
+            delete finalHeaders['Content-Type'];
+        } else {
+            // JSON body: stringify như bình thường
+            fetchOptions.body = JSON.stringify(body);
+        }
     };
 
     try {

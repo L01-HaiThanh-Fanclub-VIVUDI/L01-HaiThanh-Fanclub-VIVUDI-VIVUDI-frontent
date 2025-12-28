@@ -25,14 +25,21 @@ const authentication = {
     emailField: 'Email',
     passwordField: 'Mật khẩu',
     passwordPlaceholder: 'Nhập mật khẩu của bạn',
+    phoneField: 'Số điện thoại',
+    phonePlaceholder: '0123456789',
 
     signInButton: 'Đăng nhập',
-    connectMessage: 'hoặc',
-    dontHaveAccount: 'Chưa có tài khoản?',
     signInTitle: 'Đăng nhập ngay',
     signInSubtitle: 'Vui lòng đăng nhập để tiếp tục sử dụng ứng dụng của chúng tôi',
+    signInLink: 'Đăng nhập',
 
     signUpButton: 'Đăng ký',
+    signUpTitle: 'Đăng ký ngay',
+    signUpSubtitle: 'Tạo tài khoản để bắt đầu hành trình khám phá',
+
+    connectMessage: 'hoặc',
+    dontHaveAccount: 'Chưa có tài khoản?',
+    alreadyHaveAccount: 'Đã có tài khoản?',
 };
 //#endregion
 
@@ -61,6 +68,15 @@ export const viMessages: MessageObject = {
         101: 'Trường email là bắt buộc',
         102: 'Sai mật khẩu, vui lòng thử lại',
         103: 'Mật khẩu không được để trống',
+    },
+
+    [MSG_ID.MSG_AUTH_REGISTER]: {
+        0: 'Đăng ký thành công',
+        100: 'Email đã được sử dụng',
+        101: 'Số điện thoại đã được sử dụng',
+        102: 'Email không hợp lệ',
+        103: 'Số điện thoại không hợp lệ',
+        104: 'Mật khẩu không đủ mạnh',
     },
 };
 //# endregion

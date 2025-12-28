@@ -8,10 +8,11 @@
  *  Modified    :                                                             *
 \******************************************************************************/
 
-import { LoginDTO, LoginResponseDTO } from "@/models/auth_login.dto";
-import { baseApiService } from "./base.service";
-import { ResetPasswordDto } from "@/models/auth_verify_otp.dto";
 import { ApiResponse } from "@/models/api_response";
+import { LoginDTO, LoginResponseDTO } from "@/models/auth_login.dto";
+import { RegisterDto, RegisterResponseDTO } from "@/models/auth_register.dto";
+import { ResetPasswordDto } from "@/models/auth_verify_otp.dto";
+import { baseApiService } from "./base.service";
 
 /******************************************************************************
  * AuthService Class                                                          *
@@ -69,6 +70,15 @@ class AuthServiceClass {
                 });
             }, 5000)
         );
+    };
+
+    /******************************************************************************
+     * Hàm đăng ký người dùng mới                                                 *
+     * @param payload: RegisterDto - Dữ liệu đăng ký của người dùng              *
+     * @returns Promise<ApiResponse<RegisterResponseDTO>> - Kết quả trả về từ API *
+     ******************************************************************************/
+    public async register(payload: RegisterDto) {
+        return await baseApiService.post<RegisterResponseDTO>("/auth/register", { body: payload });
     };
 };
 

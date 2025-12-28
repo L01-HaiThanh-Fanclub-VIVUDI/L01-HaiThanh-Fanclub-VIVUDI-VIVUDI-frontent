@@ -31,6 +31,10 @@ export enum PAGE_ID {
      ****************************************************************************/
     AUTH_SIGN_UP = 'sign-up',
     /****************************************************************************
+     * Trang đăng ký của người dùng (mới)                                       *
+     ****************************************************************************/
+    AUTH_REGISTER = '(auth)/register',
+    /****************************************************************************
      * Trang quên mật khẩu của người dùng                                       *
      ****************************************************************************/
     AUTH_FORGOT_PASSWORD = 'forgot-password',
@@ -59,6 +63,7 @@ export enum PAGE_ID {
      ****************************************************************************/
     GENERAL = 'general',
     PLACE_DETAIL = 'place_detail',
+    POST_DETAIL = 'post_detail',
     PLACE_SEARCH = 'place_search',
 };
 
@@ -78,9 +83,11 @@ export const PageInfo: Partial<Record<PAGE_ID, { key: string; type: PAGE_TYPE }>
     [PAGE_ID.ON_BOARD]: { key: 'onboard', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.AUTH_LOGIN]: { key: 'login', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.AUTH_SIGN_UP]: { key: 'sign-up', type: PAGE_TYPE.PUBLIC },
+    [PAGE_ID.AUTH_REGISTER]: { key: 'register', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.AUTH_FORGOT_PASSWORD]: { key: 'forgot-password', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.AUTH_OTP_VERIFICATION]: { key: 'otp-verification', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.HOME]: { key: 'home', type: PAGE_TYPE.PUBLIC },
     [PAGE_ID.PROFILE]: { key: 'profile', type: PAGE_TYPE.PRIVATE },
     [PAGE_ID.GENERAL]: { key: 'general', type: PAGE_TYPE.PRIVATE },
+    [PAGE_ID.POST_DETAIL]: { key: 'post_detail', type: PAGE_TYPE.PRIVATE },
 };

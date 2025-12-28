@@ -87,6 +87,8 @@ export enum MSG_ID {
 
     // ID cha của các message liên quan đến đăng nhập
     MSG_AUTH_LOGIN = 1000,
+    // ID cha của các message liên quan đến đăng ký
+    MSG_AUTH_REGISTER = 1100,
 };
 
 /******************************************************************************
