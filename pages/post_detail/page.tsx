@@ -1,22 +1,25 @@
 import { Comment } from '@/models/comment.dto';
 import { Post } from '@/models/post.dto';
 import { commentService } from '@/services/comment.service';
+import { googleDriveService } from '@/services/goole-drive.service';
 import { postService } from '@/services/post.service';
 import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { FC, JSX, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 export type PostDetailParams = {
-    postId: string;
+    id: string;
 };
 
 const PostDetailScreen: FC = (): JSX.Element => {
     const params = useLocalSearchParams<PostDetailParams>();
     const navigation = useNavigation<AppStackNavigation>();
-    const postId = params.postId;
+    const postId = params.id as string;
 
     /******************************************************************************
      * State Management
@@ -28,6 +31,8 @@ const PostDetailScreen: FC = (): JSX.Element => {
     const [error, setError] = useState<string | null>(null);
     const [commentText, setCommentText] = useState('');
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
 
     /******************************************************************************
      * Fetch Post Details
@@ -36,9 +41,19 @@ const PostDetailScreen: FC = (): JSX.Element => {
         try {
             console.log('Fetching post:', postId);
             const response = await postService.getPostById(postId);
+            console.log(response);
 
             if (response.success && response.data) {
                 setPost(response.data);
+
+                // Convert media URLs to direct links
+                if (response.data.medias && response.data.medias.length > 0) {
+                    const urls = response.data.medias.map(media =>
+                        googleDriveService.getDriveLink(media.url)
+                    );
+                    setImageUrls(urls);
+                }
+
                 setError(null);
             } else {
                 setError('Không thể tải bài viết');
@@ -58,9 +73,10 @@ const PostDetailScreen: FC = (): JSX.Element => {
         try {
             console.log('Fetching comments for post:', postId);
             const response = await commentService.getCommentsByPostId(postId);
+            console.log(response);
 
             if (response.success && response.data) {
-                setComments(response.data);
+                setComments(response.data as unknown as Comment[]);
             } else {
                 console.log('No comments found');
             }
@@ -88,7 +104,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
             });
 
             if (response.success && response.data) {
-                // Refresh comments
                 setCommentText('');
                 fetchComments();
             } else {
@@ -122,7 +137,7 @@ const PostDetailScreen: FC = (): JSX.Element => {
                 style={styles.commentAvatar}
             />
             <View style={styles.commentContent}>
-                <Text style={styles.commentAuthor}>{item.user?.display_name || 'Unknown User'}</Text>
+                <Text style={styles.commentAuthor}>{item.user_id || 'Unknown User'}</Text>
                 <Text style={styles.commentText}>{item.content}</Text>
                 <Text style={styles.commentDate}>
                     {new Date(item.createdAt).toLocaleDateString('vi-VN')}
@@ -185,7 +200,7 @@ const PostDetailScreen: FC = (): JSX.Element => {
                             style={styles.authorAvatar}
                         />
                         <View style={styles.authorInfo}>
-                            <Text style={styles.authorName}>{post.author?.display_name || 'Unknown User'}</Text>
+                            <Text style={styles.authorName}>{post.author_id || 'Unknown User'}</Text>
                             <Text style={styles.postDate}>
                                 {new Date(post.createdAt).toLocaleDateString('vi-VN', {
                                     day: 'numeric',
@@ -206,20 +221,61 @@ const PostDetailScreen: FC = (): JSX.Element => {
 
                     {/* Post Content */}
                     <Text style={styles.postContent}>{post.content}</Text>
+                </View>
 
-                    {/* Post Images */}
-                    {post.medias && post.medias.length > 0 && (
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.mediaScroll}>
-                            {post.medias.map((media, index) => (
+                {/* Post Images Carousel - Full Width */}
+                {imageUrls.length > 0 && (
+                    <View style={styles.mediaContainer}>
+                        <FlatList
+                            data={imageUrls}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            onViewableItemsChanged={({ viewableItems }) => {
+                                if (viewableItems.length > 0) {
+                                    setCurrentImageIndex(viewableItems[0].index || 0);
+                                }
+                            }}
+                            viewabilityConfig={{
+                                itemVisiblePercentThreshold: 50
+                            }}
+                            keyExtractor={(item, index) => `media-${index}`}
+                            renderItem={({ item }) => (
                                 <Image
-                                    key={media.id || index}
-                                    source={{ uri: media.url }}
+                                    source={{ uri: item }}
                                     style={styles.postImage}
                                 />
-                            ))}
-                        </ScrollView>
-                    )}
+                            )}
+                        />
 
+                        {/* Pagination Dots */}
+                        {imageUrls.length > 1 && (
+                            <View style={styles.paginationContainer}>
+                                {imageUrls.map((_, index) => (
+                                    <View
+                                        key={index}
+                                        style={[
+                                            styles.paginationDot,
+                                            index === currentImageIndex && styles.paginationDotActive
+                                        ]}
+                                    />
+                                ))}
+                            </View>
+                        )}
+
+                        {/* Image Counter */}
+                        {imageUrls.length > 1 && (
+                            <View style={styles.imageCounter}>
+                                <Text style={styles.imageCounterText}>
+                                    {currentImageIndex + 1}/{imageUrls.length}
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+                )}
+
+                {/* Rating - With Padding */}
+                <View style={styles.postContainer}>
                     {/* Rating */}
                     {post.rating && (
                         <View style={styles.ratingSection}>
@@ -331,8 +387,6 @@ const styles = StyleSheet.create({
     },
     postContainer: {
         padding: 16,
-        borderBottomWidth: 8,
-        borderBottomColor: '#F5F5F5',
     },
     authorSection: {
         flexDirection: 'row',
@@ -374,14 +428,50 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         marginBottom: 16,
     },
-    mediaScroll: {
+    mediaContainer: {
+        width: SCREEN_WIDTH,
+        height: SCREEN_WIDTH,
         marginBottom: 16,
     },
     postImage: {
-        width: 300,
-        height: 300,
+        width: SCREEN_WIDTH,
+        height: SCREEN_WIDTH,
+    },
+    paginationContainer: {
+        position: 'absolute',
+        bottom: 12,
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 6,
+    },
+    paginationDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    },
+    paginationDotActive: {
+        backgroundColor: '#FFFFFF',
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+    },
+    imageCounter: {
+        position: 'absolute',
+        top: 12,
+        right: 12,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
         borderRadius: 12,
-        marginRight: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+    },
+    imageCounterText: {
+        color: '#FFFFFF',
+        fontSize: 12,
+        fontWeight: '600',
     },
     ratingSection: {
         flexDirection: 'row',

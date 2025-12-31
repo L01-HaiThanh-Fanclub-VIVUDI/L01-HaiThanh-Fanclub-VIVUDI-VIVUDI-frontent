@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+        backgroundColor: '#ffffff',
     },
     headerContainer: {
         backgroundColor: '#FDEEF0',
@@ -138,6 +139,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 5,
+        paddingRight: 5,
     }, reelCardContentContainer: {
         backgroundColor: 'rgba(255, 255, 255, 0.8)', 
         borderRadius: 15, 

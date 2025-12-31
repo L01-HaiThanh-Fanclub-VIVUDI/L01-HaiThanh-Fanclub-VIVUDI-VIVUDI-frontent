@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const imageSize = width / 4;
@@ -114,8 +114,8 @@ export const styles = StyleSheet.create({
     },
     previewContainer: {
         width: '100%',
-        height: 330, 
-        backgroundColor: '#F7F7F7', 
+        height: 330,
+        backgroundColor: '#F7F7F7',
         justifyContent: 'center',
         alignItems: 'center',
         paddingVertical: 10,
@@ -143,7 +143,7 @@ export const styles = StyleSheet.create({
         height: 320,
         borderRadius: 8,
         overflow: 'hidden',
-        marginRight: 10, 
+        marginRight: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -191,5 +191,48 @@ export const styles = StyleSheet.create({
     tabActive: {
         color: '#000',
         fontWeight: 'bold',
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'flex-end',
+    },
+    modalContent: {
+        backgroundColor: '#FFF',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        maxHeight: '70%',
+        paddingBottom: 30,
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#000',
+    },
+    albumItem: {
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F0F0F0',
+    },
+    albumItemSelected: {
+        backgroundColor: '#F5F5F5',
+    },
+    albumTitle: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#000',
+        marginBottom: 4,
+    },
+    albumCount: {
+        fontSize: 14,
+        color: '#7D848D',
     },
 });

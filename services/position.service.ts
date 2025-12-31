@@ -35,6 +35,7 @@ class PositionServiceClass {
         radius: number
     ): Promise<ApiResponse<Position[]>> {
         const url = `/position/getInfo/${longtitude}/${lattitude}/${radius}`;
+        console.log(url);
         return baseApiService.get<Position[]>(url);
     }
 

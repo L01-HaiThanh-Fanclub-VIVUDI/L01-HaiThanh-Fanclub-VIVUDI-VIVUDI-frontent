@@ -1,7 +1,8 @@
-import { DeleteDriveResponse } from "@/models/delete_drive_response.dto";
-import { baseApiService } from "./base.service";
 import { ApiResponse } from "@/models/api_response";
+import { DeleteDriveResponse } from "@/models/delete_drive_response.dto";
 import { DriveFile } from "@/models/drive_file.dto";
+import { VIVUDI_API_URL } from "@/settings";
+import { baseApiService } from "./base.service";
 
 class GoogleDriveServiceClass {
     private static instance: GoogleDriveServiceClass;
@@ -43,6 +44,10 @@ class GoogleDriveServiceClass {
         return baseApiService.get<any>(`/google-drive/file/${fileId}`, {
             responseType: 'blob'
         } as any);
+    }
+
+    public getDriveLink(fileId: string): string {
+        return `${VIVUDI_API_URL}/google-drive/file/${fileId}`;
     }
 };
 

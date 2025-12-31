@@ -1,0 +1,8 @@
+
+ curl -X 'POST' \
+  'https://vivudi-backend-wh0z.onrender.com/post' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmUzYTkzMy02YmU3LTRmN2MtYmNlNC0yMjFkZTNmMjIwNmIiLCJlbWFpbCI6ImtsQGdtLmNvbSIsImlhdCI6MTc2NjkzNjYwNiwiZXhwIjoxNzY3MDIzMDA2fQ.YZZdDn0NQ-XKuA4q3P0uXHcw-3Ka8rveMzZcHExX42c' \
+  -F 'data={"content":"My post content","location_id":"df5678c5-bd85-4d28-a71c-983ce9d933e8","visibility":"PUBLIC"}' \
+  -F 'media=sign.jpg;type=image/jpg'

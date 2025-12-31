@@ -8,7 +8,6 @@
  *  Modified    :                                                             *
  ******************************************************************************/
 
-import 'react-native-gesture-handler';
 import ScreenWrapper from '@/components/ui/screen_wrapper';
 import useIsFirstLaunch from '@/hooks/useIsFirstLaunch';
 import { ProviderInjection } from '@/providers';
@@ -18,7 +17,8 @@ import { PAGE_ID } from '@/settings/navigation/page';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { JSX, useEffect } from 'react';
+import { JSX, useEffect, useState } from 'react';
+import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 /******************************************************************************
@@ -33,13 +33,37 @@ const AppStack = (): JSX.Element => {
 	 * - Nếu là lần đầu, hiển thị trang onboard                                   *
 	 ******************************************************************************/
 	const isFirstLaunch = useIsFirstLaunch();
+	const [hasToken, setHasToken] = useState<boolean | null>(null);
+
+	/******************************************************************************
+	 * Check for stored auth token on mount
+	 ******************************************************************************/
+	useEffect(() => {
+		const checkToken = async () => {
+			try {
+				const AsyncStorage = await import('@react-native-async-storage/async-storage');
+				const token = await AsyncStorage.default.getItem('auth_token');
+				setHasToken(!!token);
+				console.log('Auth token check:', token ? 'Found' : 'Not found');
+			} catch (error) {
+				console.error('Error checking token:', error);
+				setHasToken(false);
+			}
+		};
+		checkToken();
+	}, []);
 
 	/******************************************************************************
 	 * Đặt tên route mặc định cho navigation stack                                *
-	 * - Nếu là lần đầu, sử dụng PAGE_ID.ON_BOARD để hiển thị trang onboard       *
-	 * - Nếu không, sử dụng PAGE_ID.PRIVATE_TABS để hiển thị tab riêng tư         *
+	 * - Nếu là lần đầu, hiển thị onboard                                         *
+	 * - Nếu có token, hiển thị home                                              *
+	 * - Nếu không có token, hiển thị login                                       *
 	 ******************************************************************************/
-	const initialRouteName = isFirstLaunch ? PAGE_ID.ON_BOARD : PAGE_ID.AUTH_TABS;
+	const initialRouteName = isFirstLaunch
+		? PAGE_ID.ON_BOARD
+		: hasToken
+			? PAGE_ID.HOME_TABS
+			: PAGE_ID.AUTH_TABS;
 
 	/******************************************************************************
 	 * Lấy hàm hide từ context LoadingProvider để ẩn loading sau khi load font    *
@@ -69,10 +93,9 @@ const AppStack = (): JSX.Element => {
 	}, [loaded]);
 
 	/******************************************************************************
-	 * Nếu chưa load font, trả về rỗng để tránh lỗi render                        *
-	 * Nếu isFirstLaunch là null, cũng trả về rỗng để tránh lỗi render            *
+	 * Nếu chưa load font hoặc chưa check token, trả về rỗng                      *
 	 ******************************************************************************/
-	if (!loaded || isFirstLaunch == null) return <></>;
+	if (!loaded || isFirstLaunch == null || hasToken === null) return <></>;
 
 	return (
 		<>

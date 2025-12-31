@@ -1,10 +1,36 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { FC, JSX } from 'react';
+import { Feather, Ionicons } from '@expo/vector-icons';
+import { FC, JSX, useRef, useState } from 'react';
+import { Dimensions, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './styles';
-import { Ionicons, Feather } from '@expo/vector-icons';
 import { PostCardProps } from './types';
 
-const PostCard: FC<{ post: PostCardProps }> = ({ post }): JSX.Element => {
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const IMAGE_WIDTH = SCREEN_WIDTH;
+
+interface PostCardComponentProps {
+    post: PostCardProps;
+    onPostPress?: (postId: string) => void;
+}
+
+const PostCard: FC<PostCardComponentProps> = ({ post, onPostPress }): JSX.Element => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const flatListRef = useRef<FlatList>(null);
+
+    // Use images array if available, otherwise fallback to single image
+    const imagesToShow = post.images && post.images.length > 0
+        ? post.images
+        : [post.image];
+
+    const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
+        if (viewableItems.length > 0) {
+            setCurrentImageIndex(viewableItems[0].index || 0);
+        }
+    }).current;
+
+    const viewabilityConfig = useRef({
+        itemVisiblePercentThreshold: 50
+    }).current;
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -29,13 +55,44 @@ const PostCard: FC<{ post: PostCardProps }> = ({ post }): JSX.Element => {
             </View>
 
             <View style={styles.imageContainer}>
-                <Image
-                    source={post.image}
-                    style={styles.postImage}
+                <FlatList
+                    ref={flatListRef}
+                    data={imagesToShow}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    onViewableItemsChanged={onViewableItemsChanged}
+                    viewabilityConfig={viewabilityConfig}
+                    keyExtractor={(item, index) => `image-${index}`}
+                    renderItem={({ item }) => (
+                        <Image
+                            source={item}
+                            style={[styles.postImage, { width: IMAGE_WIDTH }]}
+                        />
+                    )}
                 />
-                {post.imageCount !== '1/1' && (
+
+                {/* Pagination Dots */}
+                {imagesToShow.length > 1 && (
+                    <View style={styles.paginationContainer}>
+                        {imagesToShow.map((_, index) => (
+                            <View
+                                key={index}
+                                style={[
+                                    styles.paginationDot,
+                                    index === currentImageIndex && styles.paginationDotActive
+                                ]}
+                            />
+                        ))}
+                    </View>
+                )}
+
+                {/* Image Count Badge */}
+                {imagesToShow.length > 1 && (
                     <View style={styles.imageCountBadge}>
-                        <Text style={styles.imageCountText}>{post.imageCount}</Text>
+                        <Text style={styles.imageCountText}>
+                            {currentImageIndex + 1}/{imagesToShow.length}
+                        </Text>
                     </View>
                 )}
             </View>
@@ -63,11 +120,15 @@ const PostCard: FC<{ post: PostCardProps }> = ({ post }): JSX.Element => {
                 </Text>
             </View>
 
-            <View style={styles.captionContainer}>
+            <TouchableOpacity
+                style={styles.captionContainer}
+                onPress={() => onPostPress?.(post.id)}
+                activeOpacity={0.9}
+            >
                 <Text style={styles.captionText} numberOfLines={2}>
                     <Text style={styles.boldText}>{post.username}</Text> {post.caption}
                 </Text>
-            </View>
+            </TouchableOpacity>
 
             <Text style={styles.dateText}>{post.date}</Text>
         </View>

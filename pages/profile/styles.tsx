@@ -12,12 +12,12 @@ export const styles = StyleSheet.create({
         backgroundColor: BG_COLOR,
     },
     headerContainer: {
-        flexDirection: 'row',    
-        alignItems: 'center',    
-        justifyContent: 'space-between', 
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         width: '100%',
-        paddingHorizontal: 16, 
-        height: 60, 
+        paddingHorizontal: 16,
+        height: 60,
     },
     titleContainer: {
         alignItems: 'center',
@@ -26,13 +26,13 @@ export const styles = StyleSheet.create({
         color: LABEL_COLOR,
         fontSize: 18,
         fontFamily: 'SFUISemibold',
-        fontWeight: 'bold', 
+        fontWeight: 'bold',
     },
     sideContainer: {
-        flex: 1, 
+        flex: 1,
     },
     rightContainer: {
-        alignItems: 'flex-end', 
+        alignItems: 'flex-end',
     },
     leftHeader: {
         color: '#ffffff',
@@ -122,5 +122,21 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginRight: 10,
+    },
+    logoutButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#FFF5F5',
+        borderRadius: 12,
+        paddingVertical: 16,
+        marginTop: 30,
+        gap: 10,
+    },
+    logoutText: {
+        fontSize: 16,
+        fontFamily: 'SFUISemibold',
+        color: '#FF3B30',
+        fontWeight: '600',
     },
 });

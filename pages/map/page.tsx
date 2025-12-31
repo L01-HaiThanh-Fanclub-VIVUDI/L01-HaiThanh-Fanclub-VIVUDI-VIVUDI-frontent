@@ -1,15 +1,15 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { styles } from './styles';
 import mapCustomStyle from '@/assets/mapCustomStyle.json';
-import { useNavigation } from 'expo-router';
+import { DUMMY_LOCATIONS } from '@/components/ui/marker';
+import { Location } from '@/components/ui/marker/types';
+import { PAGE_ID } from '@/settings/navigation/page';
 import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { Feather } from '@expo/vector-icons';
-import { Location } from '@/components/ui/marker/types';
-import CustomMarkerView, { DUMMY_LOCATIONS } from '@/components/ui/marker';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { PAGE_ID } from '@/settings/navigation/page';
+import { useNavigation } from 'expo-router';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { styles } from './styles';
 
 const DUMMY_POIS = [
     { id: 'p1', coordinate: { latitude: 10.8080, longitude: 106.7350 }, color: '#3B82F6' },
@@ -59,10 +59,45 @@ export default function MapScreen() {
                     <Marker
                         key={location.id}
                         coordinate={location.coordinate}
-
                         onPress={() => handleMarkerPress(location)}
                     >
                         <View style={styles.poiMarker} />
+
+                        {/* Callout Info Box */}
+                        <Callout
+                            tooltip={false}
+                            onPress={() => {
+                                console.log('Callout pressed:', location.name);
+                                // Could navigate to detail page
+                            }}
+                        >
+                            <View style={styles.calloutContainer}>
+                                {/* Location Image */}
+                                <Image
+                                    source={location.image}
+                                    style={styles.calloutImage}
+                                    resizeMode="cover"
+                                />
+
+                                {/* Location Info */}
+                                <View style={styles.calloutInfo}>
+                                    <Text style={styles.calloutTitle} numberOfLines={1}>
+                                        {location.name}
+                                    </Text>
+                                    <Text style={styles.calloutSubtitle} numberOfLines={1}>
+                                        {location.address}
+                                    </Text>
+                                    {location.rating && (
+                                        <View style={styles.calloutRating}>
+                                            <Feather name="star" size={12} color="#FFB800" />
+                                            <Text style={styles.calloutRatingText}>
+                                                {location.rating}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
+                            </View>
+                        </Callout>
                     </Marker>
                 ))}
 
@@ -75,7 +110,7 @@ export default function MapScreen() {
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.detailButton}
-                onPress={() => navigation.navigate(PAGE_ID.PRIVATE_TABS, {screen: PAGE_ID.PLACE_DETAIL})}
+                onPress={() => navigation.navigate(PAGE_ID.PRIVATE_TABS, { screen: PAGE_ID.PLACE_DETAIL })}
             >
                 <Feather name="image" size={24} color="#000" />
             </TouchableOpacity>

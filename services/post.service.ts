@@ -22,10 +22,8 @@ class PostServiceClass {
     ): Promise<ApiResponse<Post>> {
         const formData = new FormData();
 
-        // Append JSON payload as string
         formData.append('data', JSON.stringify(payload));
 
-        // Append media files using React Native format
         if (mediaUris && mediaUris.length > 0) {
             mediaUris.forEach((uri, index) => {
                 const filename = uri.split('/').pop() || `media_${index}`;
@@ -35,10 +33,11 @@ class PostServiceClass {
                 formData.append('media', {
                     uri,
                     name: filename,
-                    type,
+                    type
                 } as any);
             });
         }
+        console.log(formData);
 
         return baseApiService.post<Post>('/post', {
             body: formData
@@ -49,8 +48,16 @@ class PostServiceClass {
         return baseApiService.get<Post>(`/post/${id}`);
     }
 
-    public async getAllPosts(): Promise<ApiResponse<Post[]>> {
-        return baseApiService.get<Post[]>('/post');
+    public async getAllPosts(page: number = 1, limit: number = 10): Promise<ApiResponse<{
+        data: Post[];
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            totalPage: number;
+        };
+    }>> {
+        return baseApiService.get(`/post?page=${page}&limit=${limit}`);
     }
 };
 

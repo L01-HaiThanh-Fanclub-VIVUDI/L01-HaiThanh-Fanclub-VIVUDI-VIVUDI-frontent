@@ -68,4 +68,4 @@ export const FLAG_PRODUCT_VERSION = false; // Chỉnh sửa thành true khi depl
 /******************************************************************************
  * API URL BackEnd                                                            *
  ******************************************************************************/
-export const VIVUDI_API_URL = 'https://vivudi-backend-wh0z.onrender.com';
+export const VIVUDI_API_URL = 'http://116.106.47.217:3000';

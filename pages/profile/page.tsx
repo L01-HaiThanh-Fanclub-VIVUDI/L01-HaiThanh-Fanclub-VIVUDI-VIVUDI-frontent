@@ -1,11 +1,12 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { FC, JSX, useCallback, useState } from 'react';
-import { styles } from './styles';
-import { Feather } from '@expo/vector-icons';
-import { Stack, useNavigation } from 'expo-router';
 import ThemedView from '@/components/atoms/themed_view';
 import { useLoading } from '@/providers/loading_provider';
+import { Feather } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router, useNavigation } from 'expo-router';
+import { FC, JSX, useCallback, useState } from 'react';
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { styles } from './styles';
 
 const EditProfilePage: FC = (): JSX.Element => {
     const [firstName, setFirstName] = useState('Leonardo');
@@ -26,6 +27,36 @@ const EditProfilePage: FC = (): JSX.Element => {
 
         hide();
     }, [firstName, lastName, location, mobile, countryCode, show, hide, navigation]);
+
+    const handleLogout = useCallback(async () => {
+        Alert.alert(
+            'Đăng xuất',
+            'Bạn có chắc chắn muốn đăng xuất?',
+            [
+                { text: 'Hủy', style: 'cancel' },
+                {
+                    text: 'Đăng xuất',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            show();
+                            // Remove auth token
+                            await AsyncStorage.removeItem('auth_token');
+                            console.log('Logged out - token removed');
+
+                            // Navigate to login
+                            router.replace('/(auth)/login');
+                        } catch (error) {
+                            console.error('Logout error:', error);
+                            Alert.alert('Lỗi', 'Không thể đăng xuất');
+                        } finally {
+                            hide();
+                        }
+                    }
+                }
+            ]
+        );
+    }, [show, hide]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -116,6 +147,15 @@ const EditProfilePage: FC = (): JSX.Element => {
                             />
                         </View>
                     </View>
+
+                    {/* Logout Button */}
+                    <TouchableOpacity
+                        style={styles.logoutButton}
+                        onPress={handleLogout}
+                    >
+                        <Feather name="log-out" size={20} color="#FF3B30" />
+                        <Text style={styles.logoutText}>Đăng xuất</Text>
+                    </TouchableOpacity>
                 </ThemedView>
             </ScrollView>
         </SafeAreaView>

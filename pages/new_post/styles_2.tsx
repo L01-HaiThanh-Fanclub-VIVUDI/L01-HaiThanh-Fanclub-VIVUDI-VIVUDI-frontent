@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 12,
         borderBottomWidth: 1,
+        marginTop: 30,
         borderBottomColor: '#E0E0E0',
     },
     headerTitle: {
@@ -144,14 +145,18 @@ export const styles = StyleSheet.create({
         color: '#FF678B',
         fontWeight: '600',
     },
-    locationDisplay: {
+    dropdownItem: {
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F0F0F0',
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 12,
-        backgroundColor: '#F9F9F9',
-        borderRadius: 8,
-        gap: 8,
     },
+    dropdownItemText: {
+        fontSize: 15,
+        color: '#1B1E28',
+    },
+
     locationTextContainer: {
         flex: 1,
     },
@@ -164,10 +169,6 @@ export const styles = StyleSheet.create({
     locationAddress: {
         fontSize: 13,
         color: '#7D848D',
-    },
-    locationText: {
-        fontSize: 16,
-        color: '#1B1E28',
     },
     ratingContainer: {
         flexDirection: 'row',
@@ -182,6 +183,11 @@ export const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderTopColor: '#E0E0E0',
         backgroundColor: '#FFFFFF',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 8,
     },
     draftButton: {
         flex: 1,
@@ -213,5 +219,37 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: '#FFFFFF',
+    },
+    locationInput: {
+        backgroundColor: '#F5F5F5',
+        padding: 12,
+        borderRadius: 8,
+        fontSize: 14,
+        color: '#1B1E28',
+        marginTop: 8,
+    },
+    inputDisabled: {
+        backgroundColor: '#E8E8E8',
+        color: '#A0A0A0',
+    },
+    hint: {
+        fontSize: 12,
+        color: '#888',
+        marginTop: 4,
+        fontStyle: 'italic',
+    },
+    locationDisplay: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 12,
+        backgroundColor: '#F5F5F5',
+        borderRadius: 8,
+        marginTop: 8,
+        gap: 8,
+    },
+    locationText: {
+        fontSize: 14,
+        color: '#1B1E28',
+        flex: 1,
     },
 });

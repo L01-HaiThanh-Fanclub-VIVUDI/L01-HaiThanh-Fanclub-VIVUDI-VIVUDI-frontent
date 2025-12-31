@@ -30,7 +30,11 @@
         "googleMaps": {
           "apiKey": "AIzaSyDQ0pDRDKSyAO4lm10ttEXa2_uoZmWQzHc"
         }
-      }
+      },
+      "permissions": [
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -53,6 +57,9 @@
     "updates": {
       "url": "https://u.expo.dev/76a6fcd6-a97a-42ef-92bb-f00b641499ad"
     },
-    "platforms": ["ios", "android"]
+    "platforms": [
+      "ios",
+      "android"
+    ]
   }
 }

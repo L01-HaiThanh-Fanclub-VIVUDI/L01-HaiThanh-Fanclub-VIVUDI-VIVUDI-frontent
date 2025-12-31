@@ -3,7 +3,8 @@ export interface PostCardProps {
     username: string;
     location: string;
     avatar: any;
-    image: any;
+    image: any; // For backward compatibility
+    images?: any[]; // Array of images for carousel
     likes: string;
     likedBy: string;
     caption: string;

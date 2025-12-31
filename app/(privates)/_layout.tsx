@@ -8,20 +8,23 @@
  *  Modified    :                                                             *
  ******************************************************************************/
 
-import { PAGE_ID } from '@/settings/navigation/page';
-import { Tabs } from 'expo-router';
+import { Stack } from 'expo-router';
 import { JSX } from 'react';
 
 /******************************************************************************
- * TabLayout: Cấu hình tab bar cho app                                        *
- * - Ẩn header và tab bar                                                     *
+ * PrivatesLayout: Stack navigation for private screens                      *
+ * - general (tabs) is the initial route                                     *
+ * - Other screens (post_detail, place_detail, etc.) stack on top            *
  ******************************************************************************/
-const TabLayout = (): JSX.Element => {
+const PrivatesLayout = (): JSX.Element => {
 	return (
-		<Tabs screenOptions={{ headerShown: false, tabBarStyle: { display: 'none' } }}>
-			<Tabs.Screen name={PAGE_ID.MAP} />
-		</Tabs>
+		<Stack screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="general" />
+			<Stack.Screen name="post_detail" options={{ presentation: 'card' }} />
+			<Stack.Screen name="place_detail" />
+			<Stack.Screen name="place_search" />
+		</Stack>
 	);
 };
 
-export default TabLayout;
+export default PrivatesLayout;

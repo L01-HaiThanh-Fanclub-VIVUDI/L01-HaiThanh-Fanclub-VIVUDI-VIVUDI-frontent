@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const TEXT_COLOR = '#1B1E28';
 const LIGHT_TEXT_COLOR = '#7D848D';
@@ -104,6 +104,28 @@ export const styles = StyleSheet.create({
     },
     dotActive: {
         backgroundColor: ACTIVE_DOT_COLOR,
+    },
+    paginationContainer: {
+        position: 'absolute',
+        bottom: 12,
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 6,
+    },
+    paginationDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    },
+    paginationDotActive: {
+        backgroundColor: '#FFFFFF',
+        width: 8,
+        height: 8,
+        borderRadius: 4,
     },
 
     likesContainer: {

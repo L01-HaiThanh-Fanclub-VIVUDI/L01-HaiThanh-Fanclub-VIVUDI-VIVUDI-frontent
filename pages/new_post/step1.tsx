@@ -1,14 +1,15 @@
-import React, { useState, useEffect, JSX, FC } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Dimensions, Alert, SafeAreaView } from 'react-native';
-import * as MediaLibrary from 'expo-media-library';
-import { Image } from 'expo-image';
-import { styles } from './styles_1';
-import { Feather } from '@expo/vector-icons';
-import { useNavigation } from 'expo-router';
-import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { PAGE_ID } from '@/settings/navigation/page';
+import { AppStackNavigation } from '@/settings/navigation/route_params';
+import { Feather, Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import * as MediaLibrary from 'expo-media-library';
+import { useNavigation } from 'expo-router';
+import React, { FC, JSX, useEffect, useState } from 'react';
+import { Alert, FlatList, Modal, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { styles } from './styles_1';
 
 type MediaAsset = MediaLibrary.Asset;
+type Album = MediaLibrary.Album;
 
 const PAGE_SIZE = 20;
 
@@ -19,39 +20,110 @@ const ImagePickerScreen: FC = (): JSX.Element => {
     const [hasNextPage, setHasNextPage] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState<'photo' | 'video'>('photo');
+    const [albums, setAlbums] = useState<Album[]>([]);
+    const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+    const [showAlbumPicker, setShowAlbumPicker] = useState<boolean>(false);
     const navigation = useNavigation<AppStackNavigation>();
 
-    const loadMedia = async (afterCursor: string | null = null, initialLoad: boolean = false, type: 'photo' | 'video' = 'photo') => {
+
+    /******************************************************************************
+     * Load available albums
+     ******************************************************************************/
+    const loadAlbums = async () => {
+        try {
+            const permission = await MediaLibrary.requestPermissionsAsync(true);
+            if (!permission.granted) return;
+
+            const albumsList = await MediaLibrary.getAlbumsAsync({
+                includeSmartAlbums: false,
+            });
+
+            console.log('Available albums:', albumsList.map(a => a.title));
+            setAlbums(albumsList);
+
+            // Auto-select first album if none selected
+            if (!selectedAlbum && albumsList.length > 0) {
+                setSelectedAlbum(albumsList[0]);
+            }
+        } catch (error) {
+            console.error('Error loading albums:', error);
+        }
+    };
+
+    const loadMedia = async (
+        afterCursor: string | null = null,
+        initialLoad = false,
+        type: 'photo' | 'video' = 'photo'
+    ) => {
         if (!initialLoad && !hasNextPage) return;
 
-        if (afterCursor === null) {
-            const { status } = await MediaLibrary.requestPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission Denied', 'We need access to your photo library.');
-                return;
-            }
+        const permission = await MediaLibrary.requestPermissionsAsync(true);
+
+        console.log('Media permission:', permission);
+
+        if (!permission.granted) {
+            Alert.alert(
+                'Permission required',
+                'Please allow full access to photos'
+            );
+            return;
+        }
+
+        if (!selectedAlbum) {
+            Alert.alert('Chưa chọn album', 'Vui lòng chọn album để xem ảnh');
+            return;
         }
 
         setIsLoading(true);
 
-        const mediaResult = await MediaLibrary.getAssetsAsync({
-            mediaType: type === 'photo' ? MediaLibrary.MediaType.photo : MediaLibrary.MediaType.video,
-            sortBy: ['creationTime'],
-            first: PAGE_SIZE,
-            after: afterCursor ?? undefined,
-        });
+        try {
+            console.log('Loading from album:', selectedAlbum.title);
 
-        const newAssets = mediaResult.assets as MediaAsset[];
+            // Load media from selected album
+            const res = await MediaLibrary.getAssetsAsync({
+                album: selectedAlbum,
+                mediaType:
+                    type === 'photo'
+                        ? MediaLibrary.MediaType.photo
+                        : MediaLibrary.MediaType.video,
 
-        const currentIds = new Set(media.map(a => a.id));
-        const uniqueNewAssets = newAssets.filter(asset => !currentIds.has(asset.id));
-        
-        setMedia(prev => [...prev, ...uniqueNewAssets]);
-        setEndCursor(mediaResult.endCursor);
-        setHasNextPage(mediaResult.hasNextPage);
+                first: PAGE_SIZE,
+                after: afterCursor ?? undefined,
 
-        setIsLoading(false);
+                sortBy: [MediaLibrary.SortBy.creationTime],
+
+            });
+
+            console.log(`Loaded ${res.assets.length} ${type}s from ${selectedAlbum.title}, hasNextPage: ${res.hasNextPage}, totalCount: ${res.totalCount}`);
+
+            // Sort assets: JPEG files first, then others
+            const sortedAssets = res.assets.sort((a, b) => {
+                const isAJpeg = a.filename.toLowerCase().endsWith('.jpeg') || a.filename.toLowerCase().endsWith('.jpg');
+                const isBJpeg = b.filename.toLowerCase().endsWith('.jpeg') || b.filename.toLowerCase().endsWith('.jpg');
+
+                // JPEG files come first
+                if (isAJpeg && !isBJpeg) return -1;
+                if (!isAJpeg && isBJpeg) return 1;
+
+                // Within same type, sort by creation time (newest first)
+                return b.creationTime - a.creationTime;
+            });
+
+            setMedia(prev =>
+                initialLoad ? sortedAssets : [...prev, ...sortedAssets]
+            );
+
+            setEndCursor(res.endCursor ?? null);
+            setHasNextPage(res.hasNextPage);
+        } catch (error) {
+            console.error('Error loading media:', error);
+            Alert.alert('Lỗi', 'Không thể tải ảnh');
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+
 
     const handleSelectImage = (image: MediaAsset) => {
         const isSelected = selectedImages.some(item => item.id === image.id);
@@ -101,8 +173,18 @@ const ImagePickerScreen: FC = (): JSX.Element => {
     }
 
     useEffect(() => {
-        loadMedia(null, true, 'photo');
+        loadAlbums();
     }, []);
+
+    useEffect(() => {
+        if (selectedAlbum) {
+            // Reset media when album changes
+            setMedia([]);
+            setEndCursor(null);
+            setHasNextPage(true);
+            loadMedia(null, true, activeTab);
+        }
+    }, [selectedAlbum]);
 
     const renderGridItem = ({ item }: { item: MediaAsset }) => {
         const isSelected = isImageSelected(item);
@@ -167,9 +249,15 @@ const ImagePickerScreen: FC = (): JSX.Element => {
                 <TouchableOpacity onPress={onBackPress}>
                     <Text style={styles.headerButton}>Cancel</Text>
                 </TouchableOpacity>
-                <View style={styles.headerCenter}>
-                    <Text style={styles.headerTitle}>Recents</Text>
-                </View>
+                <TouchableOpacity
+                    style={styles.headerCenter}
+                    onPress={() => setShowAlbumPicker(true)}
+                >
+                    <Text style={styles.headerTitle}>
+                        {selectedAlbum?.title || 'Select Album'}
+                    </Text>
+                    <Ionicons name="chevron-down" size={20} color="#000" />
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.nextButton} onPress={onNextPress}>
                     <Text
                         style={styles.nextButtonText}
@@ -178,6 +266,44 @@ const ImagePickerScreen: FC = (): JSX.Element => {
                     </Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Album Picker Modal */}
+            <Modal
+                visible={showAlbumPicker}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={() => setShowAlbumPicker(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Select Album</Text>
+                            <TouchableOpacity onPress={() => setShowAlbumPicker(false)}>
+                                <Ionicons name="close" size={24} color="#000" />
+                            </TouchableOpacity>
+                        </View>
+                        <FlatList
+                            data={albums}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity
+                                    style={[
+                                        styles.albumItem,
+                                        selectedAlbum?.id === item.id && styles.albumItemSelected
+                                    ]}
+                                    onPress={() => {
+                                        setSelectedAlbum(item);
+                                        setShowAlbumPicker(false);
+                                    }}
+                                >
+                                    <Text style={styles.albumTitle}>{item.title}</Text>
+                                    <Text style={styles.albumCount}>{item.assetCount} items</Text>
+                                </TouchableOpacity>
+                            )}
+                        />
+                    </View>
+                </View>
+            </Modal>
 
             <View style={styles.previewContainer}>
                 {selectedImages.length > 0 ? (
