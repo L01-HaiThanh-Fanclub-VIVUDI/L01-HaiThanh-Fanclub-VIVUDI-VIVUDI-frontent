@@ -4,9 +4,13 @@ export interface CustomMarkerViewProps {
 }
 
 export interface Location {
-    id: string,
-    title: string,
-    subtitle: string,
-    image: any,
-    coordinate: { latitude: number, longitude: number },
+    id: string;
+    coordinate: {
+        latitude: number;
+        longitude: number;
+    };
+    image: any;
+    name: string;
+    address: string;
+    rating?: number;
 }
