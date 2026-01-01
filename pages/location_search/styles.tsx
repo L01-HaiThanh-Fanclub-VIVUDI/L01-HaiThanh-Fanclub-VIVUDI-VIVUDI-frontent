@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 
-    
+
     searchBarContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -52,8 +52,33 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
     },
+    clearButton: {
+        padding: 4,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 12,
+    },
+    loadingText: {
+        fontSize: 14,
+        color: '#666',
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 40,
+        gap: 16,
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#999',
+        textAlign: 'center',
+    },
 
-    
+
     listContainer: {
         flex: 1,
     },
@@ -64,7 +89,7 @@ export const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderBottomWidth: 1,
-        borderBottomColor: '#F7F7F7', 
+        borderBottomColor: '#F7F7F7',
     },
     primaryRow: {
         flexDirection: 'row',
@@ -76,7 +101,7 @@ export const styles = StyleSheet.create({
         color: '#666',
         fontWeight: 'bold',
         marginRight: 10,
-        minWidth: 55, 
+        minWidth: 55,
         textAlign: 'right',
     },
     primaryText: {
@@ -87,10 +112,10 @@ export const styles = StyleSheet.create({
     secondaryText: {
         fontSize: 14,
         color: '#888',
-        marginLeft: 65, 
+        marginLeft: 65,
         marginTop: 2,
     },
     divider: {
-        height: 10, 
+        height: 10,
     }
 });

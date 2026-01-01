@@ -53,6 +53,10 @@ export const styles = StyleSheet.create({
         borderWidth: 3,
         transform: [{ scale: 1.2 }],
     },
+    destinationMarker: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     loadingContainer: {
         position: 'absolute',
         top: '50%',

@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { AppStackNavigation } from '@/settings/navigation/route_params';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
-import { styles } from './styles';
-import { Ionicons } from '@expo/vector-icons';
-import { IconName, Tab } from './types';
+import { useNavigation } from 'expo-router';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import OverviewTab from './overview_tab';
 import ReviewsTabContent from './review_tab';
-import { useNavigation } from 'expo-router';
-import { AppStackNavigation } from '@/settings/navigation/route_params';
+import { styles } from './styles';
+import { IconName, Tab } from './types';
 
 const MAIN_COLOR = '#FF678B';
 
@@ -55,7 +54,7 @@ const PlaceDetailScreen = () => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => handleBackTap}>
+                <TouchableOpacity onPress={() => handleBackTap()}>
                     <Ionicons name="chevron-back" size={24} color="#000" />
                 </TouchableOpacity>
                 <View style={styles.headerRight}>
@@ -112,10 +111,10 @@ const PlaceDetailScreen = () => {
                 </View>
 
                 <View style={styles.tabsContainer}>
-                    <TabButton label="Overview" isActive={'overview' === tab} onPress={() => handleTabTap('overview')}/>
-                    <TabButton label="Reviews" isActive={'review' === tab} onPress={() => handleTabTap('review')}/>
-                    <TabButton label="Photos" isActive={'photos' === tab} onPress={() => handleTabTap('photos')}/>
-                    <TabButton label="About" isActive={'about' === tab} onPress={() => handleTabTap('about')}/>
+                    <TabButton label="Overview" isActive={'overview' === tab} onPress={() => handleTabTap('overview')} />
+                    <TabButton label="Reviews" isActive={'review' === tab} onPress={() => handleTabTap('review')} />
+                    <TabButton label="Photos" isActive={'photos' === tab} onPress={() => handleTabTap('photos')} />
+                    <TabButton label="About" isActive={'about' === tab} onPress={() => handleTabTap('about')} />
                 </View>
 
                 {tab == 'overview' && <OverviewTab data={overViewdata} />}

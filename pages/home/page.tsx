@@ -16,6 +16,8 @@ import {
 
 
 
+
+
     FlatList,
     Image,
     ImageBackground,
@@ -38,9 +40,10 @@ interface ReelItem {
     location: string;
     distance: string;
     image: any;
+    position?: Position;
 }
 
-const ReelCard: FC<{ item: ReelItem }> = ({ item }) => (
+const ReelCard: FC<{ item: ReelItem; onRoutePress: () => void }> = ({ item, onRoutePress }) => (
     <ImageBackground
         source={item.image}
         style={styles.reelCard}
@@ -60,7 +63,7 @@ const ReelCard: FC<{ item: ReelItem }> = ({ item }) => (
                 </View>
                 <View style={styles.reelCardFooter}>
                     <Text style={styles.reelCardDistance}>{item.distance}</Text>
-                    <TouchableOpacity style={styles.routeButton}>
+                    <TouchableOpacity style={styles.routeButton} onPress={onRoutePress}>
                         <Text style={styles.routeButtonText}>Route</Text>
                     </TouchableOpacity>
                 </View>
@@ -149,6 +152,7 @@ const HomePage: FC = (): JSX.Element => {
                         ? `${(pos.distance / 1000).toFixed(1)} km`
                         : 'N/A',
                     image: require('@/assets/images/home/home1.png'),
+                    position: pos,
                 }));
                 setReelItems(items);
                 setCurrentLocation(positions[0].name);
@@ -183,6 +187,14 @@ const HomePage: FC = (): JSX.Element => {
 
     const handleViewAllClick = () => {
         navigation.navigate(PAGE_ID.HOME_TABS, { screen: PAGE_ID.REELS });
+    }
+
+    const handleRoutePress = (position: Position) => {
+        // Navigate to map with destination parameter (nested navigation)
+        navigation.navigate(PAGE_ID.HOME_TABS, {
+            screen: PAGE_ID.MAP,
+            params: { destination: JSON.stringify(position) }
+        });
     }
 
     return (
@@ -253,7 +265,12 @@ const HomePage: FC = (): JSX.Element => {
                     ) : (
                         <FlatList
                             data={reelItems}
-                            renderItem={({ item }) => <ReelCard item={item} />}
+                            renderItem={({ item }) => (
+                                <ReelCard
+                                    item={item}
+                                    onRoutePress={() => item.position && handleRoutePress(item.position)}
+                                />
+                            )}
                             keyExtractor={item => item.id}
                             horizontal
                             showsHorizontalScrollIndicator={false}

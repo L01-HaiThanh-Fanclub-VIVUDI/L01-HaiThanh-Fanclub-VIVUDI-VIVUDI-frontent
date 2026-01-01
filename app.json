@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyDQ0pDRDKSyAO4lm10ttEXa2_uoZmWQzHc"
+        "googleMapsApiKey": ""
       }
     },
     "android": {
@@ -28,7 +28,7 @@
       "package": "com.anonymous.ViVuDi",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyDQ0pDRDKSyAO4lm10ttEXa2_uoZmWQzHc"
+          "apiKey": ""
         }
       },
       "permissions": [

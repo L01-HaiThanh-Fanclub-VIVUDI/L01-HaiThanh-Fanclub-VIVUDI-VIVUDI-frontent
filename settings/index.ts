@@ -9,6 +9,7 @@
 \*****************************************************************************/
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import Constants from 'expo-constants';
 
 /******************************************************************************
  * Thiết lập mặc định cho các màn hình trong Stack Navigator.                 *
@@ -69,3 +70,13 @@ export const FLAG_PRODUCT_VERSION = false; // Chỉnh sửa thành true khi depl
  * API URL BackEnd                                                            *
  ******************************************************************************/
 export const VIVUDI_API_URL = 'http://116.106.47.217:3000';
+
+/******************************************************************************
+ * Google Maps API Key                                                       *
+ * Dùng cho Directions API, Places API, etc.                                 *
+ * Đọc từ .env thông qua app.config.js                                       *
+ ******************************************************************************/
+export const GOOGLE_MAPS_API_KEY =
+    Constants.expoConfig?.android?.config?.googleMaps?.apiKey ||
+    Constants.expoConfig?.ios?.config?.googleMapsApiKey ||
+    '';
