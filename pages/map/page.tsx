@@ -149,8 +149,16 @@ export default function MapScreen() {
     }, []);
 
     const handleViewDetails = useCallback(() => {
-        navigation.navigate(PAGE_ID.PRIVATE_TABS, { screen: PAGE_ID.PLACE_DETAIL });
-    }, [navigation]);
+        if (!selectedPosition?.id) {
+            console.warn('No position selected or missing ID');
+            return;
+        }
+        console.log('Navigating to place detail with ID:', selectedPosition.id);
+        navigation.navigate(PAGE_ID.PRIVATE_TABS, {
+            screen: PAGE_ID.PLACE_DETAIL,
+            params: { id: selectedPosition.id }
+        });
+    }, [navigation, selectedPosition]);
 
     const handleClearRoute = useCallback(() => {
         setDestinationPosition(null);

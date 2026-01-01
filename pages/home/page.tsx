@@ -166,15 +166,7 @@ const HomePage: FC = (): JSX.Element => {
     }, []);
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            console.log('🔄 Auto-fetching location (1 minute interval)...');
-            fetchNearbyPositions();
-        }, 60000);
-
-        return () => {
-            console.log('Clearing location fetch interval');
-            clearInterval(intervalId);
-        };
+        fetchNearbyPositions();
     }, [searchRadius]);
 
     const handleViewAllClick = () => {

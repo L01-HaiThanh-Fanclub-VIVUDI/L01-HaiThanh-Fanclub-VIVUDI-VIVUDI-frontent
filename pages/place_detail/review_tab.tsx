@@ -1,17 +1,13 @@
-import { MaterialIcons, Ionicons } from "@expo/vector-icons";
-import { View, ScrollView, TouchableOpacity, Text } from "react-native";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Image } from 'expo-image';
-import { styles } from "./styles";
 import { Key } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { styles } from "./styles";
 
 const ReviewBar = ({ percentage }: { percentage: number }) => (
     <View style={styles.reviewBarContainer}>
         <View style={[styles.reviewBarFill, { width: `${percentage}%` }]} />
     </View>
-);
-
-const ReviewCardPlaceholder = () => (
-    <View style={styles.reviewCardPlaceholder} />
 );
 
 const ReviewItem = ({ review }: { review: any }) => (
@@ -70,15 +66,7 @@ const ReviewsTabContent = ({ data }: { data: any }) => {
                 </View>
             </View>
 
-            <View style={styles.reviewCardsContainer}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    <ReviewCardPlaceholder />
-                    <ReviewCardPlaceholder />
-                    <ReviewCardPlaceholder />
-                </ScrollView>
-            </View>
-
-            <View style={styles.rateReviewSection}>
+            {/* <View style={styles.rateReviewSection}>
                 <Text style={styles.rateReviewTitle}>Rate & Review</Text>
                 <View style={styles.rateReviewContent}>
                     <Image
@@ -94,9 +82,19 @@ const ReviewsTabContent = ({ data }: { data: any }) => {
                         ))}
                     </View>
                 </View>
-            </View>
+            </View> */}
 
-            <ReviewItem review={data.sampleReview} />
+            {data.reviews && data.reviews.length > 0 ? (
+                data.reviews.map((review: any, index: number) => (
+                    <ReviewItem key={index} review={review} />
+                ))
+            ) : (
+                <View style={{ padding: 20, alignItems: 'center' }}>
+                    <Text style={{ color: '#7D848D', fontSize: 14 }}>
+                        Chưa có đánh giá nào
+                    </Text>
+                </View>
+            )}
 
         </View>
     );

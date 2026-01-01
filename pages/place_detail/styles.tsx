@@ -1,3 +1,4 @@
+import { appColors } from '@/settings';
 import { StyleSheet } from 'react-native';
 
 const MAIN_COLOR = appColors.primary;
@@ -10,9 +11,9 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        marginTop: 45,
         paddingHorizontal: 15,
         paddingVertical: 10,
-        marginTop: 30,
     },
     headerRight: {
         flexDirection: 'row',
@@ -240,8 +241,6 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: 10,
     },
-
-    // Review Item
     reviewItemContainer: {
         paddingVertical: 20,
         borderTopWidth: 1,

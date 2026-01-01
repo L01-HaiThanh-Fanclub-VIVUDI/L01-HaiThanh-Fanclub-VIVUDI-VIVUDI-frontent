@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { styles } from "./styles";
 import { InfoRowProps } from "./types";
+import { appColors } from "@/settings";
 
 const MAIN_COLOR = appColors.primary;
 const OverviewTab = ({ data }: { data: any }) => {
@@ -32,7 +33,7 @@ const OverviewTab = ({ data }: { data: any }) => {
 
         <InfoRow
             iconName="time-outline"
-            text={`Open • Closes ${data.closingTime}`}
+            text={`Open ${data.openTime} • Closes ${data.closingTime}`}
             color="#000"
             showArrow={true}
             isHours={true}

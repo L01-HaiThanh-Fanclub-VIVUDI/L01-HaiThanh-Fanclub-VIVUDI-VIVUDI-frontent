@@ -30,7 +30,7 @@ export type RootStackParamList = {
  ****************************************************************************/
 export type PrivateTabParamList = {
     [PAGE_ID.GENERAL]: undefined;
-    [PAGE_ID.PLACE_DETAIL]: undefined;
+    [PAGE_ID.PLACE_DETAIL]: { id: string } | undefined;
 };
 
 /****************************************************************************
