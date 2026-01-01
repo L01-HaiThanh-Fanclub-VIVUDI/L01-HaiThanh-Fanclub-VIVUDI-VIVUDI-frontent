@@ -59,6 +59,22 @@ class PostServiceClass {
     }>> {
         return baseApiService.get(`/post?page=${page}&limit=${limit}`);
     }
+
+    public async getPostsByPositionId(
+        positionId: string,
+        page: number = 1,
+        limit: number = 100
+    ): Promise<ApiResponse<{
+        data: Post[];
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            totalPage: number;
+        };
+    }>> {
+        return baseApiService.get(`/post/getByPositionId?positionId=${positionId}&page=${page}&limit=${limit}`);
+    }
 };
 
 export const postService = PostServiceClass.getInstance();

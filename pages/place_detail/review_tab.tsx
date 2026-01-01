@@ -1,7 +1,7 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Image } from 'expo-image';
 import { Key } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 import { styles } from "./styles";
 
 const ReviewBar = ({ percentage }: { percentage: number }) => (
@@ -10,39 +10,50 @@ const ReviewBar = ({ percentage }: { percentage: number }) => (
     </View>
 );
 
-const ReviewItem = ({ review }: { review: any }) => (
-    <View style={styles.reviewItemContainer}>
-        <View style={styles.reviewerHeader}>
-            <Image
-                source={{ uri: 'https://i.pravatar.cc/150?img=1' }}
-                style={styles.reviewerAvatar}
-                contentFit="cover"
-            />
-            <View>
-                <Text style={styles.reviewerName}>{review.name}</Text>
-                <Text style={styles.reviewerBio}>{review.bio}</Text>
-            </View>
-        </View>
+const ReviewItem = ({ review }: { review: any }) => {
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now.getTime() - date.getTime();
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-        <View style={styles.reviewMeta}>
-            <View style={styles.starRow}>
-                {[1, 2, 3, 4, 5].map((i) => (
-                    <MaterialIcons
-                        key={i}
-                        name="star"
-                        size={14}
-                        color={i <= review.rating ? '#F5C300' : '#E0E0E0'}
-                        style={{ marginRight: 2 }}
-                    />
-                ))}
-            </View>
-            <Text style={styles.reviewDate}>{review.date}</Text>
-        </View>
+        if (diffDays === 0) {
+            return 'Hôm nay';
+        } else if (diffDays === 1) {
+            return 'Hôm qua';
+        } else if (diffDays < 7) {
+            return `${diffDays} ngày trước`;
+        } else {
+            return date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+    };
 
-        <Text style={styles.reviewTags}>{review.tags}</Text>
-        <Text style={styles.reviewBody}>{review.body}</Text>
-    </View>
-);
+    return (
+        <View style={styles.reviewItemContainer}>
+            <View style={styles.reviewerHeader}>
+                <Image
+                    source={{ uri: `https://i.pravatar.cc/150?u=${review.user_id}` }}
+                    style={styles.reviewerAvatar}
+                    contentFit="cover"
+                />
+                <View>
+                    <Text style={styles.reviewerName}>
+                        {review.user?.display_name || `User ${review.user_id.slice(0, 8)}`}
+                    </Text>
+                    <Text style={styles.reviewDate}>{formatDate(review.createdAt)}</Text>
+                </View>
+            </View>
+
+            <Text style={styles.reviewBody}>{review.content}</Text>
+
+            {review.child_comments && review.child_comments.length > 0 && (
+                <Text style={styles.reviewerBio}>
+                    {review.child_comments.length} phản hồi
+                </Text>
+            )}
+        </View>
+    );
+};
 
 const ReviewsTabContent = ({ data }: { data: any }) => {
     return (
@@ -59,10 +70,22 @@ const ReviewsTabContent = ({ data }: { data: any }) => {
                 </View>
 
                 <View style={styles.summaryRight}>
-                    {data.ratingBreakdown.map((percentage: number, index: Key | null | undefined) => (
-                        <ReviewBar key={index} percentage={percentage} />
+                    {data.ratingBreakdown.map((percentage: number, index: number) => (
+                        <View
+                            key={index}
+                            style={styles.summaryRightNumberContainer}
+                        >
+                            <Text style={styles.summaryRightNumber}>
+                                {5 - index}
+                            </Text>
+
+                            <MaterialIcons name="star" size={10} color="#7D848D" style={{ marginRight: 6, marginLeft: 2 }} />
+
+                            <View style={{ flex: 1 }}>
+                                <ReviewBar percentage={percentage} />
+                            </View>
+                        </View>
                     ))}
-                    <Ionicons name="information-circle-outline" size={18} color="#888" style={{ marginTop: 5 }} />
                 </View>
             </View>
 

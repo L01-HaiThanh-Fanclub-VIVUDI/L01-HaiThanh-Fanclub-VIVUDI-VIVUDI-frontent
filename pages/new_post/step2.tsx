@@ -27,7 +27,7 @@ const CreatePostScreen: FC = (): JSX.Element => {
     const [mediaType] = useState(params.mediaType);
     const [caption, setCaption] = useState<string>('');
     const [visibility, setVisibility] = useState<'PUBLIC' | 'PRIVATE' | 'FRIENDS'>('PUBLIC');
-    const [rating, setRating] = useState<number>(0);
+    const [rating, setRating] = useState<number>(4);
     const [location, setLocation] = useState<Position | null>(null);
     const [locationName, setLocationName] = useState<string>('');
     const [locationType, setLocationType] = useState<'coffee' | 'street_food' | 'restaurant' | 'other'>('other');

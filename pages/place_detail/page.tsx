@@ -59,7 +59,7 @@ const PlaceDetailScreen = () => {
             try {
                 console.log("noew fetch");
                 const [postsResponse, positionResponse] = await Promise.all([
-                    postService.getAllPosts(1, 100),
+                    postService.getPostsByPositionId(id, 1, 100),
                     positionService.getPositionById(id),
                 ]);
 
@@ -83,7 +83,7 @@ const PlaceDetailScreen = () => {
                                 userLoc.latitude,
                                 userLoc.longitude,
                                 position.point.coordinates[1],
-                                position.point.coordinates[0] 
+                                position.point.coordinates[0]
                             );
 
                             if (distance < 0.1) {
@@ -107,10 +107,7 @@ const PlaceDetailScreen = () => {
                 }
 
                 if (postsResponse?.data?.data) {
-                    const posts = postsResponse.data.data;
-                    const placePosts = posts.filter((p: Post) => p.location_id === id) || [];
-
-                    console.log("Posts for location", id, placePosts.length);
+                    const placePosts = postsResponse.data.data;
 
                     if (placePosts.length > 0) {
                         console.log("Sample post:", JSON.stringify(placePosts[0], null, 2));
@@ -184,6 +181,11 @@ const PlaceDetailScreen = () => {
                         }
                     });
 
+                    const total = placePosts.length;
+                    const breakdownPercentages = breakdown.map(count =>
+                        total > 0 ? (count / total) * 100 : 0
+                    );
+
 
                     setOverviewData(prev => ({
                         ...prev,
@@ -200,7 +202,7 @@ const PlaceDetailScreen = () => {
                     setReviewData({
                         totalRating: parseFloat(avgRating.toFixed(1)),
                         totalReviews: placePosts.length,
-                        ratingBreakdown: breakdown,
+                        ratingBreakdown: breakdownPercentages,
                         reviews: allReviews,
                     });
 

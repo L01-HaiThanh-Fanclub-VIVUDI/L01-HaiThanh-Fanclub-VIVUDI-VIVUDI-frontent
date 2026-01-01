@@ -198,6 +198,18 @@ export const styles = StyleSheet.create({
         paddingRight: 10,
         justifyContent: 'center',
     },
+    summaryRightNumber: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#7D848D',
+        width: 15,
+        textAlign: 'right'
+    },
+    summaryRightNumberContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 6
+    },
     reviewBarContainer: {
         height: 8,
         backgroundColor: '#E0E0E0',
@@ -206,13 +218,13 @@ export const styles = StyleSheet.create({
     },
     reviewBarFill: {
         height: '100%',
-        backgroundColor: '#F5C300', 
+        backgroundColor: '#F5C300',
         borderRadius: 4,
     },
     reviewCardsContainer: {
         flexDirection: 'row',
         marginBottom: 20,
-        marginHorizontal: -15, 
+        marginHorizontal: -15,
     },
     reviewCardPlaceholder: {
         width: 150,

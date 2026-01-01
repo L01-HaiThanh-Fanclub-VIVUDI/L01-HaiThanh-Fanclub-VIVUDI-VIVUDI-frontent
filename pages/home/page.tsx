@@ -83,6 +83,15 @@ const HomePage: FC = (): JSX.Element => {
     const [reelItems, setReelItems] = useState<ReelItem[]>([]);
     const [currentLocation, setCurrentLocation] = useState<string>('Đang tải...');
     const [searchRadius, setSearchRadius] = useState(10000);
+    const homeImages = [
+        require('@/assets/images/home/home1.png'),
+        require('@/assets/images/home/home2.png'),
+        require('@/assets/images/home/home3.png'),
+        require('@/assets/images/home/home4.png'),
+        require('@/assets/images/home/home5.png'),
+        require('@/assets/images/home/home6.png'),
+        require('@/assets/images/home/home7.png'),
+    ];
 
     const fetchNearbyPositions = async () => {
         try {
@@ -137,7 +146,7 @@ const HomePage: FC = (): JSX.Element => {
                     distance: pos.distance || pos.distance == 0
                         ? `${(pos.distance / 1000).toFixed(1)} km`
                         : 'N/A',
-                    image: require('@/assets/images/home/home1.png'),
+                    image: homeImages[Math.floor(Math.random() * homeImages.length)],
                     position: pos,
                 }));
                 setReelItems(items);
