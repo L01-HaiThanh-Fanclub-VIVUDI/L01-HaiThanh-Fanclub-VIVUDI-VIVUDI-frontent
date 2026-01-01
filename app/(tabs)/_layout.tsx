@@ -1,13 +1,10 @@
-import { Tabs, useNavigation } from 'expo-router';
+import { appColors } from '@/settings';
 import { PAGE_ID } from '@/settings/navigation/page';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons, Feather } from '@expo/vector-icons';
 import { AppStackNavigation } from '@/settings/navigation/route_params';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { useNavigationState } from '@react-navigation/native';
-
-const ACTIVE_COLOR = '#24BAEC';
-const INACTIVE_COLOR = '#7D848D';
-const MIDDLE_BUTTON_COLOR = '#FF678B';
+import { Tabs, useNavigation } from 'expo-router';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export default function TabsLayout() {
     const navigation = useNavigation<AppStackNavigation>();
@@ -21,7 +18,7 @@ export default function TabsLayout() {
             if (isReelsActive) {
                 navigation.push(PAGE_ID.NEW_REEL_TABS, { screen: PAGE_ID.MEDIA });
             } else {
-                navigation.push(PAGE_ID.PRIVATE_TABS, {screen: PAGE_ID.PLACE_SEARCH});
+                navigation.push(PAGE_ID.PRIVATE_TABS, { screen: PAGE_ID.PLACE_SEARCH });
             }
         };
         return <CustomTabBarButton
@@ -46,8 +43,8 @@ export default function TabsLayout() {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: true,
-                tabBarActiveTintColor: ACTIVE_COLOR,
-                tabBarInactiveTintColor: INACTIVE_COLOR,
+                tabBarActiveTintColor: appColors.tabActive,
+                tabBarInactiveTintColor: appColors.tabInactive,
                 tabBarStyle: {
                     position: 'absolute',
                     left: 20,
@@ -153,7 +150,7 @@ const styles: any = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 30,
-        backgroundColor: MIDDLE_BUTTON_COLOR,
+        backgroundColor: appColors.primary,
         justifyContent: 'center',
         alignItems: 'center',
         ...shadowStyle,

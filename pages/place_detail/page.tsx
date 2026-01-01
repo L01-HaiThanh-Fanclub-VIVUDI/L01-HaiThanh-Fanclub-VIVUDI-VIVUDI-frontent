@@ -9,7 +9,7 @@ import ReviewsTabContent from './review_tab';
 import { styles } from './styles';
 import { IconName, Tab } from './types';
 
-const MAIN_COLOR = '#FF678B';
+const MAIN_COLOR = appColors.primary;
 
 const PlaceDetailScreen = () => {
     const [tab, setTab] = useState<Tab>('overview');

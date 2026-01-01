@@ -1,6 +1,7 @@
 import ThemedView from '@/components/atoms/themed_view';
 import { Position } from '@/models/position.dto';
 import { positionService } from '@/services/position.service';
+import { appColors } from '@/settings';
 import { PAGE_ID } from '@/settings/navigation/page';
 import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { Feather, Ionicons } from '@expo/vector-icons';
@@ -8,26 +9,18 @@ import * as Location from 'expo-location';
 import { useNavigation } from 'expo-router';
 import { FC, JSX, useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
     Alert,
-    Dimensions // Thêm cái này để tính chiều rộng
-    ,
-
-
-
-
-
-
+    Dimensions,
     FlatList,
     Image,
     ImageBackground,
-    ScrollView, // Thêm cái này
+    ScrollView,
     Text,
-    TextInput,
     TouchableOpacity,
     View
 } from 'react-native';
-// Thay vì dùng SafeAreaView bao ngoài, ta dùng hook này để lấy padding
+
+import LoadingScreen from '@/components/ui/loading_screen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './styles';
 
@@ -84,16 +77,13 @@ const SectionHeader: FC<{ title: string, handleViewAllClick: () => void }> = ({ 
 
 const HomePage: FC = (): JSX.Element => {
     const navigation = useNavigation<AppStackNavigation>();
-    const insets = useSafeAreaInsets(); // Hook lấy khoảng cách an toàn
+    const insets = useSafeAreaInsets();
     const [positions, setPositions] = useState<Position[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [reelItems, setReelItems] = useState<ReelItem[]>([]);
     const [currentLocation, setCurrentLocation] = useState<string>('Đang tải...');
-    const [searchRadius, setSearchRadius] = useState(10000); // Default 10km
+    const [searchRadius, setSearchRadius] = useState(10000);
 
-    /******************************************************************************
-     * Fetch nearby positions based on user location
-     ******************************************************************************/
     const fetchNearbyPositions = async () => {
         try {
             const { status } = await Location.requestForegroundPermissionsAsync();
@@ -107,10 +97,9 @@ const HomePage: FC = (): JSX.Element => {
 
             let currentRadius = searchRadius;
             const MIN_POSITIONS = 5;
-            const MAX_RADIUS = 100000; // 100km max
+            const MAX_RADIUS = 100000;
             let positions: Position[] = [];
 
-            // Keep expanding radius until we have enough positions or hit max
             while (positions.length < MIN_POSITIONS && currentRadius <= MAX_RADIUS) {
                 console.log(`Searching with radius: ${currentRadius}m`);
 
@@ -126,15 +115,12 @@ const HomePage: FC = (): JSX.Element => {
                     positions = response.data;
 
                     if (positions.length >= MIN_POSITIONS) {
-                        // Found enough positions
                         setSearchRadius(currentRadius);
                         break;
                     } else if (positions.length > 0 && currentRadius >= MAX_RADIUS) {
-                        // Reached max, use what we have
                         setSearchRadius(currentRadius);
                         break;
                     } else {
-                        // Not enough, double the radius
                         currentRadius = currentRadius * 2;
                     }
                 } else {
@@ -175,22 +161,27 @@ const HomePage: FC = (): JSX.Element => {
         }
     };
 
-    const expandSearchRadius = () => {
-        const newRadius = searchRadius * 2; // Double the radius
-        setSearchRadius(newRadius);
-        fetchNearbyPositions();
-    };
-
     useEffect(() => {
         fetchNearbyPositions();
     }, []);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            console.log('🔄 Auto-fetching location (1 minute interval)...');
+            fetchNearbyPositions();
+        }, 60000);
+
+        return () => {
+            console.log('Clearing location fetch interval');
+            clearInterval(intervalId);
+        };
+    }, [searchRadius]);
 
     const handleViewAllClick = () => {
         navigation.navigate(PAGE_ID.HOME_TABS, { screen: PAGE_ID.REELS });
     }
 
     const handleRoutePress = (position: Position) => {
-        // Navigate to map with destination parameter (nested navigation)
         navigation.navigate(PAGE_ID.HOME_TABS, {
             screen: PAGE_ID.MAP,
             params: { destination: JSON.stringify(position) }
@@ -243,24 +234,22 @@ const HomePage: FC = (): JSX.Element => {
                         </View>
                     </View>
 
-                    {/* Thanh Search - Đè lên phần giao nhau giữa nền hồng và nền trắng */}
-                    <View style={[styles.searchContainer, { marginTop: 20, marginHorizontal: 20 }]}>
-                        <Feather name="search" size={20} color="#9CA3AF" />
-                        <TextInput
-                            style={styles.searchInput}
-                            placeholder="Search"
-                            placeholderTextColor="#9CA3AF"
-                        />
-                    </View>
+                    <TouchableOpacity
+                        style={[styles.searchContainer, { marginTop: 20, marginHorizontal: 20 }]}
+                        onPress={() => navigation.navigate(PAGE_ID.PRIVATE_TABS, { screen: PAGE_ID.PLACE_SEARCH })}
+                        activeOpacity={0.7}
+                    >
+                        <Feather name="search" size={20} color={appColors.textPlaceholder} />
+                        <Text style={styles.searchInput}>Search</Text>
+                    </TouchableOpacity>
                 </View>
 
-                {/* Phần nội dung bên dưới */}
                 <ThemedView style={{ marginTop: 20 }}>
                     <SectionHeader title="Reels" handleViewAllClick={handleViewAllClick} />
                     {isLoading ? (
                         <View style={{ padding: 40, alignItems: 'center' }}>
-                            <ActivityIndicator size="large" color="#FF678B" />
-                            <Text style={{ marginTop: 12, color: '#7D848D' }}>Đang tải địa điểm...</Text>
+                            <LoadingScreen isVisible={isLoading} onHidden={() => { }} />
+                            <Text style={{ marginTop: 12, color: appColors.textSecondary }}>Đang tải địa điểm...</Text>
                         </View>
                     ) : (
                         <FlatList

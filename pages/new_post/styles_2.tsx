@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         top: 4,
         right: 4,
-        backgroundColor: '#FF678B',
+        backgroundColor: appColors.primary,
         width: 24,
         height: 24,
         borderRadius: 12,
@@ -142,7 +142,7 @@ export const styles = StyleSheet.create({
         color: '#1B1E28',
     },
     dropdownOptionTextSelected: {
-        color: '#FF678B',
+        color: appColors.primary,
         fontWeight: '600',
     },
     dropdownItem: {
@@ -208,7 +208,7 @@ export const styles = StyleSheet.create({
         flex: 2,
         paddingVertical: 14,
         borderRadius: 8,
-        backgroundColor: '#FF678B',
+        backgroundColor: appColors.primary,
         alignItems: 'center',
         justifyContent: 'center',
     },

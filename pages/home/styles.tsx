@@ -1,3 +1,4 @@
+import { appColors } from '@/settings';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -63,7 +64,7 @@ export const styles = StyleSheet.create({
     locationLabel: {
         fontSize: 14,
         fontFamily: 'SFUISemibold',
-        color: '#7D848D',
+        color: '#ffffff',
     },
     locationRow: {
         flexDirection: 'row',
@@ -141,10 +142,10 @@ export const styles = StyleSheet.create({
         marginTop: 5,
         paddingRight: 5,
     }, reelCardContentContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-        borderRadius: 15, 
-        padding: 15,      
-        overflow: 'hidden', 
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 15,
+        padding: 15,
+        overflow: 'hidden',
     },
     reelCardLocationText: {
         fontSize: 14,
@@ -164,7 +165,7 @@ export const styles = StyleSheet.create({
         color: '#000000',
     },
     routeButton: {
-        backgroundColor: '#24BAEC',
+        backgroundColor: appColors.secondary,
         paddingHorizontal: 20,
         paddingVertical: 8,
         borderRadius: 15,

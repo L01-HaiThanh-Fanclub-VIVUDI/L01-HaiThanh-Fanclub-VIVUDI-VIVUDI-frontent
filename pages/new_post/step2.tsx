@@ -12,6 +12,7 @@ import React, { FC, JSX, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { styles } from './styles_2';
+import { appColors } from '@/settings';
 
 export type CreatePostParams = {
     selectedMediaUri?: string[];
@@ -22,26 +23,20 @@ const CreatePostScreen: FC = (): JSX.Element => {
     const params = useLocalSearchParams<CreatePostParams>();
     const navigation = useNavigation<AppStackNavigation>();
 
-    /******************************************************************************
-     * State Management
-     ******************************************************************************/
     const [selectedMediaUris] = useState(params.selectedMediaUri);
     const [mediaType] = useState(params.mediaType);
     const [caption, setCaption] = useState<string>('');
     const [visibility, setVisibility] = useState<'PUBLIC' | 'PRIVATE' | 'FRIENDS'>('PUBLIC');
     const [rating, setRating] = useState<number>(0);
     const [location, setLocation] = useState<Position | null>(null);
-    const [locationName, setLocationName] = useState<string>(''); // Tên địa điểm do user nhập
-    const [locationType, setLocationType] = useState<'coffee' | 'street_food' | 'restaurant' | 'other'>('other'); // Loại địa điểm
-    const [currentCoords, setCurrentCoords] = useState<{ longitude: number; latitude: number } | null>(null); // Tọa độ GPS
+    const [locationName, setLocationName] = useState<string>('');
+    const [locationType, setLocationType] = useState<'coffee' | 'street_food' | 'restaurant' | 'other'>('other');
+    const [currentCoords, setCurrentCoords] = useState<{ longitude: number; latitude: number } | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [showVisibilityDropdown, setShowVisibilityDropdown] = useState(false);
     const [showLocationTypeDropdown, setShowLocationTypeDropdown] = useState(false);
     const [isDetectingLocation, setIsDetectingLocation] = useState(true);
 
-    /******************************************************************************
-     * Location Detection - Auto detect on mount
-     ******************************************************************************/
     useEffect(() => {
         detectLocation();
     }, []);
@@ -50,7 +45,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
         try {
             setIsDetectingLocation(true);
 
-            // Request location permission
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 Alert.alert('Lỗi', 'Cần quyền truy cập vị trí để tạo bài viết');
@@ -58,7 +52,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 return;
             }
 
-            // Get current GPS coordinates
             const currentLocation = await Location.getCurrentPositionAsync({
                 accuracy: Location.Accuracy.Balanced,
             });
@@ -66,21 +59,17 @@ const CreatePostScreen: FC = (): JSX.Element => {
 
             console.log('GPS Coordinates:', { longitude, latitude });
 
-            // IMPORTANT: Save coordinates for creating new position later
             setCurrentCoords({ longitude, latitude });
 
-            // Find nearby positions from backend (within 50m radius)
             const response = await positionService.getNearbyPositions(longitude, latitude, 50);
 
             console.log(response);
             if (response.success && response.data && response.data.length > 0) {
-                // Use the closest location
                 setLocation(response.data[0]);
                 console.log('Found nearby location:', response.data[0].name);
             } else {
-                // No nearby location - user will need to name it
                 console.log('No location found - user should enter name');
-                setLocation(null); // Make sure location is null
+                setLocation(null);
             }
         } catch (error) {
             console.error('Location detection error:', error);
@@ -93,23 +82,17 @@ const CreatePostScreen: FC = (): JSX.Element => {
         }
     };
 
-    /******************************************************************************
-     * Post Creation Handler
-     ******************************************************************************/
     const onPublishPress = async () => {
-        // Validation
         if (!caption.trim()) {
             Alert.alert('Lỗi', 'Vui lòng nhập nội dung bài viết');
             return;
         }
 
-        // Check if we have GPS coordinates
         if (!location && !currentCoords) {
             Alert.alert('Lỗi', 'Không thể xác định vị trí. Vui lòng thử lại');
             return;
         }
 
-        // If no existing location and user entered a custom name, we'll create new position
         if (!location && !locationName.trim()) {
             Alert.alert('Lỗi', 'Vui lòng nhập tên địa điểm');
             return;
@@ -120,11 +103,9 @@ const CreatePostScreen: FC = (): JSX.Element => {
         try {
             let finalLocationId = location?.id;
 
-            // If user entered a custom location name, create new position first
             if (locationName.trim() && currentCoords) {
                 console.log('Creating new position:', locationName);
 
-                // Use reverse geocoding to get address from coordinates
                 let address = 'Unknown address';
                 try {
                     const geocodedLocation = await Location.reverseGeocodeAsync({
@@ -136,7 +117,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
 
                     if (geocodedLocation && geocodedLocation.length > 0) {
                         const loc = geocodedLocation[0];
-                        // Build address from components
                         address = [
                             loc.streetNumber,
                             loc.street,
@@ -149,10 +129,8 @@ const CreatePostScreen: FC = (): JSX.Element => {
                     }
                 } catch (geocodeError) {
                     console.error('Reverse geocoding failed:', geocodeError);
-                    // Continue with unknown address
                 }
 
-                // Create new position with geocoded address
                 const createPositionResponse = await positionService.createPosition({
                     name: locationName.trim(),
                     address: address,
@@ -178,7 +156,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 return;
             }
 
-            // Prepare post data
             const postData: CreatePostRequest = {
                 content: caption.trim(),
                 location_id: finalLocationId,
@@ -186,7 +163,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 rating: rating > 0 ? rating : undefined,
             };
 
-            // Create post with media
             const response = await postService.createPost(
                 postData,
                 selectedMediaUris || []
@@ -197,7 +173,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                     {
                         text: 'OK',
                         onPress: () => {
-                            // Navigate back to home
                             navigation.navigate(PAGE_ID.HOME_TABS, { screen: PAGE_ID.HOME });
                         }
                     }
@@ -213,9 +188,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
         }
     };
 
-    /******************************************************************************
-     * UI Event Handlers
-     ******************************************************************************/
     const onCancelPress = () => {
         navigation.goBack();
     };
@@ -225,13 +197,9 @@ const CreatePostScreen: FC = (): JSX.Element => {
     };
 
     const handleStarPress = (star: number) => {
-        // Toggle: if same star clicked, deselect
         setRating(rating === star ? 0 : star);
     };
 
-    /******************************************************************************
-     * Render Functions
-     ******************************************************************************/
     const renderSelectedThumbnail = ({ item, index }: { item: string, index: number }) => {
         return (
             <View style={styles.selectedThumbnailWrapper}>
@@ -254,7 +222,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={onCancelPress}>
                     <Text style={styles.cancelButtonText}>Cancel</Text>
@@ -263,7 +230,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 <View style={{ width: 60 }} />
             </View>
 
-            {/* Media Preview */}
             <View style={styles.previewContainer}>
                 {selectedMediaUris?.length ? (
                     <FlatList
@@ -282,7 +248,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 )}
             </View>
 
-            {/* Caption Input */}
             <TextInput
                 style={styles.captionInput}
                 placeholder="Thêm chú thích..."
@@ -294,7 +259,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 editable={!isLoading}
             />
 
-            {/* Location Name Input - Show if no location found */}
             {!location && currentCoords && (
                 <View style={styles.section}>
                     <Text style={styles.sectionLabel}>Tên địa điểm</Text>
@@ -309,15 +273,13 @@ const CreatePostScreen: FC = (): JSX.Element => {
                         onChangeText={setLocationName}
                         editable={!isDetectingLocation}
                     />
-
-                    {/* Location Type Dropdown */}
                     <Text style={[styles.sectionLabel, { marginTop: 16 }]}>Loại địa điểm</Text>
                     <TouchableOpacity
                         onPress={() => setShowLocationTypeDropdown(!showLocationTypeDropdown)}
                         style={styles.visibilitySelector}
                         disabled={isLoading}
                     >
-                        <Ionicons name="business-outline" size={20} color="#FF678B" />
+                        <Ionicons name="business-outline" size={20} color={appColors.primary} />
                         <Text style={styles.visibilityText}>
                             {locationType === 'coffee' && 'Quán cà phê'}
                             {locationType === 'street_food' && 'Ăn vặt'}
@@ -327,7 +289,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                         <Ionicons name="chevron-down" size={20} color="#888" />
                     </TouchableOpacity>
 
-                    {/* Type Dropdown */}
                     {showLocationTypeDropdown && (
                         <View style={styles.dropdown}>
                             <TouchableOpacity
@@ -375,18 +336,16 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 </View>
             )}
 
-            {/* Show existing location if found */}
             {location && (
                 <View style={styles.section}>
                     <Text style={styles.sectionLabel}>Địa điểm</Text>
                     <View style={styles.locationDisplay}>
-                        <Ionicons name="location" size={20} color="#FF678B" />
+                        <Ionicons name="location" size={20} color={appColors.primary} />
                         <Text style={styles.locationText}>{location.name}</Text>
                     </View>
                 </View>
             )}
 
-            {/* Visibility Selector */}
             <View style={styles.section}>
                 <Text style={styles.sectionLabel}>Chế độ hiển thị</Text>
                 <TouchableOpacity
@@ -394,12 +353,11 @@ const CreatePostScreen: FC = (): JSX.Element => {
                     style={styles.visibilitySelector}
                     disabled={isLoading}
                 >
-                    <Ionicons name="globe-outline" size={20} color="#FF678B" />
+                    <Ionicons name="globe-outline" size={20} color={appColors.primary} />
                     <Text style={styles.visibilityText}>{visibility}</Text>
                     <Ionicons name="chevron-down" size={20} color="#888" />
                 </TouchableOpacity>
 
-                {/* Dropdown */}
                 {showVisibilityDropdown && (
                     <View style={styles.dropdown}>
                         {(['PUBLIC', 'PRIVATE', 'FRIENDS'] as const).map(option => (
@@ -423,17 +381,16 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 )}
             </View>
 
-            {/* Location Display */}
             <View style={styles.section}>
                 <Text style={styles.sectionLabel}>Vị trí</Text>
                 {isDetectingLocation ? (
                     <View style={styles.locationDisplay}>
-                        <ActivityIndicator size="small" color="#FF678B" />
+                        <ActivityIndicator size="small" color={appColors.primary} />
                         <Text style={styles.locationText}>Đang xác định vị trí...</Text>
                     </View>
                 ) : location ? (
                     <View style={styles.locationDisplay}>
-                        <Ionicons name="location" size={20} color="#FF678B" />
+                        <Ionicons name="location" size={20} color={appColors.primary} />
                         <View style={styles.locationTextContainer}>
                             <Text style={styles.locationName}>{location.name}</Text>
                             <Text style={styles.locationAddress}>{location.address}</Text>
@@ -441,13 +398,12 @@ const CreatePostScreen: FC = (): JSX.Element => {
                     </View>
                 ) : (
                     <TouchableOpacity onPress={detectLocation} style={styles.locationDisplay}>
-                        <Ionicons name="refresh" size={20} color="#FF678B" />
+                        <Ionicons name="refresh" size={20} color={appColors.primary} />
                         <Text style={styles.locationText}>Thử lại</Text>
                     </TouchableOpacity>
                 )}
             </View>
 
-            {/* Rating Selector */}
             {location && (
                 <View style={styles.section}>
                     <Text style={styles.sectionLabel}>Đánh giá địa điểm</Text>
@@ -469,7 +425,6 @@ const CreatePostScreen: FC = (): JSX.Element => {
                 </View>
             )}
 
-            {/* Bottom Buttons */}
             <View style={styles.bottomButtonsContainer}>
                 <TouchableOpacity
                     onPress={onDraftPress}

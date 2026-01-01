@@ -19,7 +19,40 @@ export const stackScreenSettings: NativeStackNavigationOptions = {
 };
 
 /******************************************************************************
- * Màu sắc ứng dụng, bao gồm màu sáng và tối.                                 *
+ * Màu sắc ứng dụng chính - App Colors                                        *
+ * Tập trung tất cả màu sắc được sử dụng trong app để dễ quản lý              *
+ ******************************************************************************/
+export const appColors = {
+    // Primary colors
+    primary: '#FF678B',           // Màu chính (nút, icon quan trọng)
+    secondary: '#24BAEC',         // Màu phụ (active state)
+
+    // Text colors
+    textPrimary: '#11181C',       // Text chính
+    textSecondary: '#7D848D',     // Text phụ, mờ hơn
+    textPlaceholder: '#9CA3AF',   // Placeholder text
+
+    // Background colors
+    background: '#FFFFFF',        // Nền chính
+    backgroundSecondary: '#F5F5F5', // Nền phụ
+
+    // Status colors
+    success: '#10B981',           // Màu thành công
+    error: '#EF4444',             // Màu lỗi
+    warning: '#F59E0B',           // Màu cảnh báo
+    info: '#3B82F6',              // Màu thông tin
+
+    // Border & Divider
+    border: '#E0E0E0',            // Border mặc định
+    divider: '#F0F0F0',           // Đường phân cách
+
+    // Tab colors
+    tabActive: '#24BAEC',         // Tab đang active
+    tabInactive: '#7D848D',       // Tab không active
+};
+
+/******************************************************************************
+ * Màu sắc theo theme (light/dark mode)                                       *
  * - tintColorLight: Màu chính cho giao diện sáng.                            *
  * - tintColorDark: Màu chính cho giao diện tối.                              *
  ******************************************************************************/
@@ -33,26 +66,21 @@ const tintColorDark = '#fff';
  ******************************************************************************/
 export const colors = {
     light: {
-        text: '#11181C',
-        background: '#fff',
+        text: appColors.textPrimary,
+        background: appColors.background,
         tint: tintColorLight,
         icon: '#687076',
-        tabIconDefault: '#687076',
-        tabIconSelected: tintColorLight,
+        tabIconDefault: appColors.tabInactive,
+        tabIconSelected: appColors.tabActive,
     },
     dark: {
-        // text: '#ECEDEE',
-        // background: '#2E2E2E',
-        // tint: tintColorDark,
-        // icon: '#9BA1A6',
-        // tabIconDefault: '#9BA1A6',
-        // tabIconSelected: tintColorDark,
-        text: '#11181C',
-        background: '#fff',
+        // Dark mode currently uses same colors as light
+        text: appColors.textPrimary,
+        background: appColors.background,
         tint: tintColorLight,
         icon: '#687076',
-        tabIconDefault: '#687076',
-        tabIconSelected: tintColorLight,
+        tabIconDefault: appColors.tabInactive,
+        tabIconSelected: appColors.tabActive,
     },
 };
 

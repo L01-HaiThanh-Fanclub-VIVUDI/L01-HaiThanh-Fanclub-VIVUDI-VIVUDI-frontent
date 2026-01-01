@@ -1,8 +1,5 @@
 import { GOOGLE_MAPS_API_KEY } from '@/settings';
 
-/******************************************************************************
- * Google Directions API Response Types                                       *
- ******************************************************************************/
 interface LatLng {
     lat: number;
     lng: number;
@@ -39,10 +36,6 @@ interface RouteInfo {
     duration: string;
 }
 
-/******************************************************************************
- * Polyline Decoder                                                           *
- * Decodes Google's encoded polyline format to array of coordinates           *
- ******************************************************************************/
 const decodePolyline = (encoded: string): Array<{ latitude: number; longitude: number }> => {
     const poly: Array<{ latitude: number; longitude: number }> = [];
     let index = 0;
@@ -85,19 +78,9 @@ const decodePolyline = (encoded: string): Array<{ latitude: number; longitude: n
     return poly;
 };
 
-/******************************************************************************
- * Google Maps Service                                                        *
- ******************************************************************************/
 class GoogleMapsService {
     private readonly baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
 
-    /**
-     * Get directions between two points
-     * @param origin - Starting point { latitude, longitude }
-     * @param destination - Ending point { latitude, longitude }
-     * @param mode - Travel mode: 'driving' | 'walking' | 'bicycling' | 'transit'
-     * @returns Route information including coordinates, distance, and duration
-     */
     async getDirections(
         origin: { latitude: number; longitude: number },
         destination: { latitude: number; longitude: number },
@@ -109,24 +92,23 @@ class GoogleMapsService {
 
             const url = `${this.baseUrl}?origin=${originStr}&destination=${destinationStr}&mode=${mode}&key=${GOOGLE_MAPS_API_KEY}`;
 
-            console.log('🗺️ Fetching directions from Google Maps API...');
+            console.log('Fetching directions from Google Maps API...');
 
             const response = await fetch(url);
             const data: DirectionsResponse = await response.json();
 
             if (data.status !== 'OK' || !data.routes || data.routes.length === 0) {
-                console.error('❌ Directions API error:', data.status);
+                console.error('Directions API error:', data.status);
                 return null;
             }
 
             const route = data.routes[0];
             const leg = route.legs[0];
 
-            // Decode polyline to get route coordinates
             const coordinates = decodePolyline(route.overview_polyline.points);
 
-            console.log(`✅ Route fetched: ${leg.distance.text}, ${leg.duration.text}`);
-            console.log(`📍 Route has ${coordinates.length} points`);
+            console.log(`Route fetched: ${leg.distance.text}, ${leg.duration.text}`);
+            console.log(`Route has ${coordinates.length} points`);
 
             return {
                 coordinates,
@@ -134,7 +116,7 @@ class GoogleMapsService {
                 duration: leg.duration.text,
             };
         } catch (error) {
-            console.error('❌ Error fetching directions:', error);
+            console.error('Error fetching directions:', error);
             return null;
         }
     }

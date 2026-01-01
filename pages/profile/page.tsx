@@ -40,11 +40,9 @@ const EditProfilePage: FC = (): JSX.Element => {
                     onPress: async () => {
                         try {
                             show();
-                            // Remove auth token
                             await AsyncStorage.removeItem('auth_token');
                             console.log('Logged out - token removed');
 
-                            // Navigate to login
                             router.replace('/(auth)/login');
                         } catch (error) {
                             console.error('Logout error:', error);
@@ -148,7 +146,6 @@ const EditProfilePage: FC = (): JSX.Element => {
                         </View>
                     </View>
 
-                    {/* Logout Button */}
                     <TouchableOpacity
                         style={styles.logoutButton}
                         onPress={handleLogout}

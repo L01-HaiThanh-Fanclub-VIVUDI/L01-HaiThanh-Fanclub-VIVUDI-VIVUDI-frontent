@@ -1,3 +1,4 @@
+import LoadingScreen from '@/components/ui/loading_screen';
 import { Comment } from '@/models/comment.dto';
 import { Post } from '@/models/post.dto';
 import { commentService } from '@/services/comment.service';
@@ -9,8 +10,8 @@ import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { FC, JSX, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { styles } from './styles';
+import { appColors } from '@/settings';
 
 export type PostDetailParams = {
     id: string;
@@ -21,9 +22,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
     const navigation = useNavigation<AppStackNavigation>();
     const postId = params.id as string;
 
-    /******************************************************************************
-     * State Management
-     ******************************************************************************/
     const [post, setPost] = useState<Post | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
     const [isLoadingPost, setIsLoadingPost] = useState(true);
@@ -34,9 +32,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [imageUrls, setImageUrls] = useState<string[]>([]);
 
-    /******************************************************************************
-     * Fetch Post Details
-     ******************************************************************************/
     const fetchPost = async () => {
         try {
             console.log('Fetching post:', postId);
@@ -46,7 +41,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
             if (response.success && response.data) {
                 setPost(response.data);
 
-                // Convert media URLs to direct links
                 if (response.data.medias && response.data.medias.length > 0) {
                     const urls = response.data.medias.map(media =>
                         googleDriveService.getDriveLink(media.url)
@@ -66,9 +60,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
         }
     };
 
-    /******************************************************************************
-     * Fetch Comments
-     ******************************************************************************/
     const fetchComments = async () => {
         try {
             console.log('Fetching comments for post:', postId);
@@ -87,9 +78,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
         }
     };
 
-    /******************************************************************************
-     * Submit Comment
-     ******************************************************************************/
     const handleSubmitComment = async () => {
         if (!commentText.trim()) {
             Alert.alert('Lỗi', 'Vui lòng nhập nội dung bình luận');
@@ -117,9 +105,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
         }
     };
 
-    /******************************************************************************
-     * Load data on mount
-     ******************************************************************************/
     useEffect(() => {
         if (postId) {
             fetchPost();
@@ -127,9 +112,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
         }
     }, [postId]);
 
-    /******************************************************************************
-     * Render Comment Item
-     ******************************************************************************/
     const renderComment = ({ item }: { item: Comment }) => (
         <View style={styles.commentItem}>
             <Image
@@ -146,23 +128,18 @@ const PostDetailScreen: FC = (): JSX.Element => {
         </View>
     );
 
-    /******************************************************************************
-     * Render Loading State
-     ******************************************************************************/
     if (isLoadingPost) {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.centerContainer}>
-                    <ActivityIndicator size="large" color="#FF678B" />
+                    <LoadingScreen isVisible={isLoadingPost} onHidden={() => { }} />
+
                     <Text style={styles.loadingText}>Đang tải bài viết...</Text>
                 </View>
             </SafeAreaView>
         );
     }
 
-    /******************************************************************************
-     * Render Error State
-     ******************************************************************************/
     if (error || !post) {
         return (
             <SafeAreaView style={styles.container}>
@@ -176,12 +153,8 @@ const PostDetailScreen: FC = (): JSX.Element => {
         );
     }
 
-    /******************************************************************************
-     * Render Post Detail
-     ******************************************************************************/
     return (
         <SafeAreaView style={styles.container}>
-            {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back" size={24} color="#1B1E28" />
@@ -191,9 +164,7 @@ const PostDetailScreen: FC = (): JSX.Element => {
             </View>
 
             <ScrollView style={styles.scrollView}>
-                {/* Post Content */}
                 <View style={styles.postContainer}>
-                    {/* Author Info */}
                     <View style={styles.authorSection}>
                         <Image
                             source={post.author?.avt_url ? { uri: post.author.avt_url } : require('@/assets/images/home/avatar.png')}
@@ -211,19 +182,16 @@ const PostDetailScreen: FC = (): JSX.Element => {
                         </View>
                     </View>
 
-                    {/* Location */}
                     {post.location && (
                         <View style={styles.locationSection}>
-                            <Ionicons name="location" size={16} color="#FF678B" />
+                            <Ionicons name="location" size={16} color={appColors.primary} />
                             <Text style={styles.locationText}>{post.location.name}</Text>
                         </View>
                     )}
 
-                    {/* Post Content */}
                     <Text style={styles.postContent}>{post.content}</Text>
                 </View>
 
-                {/* Post Images Carousel - Full Width */}
                 {imageUrls.length > 0 && (
                     <View style={styles.mediaContainer}>
                         <FlatList
@@ -248,7 +216,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
                             )}
                         />
 
-                        {/* Pagination Dots */}
                         {imageUrls.length > 1 && (
                             <View style={styles.paginationContainer}>
                                 {imageUrls.map((_, index) => (
@@ -263,7 +230,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
                             </View>
                         )}
 
-                        {/* Image Counter */}
                         {imageUrls.length > 1 && (
                             <View style={styles.imageCounter}>
                                 <Text style={styles.imageCounterText}>
@@ -274,9 +240,7 @@ const PostDetailScreen: FC = (): JSX.Element => {
                     </View>
                 )}
 
-                {/* Rating - With Padding */}
                 <View style={styles.postContainer}>
-                    {/* Rating */}
                     {post.rating && (
                         <View style={styles.ratingSection}>
                             <Text style={styles.ratingLabel}>Đánh giá:</Text>
@@ -294,14 +258,13 @@ const PostDetailScreen: FC = (): JSX.Element => {
                     )}
                 </View>
 
-                {/* Comments Section */}
                 <View style={styles.commentsContainer}>
                     <Text style={styles.commentsTitle}>
                         Bình luận ({comments.length})
                     </Text>
 
                     {isLoadingComments ? (
-                        <ActivityIndicator size="small" color="#FF678B" style={{ marginVertical: 20 }} />
+                        <ActivityIndicator size="small" color={appColors.primary} style={{ marginVertical: 20 }} />
                     ) : comments.length > 0 ? (
                         <FlatList
                             data={comments}
@@ -315,7 +278,6 @@ const PostDetailScreen: FC = (): JSX.Element => {
                 </View>
             </ScrollView>
 
-            {/* Comment Input */}
             <View style={styles.commentInputContainer}>
                 <TextInput
                     style={styles.commentInput}
@@ -340,227 +302,5 @@ const PostDetailScreen: FC = (): JSX.Element => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FFFFFF',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E0E0E0',
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#1B1E28',
-    },
-    scrollView: {
-        flex: 1,
-    },
-    centerContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    loadingText: {
-        marginTop: 12,
-        fontSize: 16,
-        color: '#7D848D',
-    },
-    errorText: {
-        fontSize: 16,
-        color: '#FF3B30',
-        textAlign: 'center',
-        marginBottom: 12,
-    },
-    backButton: {
-        fontSize: 16,
-        color: '#FF678B',
-        fontWeight: '600',
-    },
-    postContainer: {
-        padding: 16,
-    },
-    authorSection: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-    authorAvatar: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        marginRight: 12,
-    },
-    authorInfo: {
-        flex: 1,
-    },
-    authorName: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#1B1E28',
-    },
-    postDate: {
-        fontSize: 14,
-        color: '#7D848D',
-        marginTop: 2,
-    },
-    locationSection: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 12,
-        gap: 4,
-    },
-    locationText: {
-        fontSize: 14,
-        color: '#7D848D',
-    },
-    postContent: {
-        fontSize: 16,
-        color: '#1B1E28',
-        lineHeight: 24,
-        marginBottom: 16,
-    },
-    mediaContainer: {
-        width: SCREEN_WIDTH,
-        height: SCREEN_WIDTH,
-        marginBottom: 16,
-    },
-    postImage: {
-        width: SCREEN_WIDTH,
-        height: SCREEN_WIDTH,
-    },
-    paginationContainer: {
-        position: 'absolute',
-        bottom: 12,
-        left: 0,
-        right: 0,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 6,
-    },
-    paginationDot: {
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    },
-    paginationDotActive: {
-        backgroundColor: '#FFFFFF',
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-    },
-    imageCounter: {
-        position: 'absolute',
-        top: 12,
-        right: 12,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        borderRadius: 12,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-    },
-    imageCounterText: {
-        color: '#FFFFFF',
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    ratingSection: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-    },
-    ratingLabel: {
-        fontSize: 14,
-        color: '#7D848D',
-    },
-    stars: {
-        flexDirection: 'row',
-        gap: 4,
-    },
-    commentsContainer: {
-        padding: 16,
-    },
-    commentsTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#1B1E28',
-        marginBottom: 16,
-    },
-    noCommentsText: {
-        fontSize: 14,
-        color: '#7D848D',
-        textAlign: 'center',
-        marginVertical: 20,
-    },
-    commentItem: {
-        flexDirection: 'row',
-        marginBottom: 16,
-    },
-    commentAvatar: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        marginRight: 12,
-    },
-    commentContent: {
-        flex: 1,
-    },
-    commentAuthor: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: '#1B1E28',
-        marginBottom: 4,
-    },
-    commentText: {
-        fontSize: 14,
-        color: '#1B1E28',
-        lineHeight: 20,
-        marginBottom: 4,
-    },
-    commentDate: {
-        fontSize: 12,
-        color: '#7D848D',
-    },
-    commentInputContainer: {
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        padding: 12,
-        borderTopWidth: 1,
-        borderTopColor: '#E0E0E0',
-        backgroundColor: '#FFFFFF',
-        gap: 8,
-    },
-    commentInput: {
-        flex: 1,
-        minHeight: 40,
-        maxHeight: 100,
-        backgroundColor: '#F5F5F5',
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        fontSize: 14,
-        color: '#1B1E28',
-    },
-    sendButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: '#FF678B',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    sendButtonDisabled: {
-        backgroundColor: '#FFB0C1',
-    },
-});
 
 export default PostDetailScreen;

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const MAIN_COLOR = '#FF678B';
+const MAIN_COLOR = appColors.primary;
 export const styles = StyleSheet.create({
     container: {
         flex: 1,

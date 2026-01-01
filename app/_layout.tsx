@@ -54,6 +54,39 @@ const AppStack = (): JSX.Element => {
 	}, []);
 
 	/******************************************************************************
+	 * Global error handler to suppress known Expo Go limitations
+	 * - expo-keep-awake error on Android (known Expo Go issue)
+	 ******************************************************************************/
+	useEffect(() => {
+		const errorHandler = (error: ErrorEvent) => {
+			const errorMessage = error.message || String(error);
+
+			// Suppress "Unable to activate keep awake" error (Expo Go limitation)
+			if (errorMessage.includes('Unable to activate keep awake')) {
+				console.warn('⚠️ Suppressed keep-awake error (Expo Go limitation)');
+				error.preventDefault?.();
+				return true;
+			}
+			return false;
+		};
+
+		// Add error listener
+		const originalHandler = ErrorUtils.getGlobalHandler();
+		ErrorUtils.setGlobalHandler((error, isFatal) => {
+			const errorMessage = String(error);
+			if (!errorMessage.includes('Unable to activate keep awake')) {
+				originalHandler(error, isFatal);
+			} else {
+				console.warn('⚠️ Suppressed keep-awake error (Expo Go limitation)');
+			}
+		});
+
+		return () => {
+			ErrorUtils.setGlobalHandler(originalHandler);
+		};
+	}, []);
+
+	/******************************************************************************
 	 * Đặt tên route mặc định cho navigation stack                                *
 	 * - Nếu là lần đầu, hiển thị onboard                                         *
 	 * - Nếu có token, hiển thị home                                              *

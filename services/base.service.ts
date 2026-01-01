@@ -96,39 +96,82 @@ const request = async <T>(method: RequestMethod, endpoint: string, options: Fetc
     };
 
     try {
-        // Thực hiện fetch với URL và các tùy chọn đã chuẩn bị
-        const response = await fetch(url.toString(), fetchOptions);
-        // Kiểm tra Content-Type để xác định cách xử lý response
-        const contentType = response.headers.get('Content-Type') || '';
+        const MAX_RETRIES = 3;
+        const INITIAL_RETRY_DELAY = 1000; // 1 second
+        let lastError: any;
 
-        // Nếu response không thành công (status không trong khoảng 200-299)
-        if (!response.ok) {
-            // Nếu response lỗi, vẫn trả về đúng ApiResponse từ backend
-            if (contentType.includes('application/json')) {
-                return await response.json();
-            };
-            const apiError = new ApiResponse<T>();
-            apiError.success = false;
-            apiError.message = await response.text();
-            apiError.statusCode = response.status as any;
-            apiError.error = apiError.message;
-            return apiError;
+        for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                // Thực hiện fetch với URL và các tùy chọn đã chuẩn bị
+                const response = await fetch(url.toString(), fetchOptions);
+                // Kiểm tra Content-Type để xác định cách xử lý response
+                const contentType = response.headers.get('Content-Type') || '';
+
+                // Nếu response status là 500 và còn retry attempts, thử lại
+                if (response.status >= 500 && attempt < MAX_RETRIES) {
+                    const retryDelay = INITIAL_RETRY_DELAY * Math.pow(2, attempt);
+                    console.warn(`⚠️ Server error ${response.status}, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${MAX_RETRIES})`);
+                    await new Promise(resolve => setTimeout(resolve, retryDelay));
+                    continue; // Retry
+                }
+
+                // Nếu response không thành công (status không trong khoảng 200-299)
+                if (!response.ok) {
+                    // Nếu response lỗi, vẫn trả về đúng ApiResponse từ backend
+                    if (contentType.includes('application/json')) {
+                        return await response.json();
+                    };
+                    const apiError = new ApiResponse<T>();
+                    apiError.success = false;
+                    apiError.message = await response.text();
+                    apiError.statusCode = response.status as any;
+                    apiError.error = apiError.message;
+                    return apiError;
+                };
+
+                // Nếu response là JSON, trả về ApiResponse từ backend
+                if (contentType.includes('application/json')) {
+                    // Luôn trả về đúng ApiResponse từ backend, không gói lại nữa
+                    return await response.json();
+                };
+
+                // Nếu không phải JSON, trả về text trong ApiResponse
+                const text = await response.text();
+                const apiResponse = new ApiResponse<T>();
+                apiResponse.success = true;
+                apiResponse.statusCode = 200 as any;
+                apiResponse.message = '';
+                apiResponse.data = text as any;
+                return apiResponse;
+            } catch (error: any) {
+                lastError = error;
+
+                // Nếu còn retry attempts, thử lại
+                if (attempt < MAX_RETRIES) {
+                    const retryDelay = INITIAL_RETRY_DELAY * Math.pow(2, attempt);
+                    console.warn(`⚠️ Network error, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${MAX_RETRIES})`);
+                    await new Promise(resolve => setTimeout(resolve, retryDelay));
+                    continue; // Retry
+                }
+
+                // Đã hết retry attempts
+                break;
+            }
+        }
+
+        // Nếu đã hết retry attempts, trả về lỗi cuối cùng
+        const apiError = new ApiResponse<T>();
+        apiError.success = false;
+        apiError.message = lastError?.message || 'Unknown error';
+        apiError.error = lastError?.message;
+        apiError.statusCode = 0 as any;
+
+        // Nếu không phải phiên bản sản phẩm, in lỗi ra console
+        if (!FLAG_PRODUCT_VERSION) {
+            console.error('API Error after retries:', apiError.message);
         };
 
-        // Nếu response là JSON, trả về ApiResponse từ backend
-        if (contentType.includes('application/json')) {
-            // Luôn trả về đúng ApiResponse từ backend, không gói lại nữa
-            return await response.json();
-        };
-
-        // Nếu không phải JSON, trả về text trong ApiResponse
-        const text = await response.text();
-        const apiResponse = new ApiResponse<T>();
-        apiResponse.success = true;
-        apiResponse.statusCode = 200 as any;
-        apiResponse.message = '';
-        apiResponse.data = text as any;
-        return apiResponse;
+        return apiError;
     } catch (error: any) {
         const apiError = new ApiResponse<T>();
         apiError.success = false;

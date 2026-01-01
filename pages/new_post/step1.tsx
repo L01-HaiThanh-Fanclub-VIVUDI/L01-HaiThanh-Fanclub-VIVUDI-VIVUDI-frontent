@@ -25,10 +25,6 @@ const ImagePickerScreen: FC = (): JSX.Element => {
     const [showAlbumPicker, setShowAlbumPicker] = useState<boolean>(false);
     const navigation = useNavigation<AppStackNavigation>();
 
-
-    /******************************************************************************
-     * Load available albums
-     ******************************************************************************/
     const loadAlbums = async () => {
         try {
             const permission = await MediaLibrary.requestPermissionsAsync(true);
@@ -41,7 +37,6 @@ const ImagePickerScreen: FC = (): JSX.Element => {
             console.log('Available albums:', albumsList.map(a => a.title));
             setAlbums(albumsList);
 
-            // Auto-select first album if none selected
             if (!selectedAlbum && albumsList.length > 0) {
                 setSelectedAlbum(albumsList[0]);
             }
@@ -79,7 +74,6 @@ const ImagePickerScreen: FC = (): JSX.Element => {
         try {
             console.log('Loading from album:', selectedAlbum.title);
 
-            // Load media from selected album
             const res = await MediaLibrary.getAssetsAsync({
                 album: selectedAlbum,
                 mediaType:
@@ -96,16 +90,13 @@ const ImagePickerScreen: FC = (): JSX.Element => {
 
             console.log(`Loaded ${res.assets.length} ${type}s from ${selectedAlbum.title}, hasNextPage: ${res.hasNextPage}, totalCount: ${res.totalCount}`);
 
-            // Sort assets: JPEG files first, then others
             const sortedAssets = res.assets.sort((a, b) => {
                 const isAJpeg = a.filename.toLowerCase().endsWith('.jpeg') || a.filename.toLowerCase().endsWith('.jpg');
                 const isBJpeg = b.filename.toLowerCase().endsWith('.jpeg') || b.filename.toLowerCase().endsWith('.jpg');
 
-                // JPEG files come first
                 if (isAJpeg && !isBJpeg) return -1;
                 if (!isAJpeg && isBJpeg) return 1;
 
-                // Within same type, sort by creation time (newest first)
                 return b.creationTime - a.creationTime;
             });
 
@@ -178,7 +169,6 @@ const ImagePickerScreen: FC = (): JSX.Element => {
 
     useEffect(() => {
         if (selectedAlbum) {
-            // Reset media when album changes
             setMedia([]);
             setEndCursor(null);
             setHasNextPage(true);
@@ -267,7 +257,6 @@ const ImagePickerScreen: FC = (): JSX.Element => {
                 </TouchableOpacity>
             </View>
 
-            {/* Album Picker Modal */}
             <Modal
                 visible={showAlbumPicker}
                 animationType="slide"

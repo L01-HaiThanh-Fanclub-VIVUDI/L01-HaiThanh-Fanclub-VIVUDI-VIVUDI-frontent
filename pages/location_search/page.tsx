@@ -8,10 +8,10 @@ import { useNavigation } from 'expo-router';
 import React, { FC, JSX, useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './styles';
+import { appColors } from '@/settings';
 
-// Haversine formula to calculate distance between two coordinates
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371; // Earth's radius in kilometers
+    const R = 6371;
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
     const a =
@@ -29,16 +29,14 @@ const SearchLocationScreen: FC = (): JSX.Element => {
     const [searchQuery, setSearchQuery] = useState('');
     const [allPositions, setAllPositions] = useState<Position[]>([]);
     const [filteredPositions, setFilteredPositions] = useState<Position[]>([]);
+    const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+    const [radius, setRadius] = useState(20); 
     const [isLoading, setIsLoading] = useState(true);
     const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
-    /******************************************************************************
-     * Fetch nearby positions on mount
-     ******************************************************************************/
     useEffect(() => {
         const fetchPositions = async () => {
             try {
-                // Get user location
                 const { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
                     console.log('Location permission denied');
@@ -50,18 +48,17 @@ const SearchLocationScreen: FC = (): JSX.Element => {
                 const { latitude, longitude } = location.coords;
                 setUserLocation({ latitude, longitude });
 
-                // Fetch all positions within 20km
-                const RADIUS_20KM = 20000; // meters
+                const radiusInMeters = radius * 1000;
                 const response = await positionService.getNearbyPositions(
                     longitude,
                     latitude,
-                    RADIUS_20KM
+                    radiusInMeters
                 );
 
                 if (response.success && response.data) {
                     setAllPositions(response.data);
                     setFilteredPositions(response.data);
-                    console.log(`✅ Loaded ${response.data.length} positions within 20km`);
+                    console.log(`Loaded ${response.data.length} positions within ${radius}km`);
                 }
             } catch (error) {
                 console.error('Error fetching positions:', error);
@@ -71,11 +68,8 @@ const SearchLocationScreen: FC = (): JSX.Element => {
         };
 
         fetchPositions();
-    }, []);
+    }, [radius]);
 
-    /******************************************************************************
-     * Filter positions based on search query (client-side)
-     ******************************************************************************/
     useEffect(() => {
         if (!searchQuery.trim()) {
             setFilteredPositions(allPositions);
@@ -92,9 +86,6 @@ const SearchLocationScreen: FC = (): JSX.Element => {
         setFilteredPositions(filtered);
     }, [searchQuery, allPositions]);
 
-    /******************************************************************************
-     * Calculate and format distance
-     ******************************************************************************/
     const getDistanceText = useCallback((position: Position): string => {
         if (!userLocation) return '';
 
@@ -110,26 +101,28 @@ const SearchLocationScreen: FC = (): JSX.Element => {
         return `${distance.toFixed(1)} km`;
     }, [userLocation]);
 
-    /******************************************************************************
-     * Handle cancel button
-     ******************************************************************************/
     const handleCancel = useCallback(() => {
         navigation.goBack();
     }, [navigation]);
 
-    /******************************************************************************
-     * Render position item
-     ******************************************************************************/
+    const handleNext = useCallback(() => {
+        if (selectedPosition) {
+            navigation.navigate(PAGE_ID.HOME_TABS, {
+                screen: PAGE_ID.MAP,
+                params: { destination: JSON.stringify(selectedPosition) }
+            });
+        }
+    }, [navigation, selectedPosition]);
+
     const renderItem = ({ item }: { item: Position }) => (
         <TouchableOpacity
-            style={styles.listItem}
+            style={[
+                styles.listItem,
+                selectedPosition?.id === item.id && { backgroundColor: '#FFF0F3' }
+            ]}
             onPress={() => {
                 console.log('Selected position:', item.name);
-                // Navigate to map with destination
-                navigation.navigate(PAGE_ID.PRIVATE_TABS, {
-                    screen: PAGE_ID.MAP,
-                    params: { destination: item }
-                });
+                setSelectedPosition(item);
             }}
         >
             <View style={styles.primaryRow}>
@@ -151,8 +144,12 @@ const SearchLocationScreen: FC = (): JSX.Element => {
                     <Text style={styles.headerButtonText}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => console.log('Next pressed')}
-                    style={styles.nextButton}
+                    onPress={handleNext}
+                    style={[
+                        styles.nextButton,
+                        !selectedPosition && { opacity: 0.5 }
+                    ]}
+                    disabled={!selectedPosition}
                 >
                     <Text style={styles.nextButtonText}>Next</Text>
                 </TouchableOpacity>
@@ -178,9 +175,39 @@ const SearchLocationScreen: FC = (): JSX.Element => {
                 )}
             </View>
 
+            <View style={{ paddingHorizontal: 20, paddingVertical: 12, backgroundColor: '#F8F8F8' }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 8 }}>Search Radius</Text>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                    {[5, 10, 20, 50].map((r) => (
+                        <TouchableOpacity
+                            key={r}
+                            onPress={() => setRadius(r)}
+                            style={{
+                                flex: 1,
+                                paddingVertical: 8,
+                                paddingHorizontal: 12,
+                                borderRadius: 8,
+                                backgroundColor: radius === r ? appColors.primary : '#fff',
+                                borderWidth: 1,
+                                borderColor: radius === r ? appColors.primary : '#E0E0E0',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Text style={{
+                                fontSize: 14,
+                                fontWeight: '600',
+                                color: radius === r ? '#fff' : '#666'
+                            }}>
+                                {r} km
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+
             {isLoading ? (
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#FF678B" />
+                    <ActivityIndicator size="large" color={appColors.primary} />
                     <Text style={styles.loadingText}>Đang tải vị trí...</Text>
                 </View>
             ) : filteredPositions.length > 0 ? (

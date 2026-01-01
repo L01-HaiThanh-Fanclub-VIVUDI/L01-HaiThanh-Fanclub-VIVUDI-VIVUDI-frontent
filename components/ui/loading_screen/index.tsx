@@ -114,7 +114,7 @@ const LoadingScreen: FC<LoadingScreenProps> = ({ isVisible, onHidden }): JSX.Ele
      *****************************************************************************/
     return (
         <Animated.View
-            style={[styles.overlay, { transform: [{ translateY: slideAnim }] }]}
+            style={[styles.overlay]}
             pointerEvents="auto"
         >
             <ThemedView style={styles.container}>

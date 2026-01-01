@@ -15,7 +15,7 @@ type Ref = BottomSheet;
 const LocationBottomSheet = forwardRef<Ref, LocationBottomSheetProps>(
     ({ location, snapPoints, onClose }, ref) => {
         const renderContent = () => {
-           
+
             if (!location) {
                 return null;
             }
@@ -24,15 +24,15 @@ const LocationBottomSheet = forwardRef<Ref, LocationBottomSheetProps>(
                 <>
                     <View style={styles.bsHeader}>
                         <View style={{ flex: 1 }}>
-                            <Text style={styles.bsTitle}>{location.title}</Text>
-                            <Text style={styles.bsLocation}>{location.subtitle}</Text>
+                            <Text style={styles.bsTitle}>{location.name}</Text>
+                            <Text style={styles.bsLocation}>{location.address}</Text>
                         </View>
                         <Image source={location.image} style={styles.bsAvatar} />
                     </View>
 
                     <Text style={styles.bsAboutTitle}>About</Text>
                     <Text style={styles.bsAboutText}>
-                        Đây là thông tin chi tiết về {location.title}.
+                        Đây là thông tin chi tiết về {location.name}.
                         Bạn có thể thêm mô tả dài ở đây.
                     </Text>
                 </>

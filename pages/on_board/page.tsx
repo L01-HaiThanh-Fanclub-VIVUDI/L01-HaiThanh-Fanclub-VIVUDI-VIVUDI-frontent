@@ -13,6 +13,7 @@ import StageDots from '@/components/atoms/stage_dots';
 import ThemedText from '@/components/atoms/themed_text';
 import ThemedView from '@/components/atoms/themed_view';
 import { useScreenWrapper } from '@/providers/screen_wrapper_provider';
+import { appColors } from '@/settings';
 import { PAGE_ID } from '@/settings/navigation/page';
 import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { useNavigation } from 'expo-router';
@@ -41,7 +42,7 @@ const SLIDES: Slide[] = [
         highlightColor: '#FF7029',
         description:
             'At Friends tours and travel, we customize reliable and trustworthy educational tours to destinations all over the world',
-        buttonColor: '#24BAEC',
+        buttonColor: appColors.secondary,
         dotLength: [25, 13, 6],
         curveLeftPosition: -4,
         inactiveColor: '#CAEAFF',
@@ -53,7 +54,7 @@ const SLIDES: Slide[] = [
         highlightColor: '#1EB980',
         description:
             'To get the best of your adventure you just need to leave and go where we like, we are waiting for you',
-        buttonColor: '#24BAEC',
+        buttonColor: appColors.secondary,
         dotLength: [13.001, 25, 6],
         curveLeftPosition: 9,
         inactiveColor: '#CAEAFF',
@@ -65,7 +66,7 @@ const SLIDES: Slide[] = [
         highlightColor: '#FF5680',
         description:
             'To get the best of your adventure you just need to leave and go where you like, we are waiting for you',
-        buttonColor: '#FF678B',
+        buttonColor: appColors.primary,
         dotLength: [13, 6, 25],
         curveLeftPosition: 12,
         inactiveColor: '#FF9DB0',

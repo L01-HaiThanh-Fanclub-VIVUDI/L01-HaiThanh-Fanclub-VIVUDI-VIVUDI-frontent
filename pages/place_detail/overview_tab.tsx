@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 import { styles } from "./styles";
 import { InfoRowProps } from "./types";
 
-const MAIN_COLOR = '#FF678B';
+const MAIN_COLOR = appColors.primary;
 const OverviewTab = ({ data }: { data: any }) => {
     const InfoRow = ({ iconName, text, color, showArrow, isAddress = false, isHours = false }: InfoRowProps) => (
         <View style={[styles.infoRow, isAddress && styles.addressRow, isHours && styles.hoursRow]}>

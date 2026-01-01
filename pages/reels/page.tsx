@@ -1,12 +1,15 @@
+import LoadingScreen from '@/components/ui/loading_screen';
 import PostCard from '@/components/ui/post_card/page';
 import { PostCardProps } from '@/components/ui/post_card/types';
 import { Post } from '@/models/post.dto';
 import { googleDriveService } from '@/services/goole-drive.service';
 import { postService } from '@/services/post.service';
+import { appColors } from '@/settings';
 import { router } from 'expo-router';
 import { FC, JSX, useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, RefreshControl, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { styles } from './styles';
 
 const FeedScreen: FC = (): JSX.Element => {
     const [posts, setPosts] = useState<PostCardProps[]>([]);
@@ -17,11 +20,7 @@ const FeedScreen: FC = (): JSX.Element => {
     const [totalPages, setTotalPages] = useState(1);
     const [error, setError] = useState<string | null>(null);
 
-    /******************************************************************************
-     * convertPostToCardProps: Convert API Post to PostCardProps format (async)
-     ******************************************************************************/
     const convertPostToCardProps = async (post: Post): Promise<PostCardProps> => {
-        // Get direct links for ALL media images from API
         let imageUrls: any[] = [];
 
         if (post.medias && post.medias.length > 0) {
@@ -35,7 +34,6 @@ const FeedScreen: FC = (): JSX.Element => {
             }
         }
 
-        // Fallback if no images loaded
         if (imageUrls.length === 0) {
             imageUrls = [require('@/assets/images/home/shibuya.png')];
         }
@@ -49,8 +47,8 @@ const FeedScreen: FC = (): JSX.Element => {
             avatar: post.author?.avt_url
                 ? { uri: post.author.avt_url }
                 : require('@/assets/images/home/avatar.png'),
-            image: imageUrls[0], // First image for backward compatibility
-            images: imageUrls, // All images for carousel
+            image: imageUrls[0], 
+            images: imageUrls, 
             likes: '0', // TODO: Add likes count from API
             likedBy: '', // TODO: Add liked by from API
             caption: post.content,
@@ -63,31 +61,27 @@ const FeedScreen: FC = (): JSX.Element => {
         };
     };
 
-    /******************************************************************************
-     * fetchPosts: Fetch all posts from API
-     ******************************************************************************/
     const fetchPosts = useCallback(async () => {
         try {
             console.log('Fetching posts...');
+            setIsLoading(true);
             const response = await postService.getAllPosts();
 
             console.log('Posts response:', response);
 
             if (response.success && response.data) {
-                // Handle new pagination format: response.data.data contains posts
                 const postsData = response.data.data;
                 const convertedPosts = await Promise.all(postsData.map(convertPostToCardProps));
                 setPosts(convertedPosts);
 
-                // Set pagination info
                 if (response.data.pagination) {
                     setCurrentPage(response.data.pagination.page);
                     setTotalPages(response.data.pagination.totalPage);
-                    console.log(`📊 Pagination: page ${response.data.pagination.page}/${response.data.pagination.totalPage}`);
+                    console.log(`Pagination: page ${response.data.pagination.page}/${response.data.pagination.totalPage}`);
                 }
 
                 setError(null);
-                console.log(`✅ Loaded ${postsData.length} posts`);
+                console.log(`Loaded ${postsData.length} posts`);
             } else {
                 setError('Không thể tải bài viết');
             }
@@ -104,9 +98,6 @@ const FeedScreen: FC = (): JSX.Element => {
         }
     }, []);
 
-    /******************************************************************************
-     * onRefresh: Pull to refresh handler
-     ******************************************************************************/
     const onRefresh = useCallback(() => {
         setIsRefreshing(true);
         setIsLoading(true);
@@ -114,9 +105,6 @@ const FeedScreen: FC = (): JSX.Element => {
         fetchPosts();
     }, [fetchPosts]);
 
-    /******************************************************************************
-     * onLoadMore: Load next page when scrolling
-     ******************************************************************************/
     const onLoadMore = useCallback(async () => {
         if (isLoadingMore || currentPage >= totalPages) {
             console.log(`Skip loading: isLoadingMore=${isLoadingMore}, currentPage=${currentPage}, totalPages=${totalPages}`);
@@ -135,50 +123,36 @@ const FeedScreen: FC = (): JSX.Element => {
                 const convertedPosts = await Promise.all(newPosts.map(convertPostToCardProps));
 
                 setPosts(prev => [...prev, ...convertedPosts]);
-                setCurrentPage(nextPage); // Use nextPage, not pagination.page
+                setCurrentPage(nextPage);
                 setTotalPages(pagination.totalPage);
 
-                console.log(`✅ Loaded page ${nextPage}/${pagination.totalPage} (${newPosts.length} posts)`);
+                console.log(`Loaded page ${nextPage}/${pagination.totalPage} (${newPosts.length} posts)`);
                 console.log(`   Total posts now: ${posts.length + newPosts.length}`);
             }
         } catch (error) {
-            console.error('❌ Error loading more posts:', error);
+            console.error('Error loading more posts:', error);
         } finally {
             setIsLoadingMore(false);
         }
     }, [isLoadingMore, currentPage, totalPages]);
 
-    /******************************************************************************
-     * Load posts on mount
-     ******************************************************************************/
     useEffect(() => {
         fetchPosts();
     }, [fetchPosts]);
 
-    /******************************************************************************
-     * Navigate to post detail
-     ******************************************************************************/
     const handlePostPress = (postId: string) => {
         router.push(`/post_detail?id=${postId}`);
     };
 
-    /******************************************************************************
-     * Render loading state
-     ******************************************************************************/
     if (isLoading) {
         return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.centerContainer}>
-                    <ActivityIndicator size="large" color="#FF678B" />
-                    <Text style={styles.loadingText}>Đang tải bài viết...</Text>
-                </View>
-            </SafeAreaView>
+            <View style={styles.centerContainer}>
+                <LoadingScreen isVisible={isLoading} onHidden={() => { }} />
+                <Text style={styles.loadingText}>Đang tải bài viết...</Text>
+            </View>
         );
     }
 
-    /******************************************************************************
-     * Render error state
-     ******************************************************************************/
     if (error) {
         return (
             <SafeAreaView style={styles.container}>
@@ -192,9 +166,6 @@ const FeedScreen: FC = (): JSX.Element => {
         );
     }
 
-    /******************************************************************************
-     * Render posts feed
-     ******************************************************************************/
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
@@ -209,8 +180,8 @@ const FeedScreen: FC = (): JSX.Element => {
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={onRefresh}
-                        tintColor="#FF678B"
-                        colors={['#FF678B']}
+                        tintColor={appColors.primary}
+                        colors={[appColors.primary]}
                     />
                 }
                 ListEmptyComponent={
@@ -223,7 +194,7 @@ const FeedScreen: FC = (): JSX.Element => {
                 ListFooterComponent={() => (
                     isLoadingMore ? (
                         <View style={{ paddingVertical: 20 }}>
-                            <ActivityIndicator size="small" color="#FF678B" />
+                            <ActivityIndicator size="small" color={appColors.primary} />
                         </View>
                     ) : null
                 )}
@@ -231,39 +202,5 @@ const FeedScreen: FC = (): JSX.Element => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FFFFFF',
-    },
-    centerContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    loadingText: {
-        marginTop: 12,
-        fontSize: 16,
-        color: '#7D848D',
-    },
-    errorText: {
-        fontSize: 16,
-        color: '#FF3B30',
-        textAlign: 'center',
-        marginBottom: 12,
-    },
-    retryText: {
-        fontSize: 16,
-        color: '#FF678B',
-        fontWeight: '600',
-    },
-    emptyText: {
-        fontSize: 16,
-        color: '#7D848D',
-        textAlign: 'center',
-    },
-});
 
 export default FeedScreen;

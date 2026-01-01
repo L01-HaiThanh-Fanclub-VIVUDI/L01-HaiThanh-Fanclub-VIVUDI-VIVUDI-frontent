@@ -1,3 +1,4 @@
+import { appColors } from '@/settings';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -22,7 +23,7 @@ export const styles = StyleSheet.create({
         paddingVertical: 5,
     },
     nextButton: {
-        backgroundColor: '#FF678B',
+        backgroundColor: appColors.primary,
         paddingHorizontal: 15,
         paddingVertical: 5,
         borderRadius: 20,

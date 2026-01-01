@@ -2,6 +2,7 @@ import mapCustomStyle from '@/assets/mapCustomStyle.json';
 import { Position } from '@/models/position.dto';
 import { googleMapsService } from '@/services/google-maps.service';
 import { positionService } from '@/services/position.service';
+import { appColors } from '@/settings';
 import { PAGE_ID } from '@/settings/navigation/page';
 import { AppStackNavigation } from '@/settings/navigation/route_params';
 import { Ionicons } from '@expo/vector-icons';
@@ -32,25 +33,19 @@ export default function MapScreen() {
         longitudeDelta: 0.04,
     });
 
-    /******************************************************************************
-     * Get user location and fetch nearby positions
-     ******************************************************************************/
     useEffect(() => {
         const fetchUserLocationAndPositions = async () => {
             try {
-                // Get location permission
                 const { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
                     Alert.alert('Permission denied', 'Location permission is required');
                     return;
                 }
 
-                // Get current location
                 const location = await Location.getCurrentPositionAsync({});
                 const { latitude, longitude } = location.coords;
                 setUserLocation({ latitude, longitude });
 
-                // Update map region to user location
                 setMapRegion({
                     latitude,
                     longitude,
@@ -58,16 +53,15 @@ export default function MapScreen() {
                     longitudeDelta: 0.04,
                 });
 
-                // Fetch nearby positions (1000km radius)
                 const response = await positionService.getNearbyPositions(
                     longitude,
                     latitude,
-                    1000000 // 1000km
+                    1000000
                 );
 
                 if (response.success && response.data) {
                     setPositions(response.data);
-                    console.log(`✅ Loaded ${response.data.length} positions`);
+                    console.log(`Loaded ${response.data.length} positions`);
                 } else {
                     console.log('No positions found nearby');
                 }
@@ -97,7 +91,7 @@ export default function MapScreen() {
                     duration: route.duration
                 });
             } else {
-                console.log('⚠️ Using fallback straight line');
+                console.log('Using fallback straight line');
                 setRouteCoordinates([origin, destination]);
                 setRouteInfo(null);
             }
@@ -155,7 +149,6 @@ export default function MapScreen() {
     }, []);
 
     const handleViewDetails = useCallback(() => {
-        // Navigate to place detail screen
         navigation.navigate(PAGE_ID.PRIVATE_TABS, { screen: PAGE_ID.PLACE_DETAIL });
     }, [navigation]);
 
@@ -170,7 +163,6 @@ export default function MapScreen() {
         const lng = destination.point.coordinates[0];
         const label = encodeURIComponent(destination.name);
 
-        // Create URL for different platforms
         const scheme = Platform.select({
             ios: `maps:0,0?q=${label}@${lat},${lng}`,
             android: `geo:0,0?q=${lat},${lng}(${label})`
@@ -183,7 +175,6 @@ export default function MapScreen() {
                 if (supported) {
                     Linking.openURL(url);
                 } else {
-                    // Fallback to Google Maps web
                     Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
                 }
             })
@@ -205,7 +196,6 @@ export default function MapScreen() {
                 showsPointsOfInterest={false}
                 onPress={handleCloseCard}
             >
-                {/* Position Markers */}
                 {positions.map((position) => (
                     <Marker
                         key={position.id}
@@ -222,16 +212,14 @@ export default function MapScreen() {
                     </Marker>
                 ))}
 
-                {/* Draw route if destination exists */}
                 {destinationPosition && userLocation && routeCoordinates.length > 0 && (
                     <>
                         <Polyline
                             coordinates={routeCoordinates}
-                            strokeColor="#FF678B"
+                            strokeColor={appColors.primary}
                             strokeWidth={4}
                         />
 
-                        {/* Destination Marker */}
                         <Marker
                             coordinate={{
                                 latitude: destinationPosition.point.coordinates[1],
@@ -239,7 +227,7 @@ export default function MapScreen() {
                             }}
                         >
                             <View style={styles.destinationMarker}>
-                                <Ionicons name="location" size={32} color="#FF678B" />
+                                <Ionicons name="location" size={32} color={appColors.primary} />
                             </View>
                         </Marker>
                     </>
@@ -248,12 +236,11 @@ export default function MapScreen() {
 
             {isLoading && (
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#FF678B" />
+                    <ActivityIndicator size="large" color={appColors.primary} />
                     <Text style={styles.loadingText}>Đang tải vị trí...</Text>
                 </View>
             )}
 
-            {/* User Location Button - Bottom Right */}
             <TouchableOpacity
                 style={{
                     position: 'absolute',
@@ -282,10 +269,9 @@ export default function MapScreen() {
                     }
                 }}
             >
-                <Ionicons name="locate" size={24} color="#FF678B" />
+                <Ionicons name="locate" size={24} color={appColors.primary} />
             </TouchableOpacity>
 
-            {/* Route Info Card */}
             {destinationPosition && !isLoading && (
                 <View style={{
                     position: 'absolute',
@@ -303,7 +289,7 @@ export default function MapScreen() {
                 }}>
                     {isLoadingRoute ? (
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <ActivityIndicator size="small" color="#FF678B" />
+                            <ActivityIndicator size="small" color={appColors.primary} />
                             <Text style={{ marginLeft: 8, color: '#7D848D' }}>Đang tìm đường...</Text>
                         </View>
                     ) : routeInfo ? (
@@ -316,18 +302,18 @@ export default function MapScreen() {
                                     onPress={handleClearRoute}
                                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                                 >
-                                    <Ionicons name="close-circle" size={24} color="#FF678B" />
+                                    <Ionicons name="close-circle" size={24} color={appColors.primary} />
                                 </TouchableOpacity>
                             </View>
                             <View style={{ flexDirection: 'row', gap: 16, marginBottom: 8 }}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Ionicons name="navigate" size={16} color="#FF678B" />
+                                    <Ionicons name="navigate" size={16} color={appColors.primary} />
                                     <Text style={{ marginLeft: 4, color: '#7D848D', fontSize: 12 }}>
                                         {routeInfo.distance}
                                     </Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Ionicons name="time" size={16} color="#FF678B" />
+                                    <Ionicons name="time" size={16} color={appColors.primary} />
                                     <Text style={{ marginLeft: 4, color: '#7D848D', fontSize: 12 }}>
                                         {routeInfo.duration}
                                     </Text>
@@ -338,7 +324,7 @@ export default function MapScreen() {
                                     flexDirection: 'row',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    backgroundColor: '#FF678B',
+                                    backgroundColor: appColors.primary,
                                     paddingVertical: 8,
                                     paddingHorizontal: 12,
                                     borderRadius: 8,
@@ -359,7 +345,7 @@ export default function MapScreen() {
                                 onPress={handleClearRoute}
                                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                             >
-                                <Ionicons name="close-circle" size={24} color="#FF678B" />
+                                <Ionicons name="close-circle" size={24} color={appColors.primary} />
                             </TouchableOpacity>
                         </View>
                     )}
@@ -385,11 +371,10 @@ export default function MapScreen() {
                             </View>
                         </View>
 
-                        {/* Info */}
                         <View style={styles.floatingCardBody}>
                             {selectedPosition.address && (
                                 <View style={styles.floatingCardRow}>
-                                    <Ionicons name="location" size={18} color="#FF678B" />
+                                    <Ionicons name="location" size={18} color={appColors.primary} />
                                     <Text style={styles.floatingCardText} numberOfLines={2}>
                                         {selectedPosition.address}
                                     </Text>
@@ -398,7 +383,7 @@ export default function MapScreen() {
 
                             {selectedPosition.type && (
                                 <View style={styles.floatingCardRow}>
-                                    <Ionicons name="pricetag" size={18} color="#FF678B" />
+                                    <Ionicons name="pricetag" size={18} color={appColors.primary} />
                                     <Text style={styles.floatingCardText}>
                                         {selectedPosition.type}
                                     </Text>
@@ -407,7 +392,7 @@ export default function MapScreen() {
 
                             {selectedPosition.distance && (
                                 <View style={styles.floatingCardRow}>
-                                    <Ionicons name="navigate" size={18} color="#FF678B" />
+                                    <Ionicons name="navigate" size={18} color={appColors.primary} />
                                     <Text style={styles.floatingCardText}>
                                         {(selectedPosition.distance / 1000).toFixed(1)} km
                                     </Text>
@@ -420,7 +405,7 @@ export default function MapScreen() {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                backgroundColor: '#FF678B',
+                                backgroundColor: appColors.primary,
                                 paddingVertical: 10,
                                 paddingHorizontal: 16,
                                 borderRadius: 8,
@@ -436,7 +421,6 @@ export default function MapScreen() {
                                     setDestinationPosition(selectedPosition);
                                     fetchRoute(userLocation, destCoords);
 
-                                    // Adjust map to show route
                                     const midLat = (userLocation.latitude + destCoords.latitude) / 2;
                                     const midLon = (userLocation.longitude + destCoords.longitude) / 2;
                                     const latDelta = Math.abs(userLocation.latitude - destCoords.latitude) * 1.5;

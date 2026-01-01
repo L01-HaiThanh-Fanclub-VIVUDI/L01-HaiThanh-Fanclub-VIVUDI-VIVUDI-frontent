@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
         width: 12,
         height: 12,
         borderRadius: 6,
-        backgroundColor: '#FF678B',
+        backgroundColor: appColors.primary,
         borderWidth: 2,
         borderColor: '#FFFFFF',
         shadowColor: '#000',
@@ -123,7 +123,7 @@ export const styles = StyleSheet.create({
     },
     floatingCardHint: {
         fontSize: 13,
-        color: '#FF678B',
+        color: appColors.primary,
         fontWeight: '600',
         textAlign: 'center',
     },
@@ -193,7 +193,7 @@ export const styles = StyleSheet.create({
     },
     primaryButton: {
         flexDirection: 'row',
-        backgroundColor: '#FF678B',
+        backgroundColor: appColors.primary,
         padding: 16,
         borderRadius: 12,
         alignItems: 'center',
