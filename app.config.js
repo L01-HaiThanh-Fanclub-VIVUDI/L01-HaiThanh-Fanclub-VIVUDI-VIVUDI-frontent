@@ -21,6 +21,7 @@ export default {
 
         ios: {
             supportsTablet: true,
+            bundleIdentifier: process.env.IOS_BUNDLE_ID || 'com.vivudi.fanclub',
             config: {
                 googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
             },
@@ -38,7 +39,11 @@ export default {
                     apiKey: process.env.GOOGLE_MAPS_API_KEY,
                 },
             },
-            permissions: ['READ_MEDIA_IMAGES', 'READ_MEDIA_VIDEO'
+            permissions: [
+                'READ_EXTERNAL_STORAGE',
+                'READ_MEDIA_IMAGES',
+                'READ_MEDIA_VIDEO',
+                'ACCESS_MEDIA_LOCATION'
             ],
         },
 
@@ -47,9 +52,16 @@ export default {
             output: 'static',
             favicon: './assets/images/favicon.png',
         },
-
-        plugins: [],
-
+        plugins: [
+            [
+                "expo-media-library",
+                {
+                    "photosPermission": "Ứng dụng cần truy cập ảnh để bạn có thể chọn và đăng tải.",
+                    "savePhotosPermission": "Ứng dụng cần quyền lưu ảnh vào thiết bị.",
+                    "isAccessMediaLocationEnabled": true
+                }
+            ]
+        ],
         experiments: {
             typedRoutes: true,
         },

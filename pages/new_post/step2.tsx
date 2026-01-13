@@ -136,8 +136,8 @@ const CreatePostScreen: FC = (): JSX.Element => {
                     address: address,
                     description: `Created by user on ${new Date().toLocaleDateString('vi-VN')}`,
                     type: locationType,
-                    longtitude: currentCoords.longitude,
-                    lattitude: currentCoords.latitude,
+                    longtitude: currentCoords.latitude,
+                    lattitude: currentCoords.longitude,
                 });
 
                 console.log(createPositionResponse);

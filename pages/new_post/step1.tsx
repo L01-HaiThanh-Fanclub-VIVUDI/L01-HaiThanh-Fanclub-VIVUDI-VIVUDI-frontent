@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 import * as MediaLibrary from 'expo-media-library';
 import { useNavigation } from 'expo-router';
 import React, { FC, JSX, useEffect, useState } from 'react';
-import { Alert, FlatList, Modal, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Linking, Modal, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './styles_1';
 
 type MediaAsset = MediaLibrary.Asset;
@@ -27,21 +27,59 @@ const ImagePickerScreen: FC = (): JSX.Element => {
 
     const loadAlbums = async () => {
         try {
-            const permission = await MediaLibrary.requestPermissionsAsync(true);
-            if (!permission.granted) return;
+            console.log('--- Bắt đầu kiểm tra quyền ---');
 
+            // 1. Kiểm tra trạng thái quyền hiện tại
+            let { status, canAskAgain } = await MediaLibrary.getPermissionsAsync();
+            console.log('Trạng thái quyền ban đầu:', status);
+
+            // 2. Nếu chưa từng hỏi (undetermined) hoặc bị từ chối mà vẫn hỏi lại được -> thì hỏi lại
+            if (status === 'undetermined' || (status === 'denied' && canAskAgain)) {
+                console.log('Đang hiện popup xin quyền...');
+                const newPermission = await MediaLibrary.requestPermissionsAsync();
+                status = newPermission.status;
+            }
+
+            console.log('Trạng thái quyền sau khi hỏi:', status);
+
+            // 3. Nếu vẫn không được cấp quyền -> Dừng ngay, KHÔNG gọi getAlbumsAsync
+            if (status !== 'granted') {
+                console.log('Quyền bị từ chối. Không thể tải album.');
+                Alert.alert(
+                    "Cần quyền truy cập",
+                    "Ứng dụng cần quyền truy cập thư viện ảnh để hoạt động. Vui lòng vào Cài đặt để cấp quyền.",
+                    [
+                        { text: "Để sau", style: "cancel" },
+                        {
+                            text: "Mở Cài đặt",
+                            onPress: () => {
+                                // Mở cài đặt app để user tự bật
+                                MediaLibrary.presentPermissionsPickerAsync().catch(() => {
+                                    // Fallback cho Android nếu hàm trên không chạy
+                                    Linking.openSettings();
+                                });
+                            }
+                        }
+                    ]
+                );
+                return;
+            }
+
+            // 4. Chỉ chạy xuống đây khi đã có quyền (granted)
+            console.log('Đã có quyền, đang tải danh sách albums...');
             const albumsList = await MediaLibrary.getAlbumsAsync({
                 includeSmartAlbums: false,
             });
 
-            console.log('Available albums:', albumsList.map(a => a.title));
+            console.log('Tìm thấy:', albumsList.length, 'albums');
             setAlbums(albumsList);
 
             if (!selectedAlbum && albumsList.length > 0) {
                 setSelectedAlbum(albumsList[0]);
             }
         } catch (error) {
-            console.error('Error loading albums:', error);
+            console.error('Lỗi khi tải albums:', error);
+            Alert.alert("Lỗi", "Không thể tải danh sách Album: " + error);
         }
     };
 
